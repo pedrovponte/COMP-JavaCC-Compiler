@@ -1,0 +1,141 @@
+options
+{
+    LOOKAHEAD=1;
+}
+
+PARSER_BEGIN(Calculator)
+
+
+public class Calculator
+{
+    public static void main(String args[]) throws ParseException {
+      	System.out.println("Write an arithmetic expression:");
+		Calculator myCalc = new Calculator(System.in);
+		SimpleNode root = myCalc.Expression(); // returns reference to root node
+
+		root.dump(""); // prints the tree on the screen
+
+		//System.out.println("Expression value: "+myCalc.eval(root));
+    }
+
+}
+
+PARSER_END(Calculator)
+
+SKIP :
+{
+	" " | "\r" | "\t"
+}
+
+TOKEN:
+{
+    <IMPORT: "import">
+    | <STATIC: "static">
+    | <DOT: ".">
+    | <STAR: "*">
+    | <SEMICOLON: ";">
+    | <COMMA: ",">
+    | <CLASS: "class">
+    | <EXTENDS: "extends">
+    | <LBRACE: "{">
+    | <RBRACE: "}">
+    | <PUBLIC: "public">
+    | <LPAREN: "(">
+    | <RPAREN: ")">
+    | <RETURN: "return">
+    | <VOID: "void">
+    | <MAIN: "main">
+    | <STRINGARR: "String[]">
+    | <INT: "int">
+    | <BOOLEAN: "boolean">
+    | <IF: "if">
+    | <ELSE: "else">
+    | <WHILE: "while">
+    | <ASSIGN: "=">
+    | <LBRACKET: "[">
+    | <RBRACKET: "]">
+    | <SC_AND: "&&">
+    | <LESS: "<">
+    | <PLUS: "+">
+    | <MINUS: "-">
+    | <SLASH: "/">
+    | <TRUE: "true">
+    | <FALSE: "false">
+    | <THIS: "this">
+    | <NEW: "new">
+    | <BANG: "!">
+    | <LENGTH: "length">
+    | <IDENTIFIER: ["a"-"z", "A"-"Z", "_", "$"](["a"-"z", "A"-"Z", "0"-"9", "_", "$"])* >
+    | <NUMERIC: (["0"-"9"])+ >
+}
+
+SimpleNode Program() : {}
+{
+    ImportDeclaration() ClassDeclaration() <EOF>
+}
+
+void ImportDeclaration() : {}
+{
+    ((Import()) <SEMICOLON>)*
+}
+
+void Import() : {Token t;} //nao tenho a certeza se isto esta bem feito pq nao sei se {.Identifier vai ser sempre o nome do metodo}
+{
+    <IMPORT> (<STATIC> {jjtThis.setStatic(true);})? t=<IDENTIFIER> {jjtThis.setClassName(t.image);}
+        (<DOT> t=<IDENTIFIER> {jjthis.setMethodName(t.image);})* (<DOT> <STAR> )? <SEMICOLON>
+}
+
+void ClassDeclaration() : {Token t;}
+{
+    <CLASS> t=<IDENTIFIER> {jjtThis.value = t.image;} (<EXTENDS> t=<IDENTIFIER> {jjtThis.value = t.image;})?
+        <LBRACE> (VarDeclaration())* (MethodDeclaration())* <RBRACE>
+}
+
+void VarDeclaration() : {}
+{
+    Type() Identifier() <SEMICOLON>
+}
+
+void MethodDeclaration() : {Token t;}
+{
+    <PUBLIC>
+    (
+        Type()
+        t=<IDENTIFIER> {jjtThis.value = t.image;}
+        <LPAREN>
+        (
+            Type() t=<IDENTIFIER> {jjtThis.value = t.image;} //Identifier()?
+            (
+                <COMMA> Type() Identifier()
+            )*
+        )?
+        <RPAREN>
+        <LBRACE>
+        (VarDeclaration())*
+        (Statement())*
+        <RETURN> Expression() <SEMICOLON>
+        <RBRACE>
+    |
+         <STATIC>
+         <VOID>
+         <MAIN>
+         <LPAREN>
+         t=<STRINGARR> {jjtThis.value = t.image}
+         Identifier()
+         <RPAREN>
+         <LBRACE>
+         (VarDeclaration())*
+         (Statement())*
+         <RBRACE>
+    )
+}
+
+void Identifier() : { Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.value = t.image; }
+}
+
+void Type() : {}
+{
+
+}
