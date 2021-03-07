@@ -120,7 +120,7 @@ void MethodDeclaration() : {Token t;}
          <VOID>
          <MAIN>
          <LPAREN>
-         t=<STRINGARR> {jjtThis.value = t.image}
+         t=<STRINGARR> {jjtThis.value = t.image;}
          Identifier()
          <RPAREN>
          <LBRACE>
@@ -132,10 +132,181 @@ void MethodDeclaration() : {Token t;}
 
 void Identifier() : { Token t; }
 {
-    t = <IDENTIFIER> { jjtThis.value = t.image; }
+    t = <IDENTIFIER> {jjtThis.value = t.image;}
 }
 
-void Type() : {}
+void Type() : {Token t;}
 {
-
+    t = <IDENTIFIER> {jjtThis.value = t.image;}
+    |
+    PrimitiveType()
 }
+
+void PrimitiveType() : {}
+{
+    t = <BOOLEAN> {jjtThis.value = t.image;}
+    |
+    (
+        t = <INT> (<LBRACKET> <RBRACKET> {b = true;})? {
+            if(b)
+                jjtThis.value = t.image + "[]";
+            else
+                jjtThis.value = t.image;
+        }
+
+    )
+}
+
+void Statement() : {}
+{
+    IdentifierStatement()
+    |
+    NoIdentifierStatement()
+}
+
+void IdentifierStatement() : {}
+{
+    Identifier() AfterIdentifier() <SEMICOLON>
+}
+
+void AfterIdentifier() : {}
+{
+    <ASSIGN> Expression()
+    |
+    <LBRACKET> Expression() <RBRACKET> <ASSIGN> Expression() <SEMICOLON>
+}
+
+void NoIdentifierStatement() : {}
+{
+    <LBRACE> (Statement())* <RBRACE>
+    |
+    IfStatement()
+    |
+    WhileStatement()
+}
+
+void IfStatement() : {}
+{
+    <IF> <LPAREN> Expression() <RPAREN> Statement() <ELSE> Statement()
+}
+
+void WhileStatement() : {}
+{
+    <WHILE> <LPAREN> Expression() <RPAREN> Statement()
+}
+
+void Expression() : {}
+{
+    Expr1() ExprAnd()
+}
+
+void ExprAnd() : {}
+{
+    <SC_AND> Expr1() ExprAnd()
+    |
+    {}
+}
+
+void Expr1() : {}
+{
+    Expr2() ExprLess()
+}
+
+void ExprLess() : {}
+{
+    <LESS> Expr2() ExprLess()
+    |
+    {}
+}
+
+void Expr2() : {}
+{
+    Expr3() ExprSumSub()
+}
+
+void ExprSumSub() : {}
+{
+    <MINUS> Expr3() ExprSumSub()
+    |
+    <PLUS> Expr3() ExprSumSub()
+    |
+    {}
+}
+
+void Expr3() : {}
+{
+     Expr4() ExprMulDiv()
+}
+
+void ExprMulDiv() : {}
+{
+    <STAR> Expr4() ExprMulDiv()
+    |
+    <SLASH> Expr4() ExprMulDiv()
+    |
+    {}
+}
+
+void Expr4() : {}
+{
+    Expr5() ExprDot()
+}
+
+void ExprDot() : {}
+{
+    <DOT> AfterDot() ExprArray() ExprDot()
+    |
+    {}
+}
+
+void AfterDot() : {Token t;}
+{
+    t=<LENGTH> {jjtThis.value = t.image;}
+    |
+    t=<IDENTIFIER> {jjtThis.value = t.image;}
+    <LPAREN>
+    Expression() <COMMA> Expression()
+    <RPAREN>
+}
+
+void Expr5() : {}
+{
+    ExprLiteral() ExprArray()
+}
+
+void ExprArray() : {}
+{
+    <LBRACKET> Expression() <RBRACKET> ExprArray()
+    |
+    {}
+}
+
+void ExprLiteral() : {}
+{
+    NoIdentifierExprLiteral()
+    |
+    Identifier()
+}
+
+void NoIdentifierExprLiteral() : {Token t;}
+{
+    L=<TRUE> {jjtThis.value = t.image;}
+    |
+    L=<FALSE> {jjtThis.value = t.image;}
+    |
+    <THIS>
+    |
+    <BANG> (Expr5() ExprDot())
+    |
+    <NUMERIC>
+    |
+    <NEW>
+    (
+        t=<INT> <LBRACKET> Expression() <RBRACKET> {jjtThis.value = t.image + "[]";}
+        |
+        t = <IDENTIFIER> <LPAREN> <RPAREN>
+    )
+    |
+    <LPAREN> Expression() <RPAREN>
+}
+
