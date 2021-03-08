@@ -79,21 +79,27 @@ void ImportDeclaration() : {}
     ((Import()) <SEMICOLON>)*
 }
 
-void Import() : {Token t;} //nao tenho a certeza se isto esta bem feito pq nao sei se {.Identifier vai ser sempre o nome do metodo}
+
+void Import() : {Token t;}
 {
-    <IMPORT> (<STATIC> {jjtThis.setStatic(true);})? t=<IDENTIFIER> {jjtThis.setClassName(t.image);}
-        (<DOT> t=<IDENTIFIER> {jjthis.setMethodName(t.image);})* (<DOT> <STAR> )? <SEMICOLON>
+    <IMPORT> (<STATIC> {jjtThis.setStatic(true);})? t=<IDENTIFIER> {jjtThis.value = t.image;}
+        (<DOT> t=<IDENTIFIER> {jjthis.value = t.image;})* (<DOT> <STAR>)?
 }
 
 void ClassDeclaration() : {Token t;}
 {
-    <CLASS> t=<IDENTIFIER> {jjtThis.value = t.image;} (<EXTENDS> t=<IDENTIFIER> {jjtThis.value = t.image;})?
-        <LBRACE> (VarDeclaration())* (MethodDeclaration())* <RBRACE>
+    <CLASS>
+    t=<IDENTIFIER> {jjtThis.value = t.image;}
+    (<EXTENDS> t=<IDENTIFIER> {jjtThis.value = t.image;})?
+    <LBRACE>
+    (VarDeclaration() <SEMICOLON>)*
+    (MethodDeclaration())*
+    <RBRACE>
 }
 
 void VarDeclaration() : {}
 {
-    Type() Identifier() <SEMICOLON>
+    Type() Identifier()
 }
 
 void MethodDeclaration() : {Token t;}
@@ -104,15 +110,14 @@ void MethodDeclaration() : {Token t;}
         t=<IDENTIFIER> {jjtThis.value = t.image;}
         <LPAREN>
         (
-            Type() t=<IDENTIFIER> {jjtThis.value = t.image;} //Identifier()?
+            VarDeclaration()
             (
-                <COMMA> Type() Identifier()
+                <COMMA> VarDeclaration() <SEMICOLON>
             )*
         )?
         <RPAREN>
         <LBRACE>
-        (VarDeclaration())*
-        (Statement())*
+        MethodDeclarationBody()
         <RETURN> Expression() <SEMICOLON>
         <RBRACE>
     |
@@ -124,10 +129,15 @@ void MethodDeclaration() : {Token t;}
          Identifier()
          <RPAREN>
          <LBRACE>
-         (VarDeclaration())*
-         (Statement())*
+         MethodDeclarationBody()
          <RBRACE>
     )
+}
+
+void MethodDeclarationBody() : {}
+{
+    (VarDeclaration() <SEMICOLON>)*
+    (Statement())*
 }
 
 void Identifier() : { Token t; }
@@ -139,7 +149,7 @@ void Type() : {Token t;}
 {
     t = <IDENTIFIER> {jjtThis.value = t.image;}
     |
-    PrimitiveType()
+    PrimitiveType() // "int", "[", "]", "boolean", "int"
 }
 
 void PrimitiveType() : {}
@@ -149,11 +159,10 @@ void PrimitiveType() : {}
     (
         t = <INT> (<LBRACKET> <RBRACKET> {b = true;})? {
             if(b)
-                jjtThis.value = t.image + "[]";
+                jjtThis.value = t.image + "[]"; // int[]
             else
-                jjtThis.value = t.image;
+                jjtThis.value = t.image; // int
         }
-
     )
 }
 
@@ -164,7 +173,7 @@ void Statement() : {}
     NoIdentifierStatement()
 }
 
-void IdentifierStatement() : {}
+void IdentifierStatement() : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";"
 {
     Identifier() AfterIdentifier() <SEMICOLON>
 }
@@ -176,7 +185,7 @@ void AfterIdentifier() : {}
     <LBRACKET> Expression() <RBRACKET> <ASSIGN> Expression() <SEMICOLON>
 }
 
-void NoIdentifierStatement() : {}
+void NoIdentifierStatement() : {} // "{", { Statement }, "}" | "if", "(", Expression, ")", Statement, "else", Statement | "while", "(", Expression, ")", Statement
 {
     <LBRACE> (Statement())* <RBRACE>
     |
