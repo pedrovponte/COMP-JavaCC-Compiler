@@ -182,7 +182,12 @@ void AfterIdentifier() : {}
 {
     <ASSIGN> Expression()
     |
-    <LBRACKET> Expression() <RBRACKET> <ASSIGN> Expression() <SEMICOLON>
+    InsideArray() <ASSIGN> Expression() <SEMICOLON>
+}
+
+void InsideArray() : {}
+{
+    <LBRACKET> Expression() <RBRACKET>
 }
 
 void NoIdentifierStatement() : {} // "{", { Statement }, "}" | "if", "(", Expression, ")", Statement, "else", Statement | "while", "(", Expression, ")", Statement
@@ -196,12 +201,18 @@ void NoIdentifierStatement() : {} // "{", { Statement }, "}" | "if", "(", Expres
 
 void IfStatement() : {}
 {
-    <IF> <LPAREN> Expression() <RPAREN> Statement() <ELSE> Statement()
+    <IF> IfWhileCondition()
+    <ELSE> Statement()
 }
 
 void WhileStatement() : {}
 {
-    <WHILE> <LPAREN> Expression() <RPAREN> Statement()
+    <WHILE> IfWhileCondition()
+}
+
+void IfWhileCondition() : {}
+{
+    <LPAREN> Expression() <RPAREN> Statement()
 }
 
 void Expression() : {}
@@ -285,7 +296,7 @@ void Expr5() : {}
 
 void ExprArray() : {}
 {
-    <LBRACKET> Expression() <RBRACKET> ExprArray()
+    InsideArray() ExprArray()
     |
     {}
 }
@@ -311,7 +322,7 @@ void NoIdentifierExprLiteral() : {Token t;}
     |
     <NEW>
     (
-        t=<INT> <LBRACKET> Expression() <RBRACKET> {jjtThis.value = t.image + "[]";}
+        t=<INT> InsideArray() {jjtThis.value = t.image + "[]";}
         |
         t = <IDENTIFIER> <LPAREN> <RPAREN>
     )
