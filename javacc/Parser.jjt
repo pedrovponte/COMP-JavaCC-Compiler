@@ -3,28 +3,20 @@ options
     LOOKAHEAD=1;
 }
 
-PARSER_BEGIN(Calculator)
+PARSER_BEGIN(Parser)
 
 
-public class Calculator
+public class Parser
 {
-    public static void main(String args[]) throws ParseException {
-      	System.out.println("Write an arithmetic expression:");
-		Calculator myCalc = new Calculator(System.in);
-		SimpleNode root = myCalc.Expression(); // returns reference to root node
 
-		root.dump(""); // prints the tree on the screen
-
-		//System.out.println("Expression value: "+myCalc.eval(root));
-    }
 
 }
 
-PARSER_END(Calculator)
+PARSER_END(Parser)
 
 SKIP :
 {
-	" " | "\r" | "\t"
+	" " | "\r" | "\t" | "\n"
 }
 
 TOKEN:
@@ -82,8 +74,8 @@ void ImportDeclaration() : {}
 
 void Import() : {Token t;}
 {
-    <IMPORT> (<STATIC> {jjtThis.setStatic(true);})? t=<IDENTIFIER> {jjtThis.value = t.image;}
-        (<DOT> t=<IDENTIFIER> {jjthis.value = t.image;})* (<DOT> <STAR>)?
+    <IMPORT> (<STATIC> /*{jjtThis.setStatic(true);}*/)? t=<IDENTIFIER> {jjtThis.value = t.image;}
+        (<DOT> t=<IDENTIFIER> {jjtThis.value = t.image;})* (<DOT> <STAR>)?
 }
 
 void ClassDeclaration() : {Token t;}
@@ -112,7 +104,7 @@ void MethodDeclaration() : {Token t;}
         (
             VarDeclaration()
             (
-                <COMMA> VarDeclaration() <SEMICOLON>
+                <COMMA> VarDeclaration()
             )*
         )?
         <RPAREN>
@@ -152,7 +144,7 @@ void Type() : {Token t;}
     PrimitiveType() // "int", "[", "]", "boolean", "int"
 }
 
-void PrimitiveType() : {}
+void PrimitiveType() : {Token t; Boolean b = false;}
 {
     t = <BOOLEAN> {jjtThis.value = t.image;}
     |
@@ -168,9 +160,9 @@ void PrimitiveType() : {}
 
 void Statement() : {}
 {
-    IdentifierStatement()
-    |
     NoIdentifierStatement()
+    |
+    IdentifierStatement()
 }
 
 void IdentifierStatement() : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";"
@@ -197,6 +189,8 @@ void NoIdentifierStatement() : {} // "{", { Statement }, "}" | "if", "(", Expres
     IfStatement()
     |
     WhileStatement()
+    |
+    Expression() <SEMICOLON> // ambiguo?
 }
 
 void IfStatement() : {}
@@ -310,9 +304,9 @@ void ExprLiteral() : {}
 
 void NoIdentifierExprLiteral() : {Token t;}
 {
-    L=<TRUE> {jjtThis.value = t.image;}
+    t=<TRUE> {jjtThis.value = t.image;}
     |
-    L=<FALSE> {jjtThis.value = t.image;}
+    t=<FALSE> {jjtThis.value = t.image;}
     |
     <THIS>
     |
