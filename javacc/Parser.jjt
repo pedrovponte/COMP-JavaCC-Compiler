@@ -1,5 +1,6 @@
 options
 {
+    MULTI=true;
     LOOKAHEAD=1;
 }
 
@@ -189,8 +190,8 @@ void NoIdentifierStatement() : {} // "{", { Statement }, "}" | "if", "(", Expres
     IfStatement()
     |
     WhileStatement()
-    |
-    Expression() <SEMICOLON> // ambiguo?
+   /* |
+    Expression() <SEMICOLON> // ambiguo?*/
 }
 
 void IfStatement() : {}
@@ -279,7 +280,7 @@ void AfterDot() : {Token t;}
     |
     t=<IDENTIFIER> {jjtThis.value = t.image;}
     <LPAREN>
-    Expression() <COMMA> Expression()
+   /* Expression() <COMMA> Expression()*/
     <RPAREN>
 }
 
@@ -324,3 +325,42 @@ void NoIdentifierExprLiteral() : {Token t;}
     <LPAREN> Expression() <RPAREN>
 }
 
+
+/*
+
+JAVACODE
+void recover_while_error() {
+    ParseException e = generateParseException();
+    System.out.println(e.toString());
+    Token t;
+
+    //skip tokens until first parenthesis is reacherd
+    do {
+        t = getNextToken();
+    } while (t.kind != ParenthesisEnd);
+
+    //skip extra parenthesis
+    while (getToken(1).kind == ParenthesisEnd) {
+        t = getNextToken();
+    }
+}
+
+*/
+
+
+/*
+JAVACODE void error_skipto(int kind) #SyntaticError
+{
+  Json.syntaticError = true;
+  ParseException e = generateParseException()
+; // generate the exception object.
+System.out.println("Error found at column "+ e.currentToken.beginColumn+ " line "+ e.currentToken.beginLine);
+Token t;
+do
+{
+  t = getNextToken();
+  if (t.kind == CBRA) return;
+}
+
+while (t.kind != kind);
+}*/
