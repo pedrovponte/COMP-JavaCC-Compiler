@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.io.StringReader;
 
 public class Main implements JmmParser {
-
-
 	public JmmParserResult parse(String jmmCode) {
 		
 		try {
@@ -22,6 +20,7 @@ public class Main implements JmmParser {
 		} catch(ParseException e) {
 			throw new RuntimeException("Error while parsing", e);
 		}
+
 	}
 
     public static void main(String[] args) {
