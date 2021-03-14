@@ -357,8 +357,33 @@ void IfStatement() : {}
 
 void WhileStatement() : {}
 {
-    <WHILE> <LPAREN> Expression() <RPAREN> Statement()
+   <WHILE> WhileCondition() Statement()
 }
+
+void WhileCondition() : {}
+{
+  try {
+    <LPAREN> Expression() <RPAREN>
+    }catch (ParseException e) {
+        error_skipto(RPAREN);
+  }
+}
+
+/*
+void WhileStatement() : {}
+{
+   <WHILE> WhileCondition() Statement()
+}
+
+void WhileCondition() : {}
+{
+  try {
+    <LPAREN> Expression() <RPAREN>
+    }catch (ParseException e) {
+        error_skipto(LBRACE);
+  }
+}
+*/
 
 void IdentifierStatement() : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
@@ -410,3 +435,15 @@ do
 
 while (t.kind != kind);
 }*/
+
+JAVACODE
+void error_skipto(int kind) {
+  ParseException e = generateParseException();  // generate the exception object
+  System.out.println("ParseException: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
+  Token t;
+
+  do {
+    t = getNextToken();
+  }
+  while (t.kind != kind);
+}
