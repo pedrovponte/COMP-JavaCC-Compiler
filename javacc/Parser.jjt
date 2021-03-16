@@ -365,7 +365,7 @@ void WhileCondition() #Condition : {}
   try {
     <LPAREN> Expression() <RPAREN>
     }catch (ParseException e) {
-        error_skipto(RPAREN);
+        error_skipto(LBRACE);
   }
 }
 
@@ -440,10 +440,11 @@ JAVACODE
 void error_skipto(int kind) {
   ParseException e = generateParseException();  // generate the exception object
   System.out.println("ParseException: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
-  Token t;
+  Token t, t1;
 
   do {
     t = getNextToken();
+    t1 = getToken(1);
   }
-  while (t.kind != kind);
+  while (t1.kind != kind);
 }
