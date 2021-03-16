@@ -109,9 +109,10 @@ void ImportDeclaration() #Import : {}
  * A lookahead of 2 is required below since "Name" can be followed
  * by a ".*" when used in the context of an "ImportDeclaration".
  */
-void Name() : {Token t;}
+void Name() #void : {/*Token t;*/}
 {
-    t = <IDENTIFIER> {jjtThis.value = t.image;} (LOOKAHEAD(2) <DOT> t = <IDENTIFIER> {jjtThis.value = t.image;} )*
+    // t = <IDENTIFIER> {jjtThis.value = t.image;} (LOOKAHEAD(2) <DOT> t = <IDENTIFIER> {jjtThis.value = t.image;} )*
+    Identifier() (LOOKAHEAD(2) <DOT> Identifier() )*
 }
 
 void ClassDeclaration() #Class : {Token t, s;}
@@ -270,7 +271,7 @@ void PrimaryExpression() : {}
     PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
 
-void PrimaryPrefix() : {}
+void PrimaryPrefix() #void : {}
 {
     Literal()
     |
@@ -295,7 +296,7 @@ void PrimarySuffix() : {Token t;}
 
 void Literal() #void : {Token t;}
 {
-    t=<NUMERIC> {jjtThis.value = t.image;} #Numeric
+    t=<NUMERIC> {jjtThis.value = Integer.valueOf(t.image);} #Numeric
     |
     t=<IDENTIFIER> {jjtThis.value = t.image;} #Identifier
     |
@@ -304,9 +305,9 @@ void Literal() #void : {Token t;}
 
 void BooleanLiteral() #Boolean : {Token t;}
 {
-    t=<TRUE> {jjtThis.value = t.image;}
+    t=<TRUE> {jjtThis.value = Boolean.valueOf(t.image);}
     |
-    t=<FALSE> {jjtThis.value = t.image;}
+    t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image);}
 }
 
 void Arguments() : {}
@@ -329,7 +330,7 @@ void AllocationExpression() : {Token t;}
     ) #New
 }
 
-void InsideArray() : {}
+void InsideArray() #Array : {}
 {
     <LBRACKET> Expression() <RBRACKET>
 }

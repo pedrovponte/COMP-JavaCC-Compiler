@@ -36,7 +36,7 @@ public interface ParserTreeConstants {
     public int JJTARGUMENTLIST = 34;
     public int JJTALLOCATIONEXPRESSION = 35;
     public int JJTNEW = 36;
-    public int JJTINSIDEARRAY = 37;
+    public int JJTARRAY = 37;
     public int JJTSTATEMENT = 38;
     public int JJTIFSTATEMENT = 39;
     public int JJTWHILE = 40;
@@ -83,7 +83,7 @@ public interface ParserTreeConstants {
         "ArgumentList",
         "AllocationExpression",
         "New",
-        "InsideArray",
+        "Array",
         "Statement",
         "IfStatement",
         "While",
