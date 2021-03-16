@@ -363,27 +363,31 @@ void WhileStatement() #While : {}
 void WhileCondition() #Condition : {}
 {
   try {
-    <LPAREN> Expression() <RPAREN>
-    }catch (ParseException e) {
-        error_skipto(LBRACE);
-  }
-}
+    <LPAREN> Expression() <RPAREN>}
+    catch (ParseException e)
+        {
+            token_source.errors ++;
 
-/*
-void WhileStatement() : {}
-{
-   <WHILE> WhileCondition() Statement()
-}
+            System.out.println("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
 
-void WhileCondition() : {}
-{
-  try {
-    <LPAREN> Expression() <RPAREN>
-    }catch (ParseException e) {
-        error_skipto(LBRACE);
-  }
+            Token t = getToken(0);
+            // Advances while there are no 2 ")" in a row or if the following character is not a "{"
+            while (true) {
+                if (t.kind == RPAREN && getToken(1).kind != RPAREN) {
+                    break;
+                }
+                else if (getToken(1).kind == LBRACE){
+                    break;
+                }
+
+                t = getNextToken();
+            }
+
+            if (token_source.errors>= 10) {
+                throw new ParseException("Ten errors were found. Program terminated.");
+            }
+        }
 }
-*/
 
 void IdentifierStatement() : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
@@ -436,15 +440,24 @@ do
 while (t.kind != kind);
 }*/
 
+TOKEN_MGR_DECLS : {
+    int errors = 0;
+}
+
 JAVACODE
 void error_skipto(int kind) {
   ParseException e = generateParseException();  // generate the exception object
   System.out.println("ParseException: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
-  Token t, t1;
+  Token t;
 
+  if(token_source.errors==10){System.out.println("10 errors found, stopping program!"); System.exit(-1);}
   do {
-    t = getNextToken();
-    t1 = getToken(1);
+      t = getNextToken();
+  } while (t.kind != kind);
+  /*
+  do {
+    getNextToken();
+    t = getToken(1);
   }
-  while (t1.kind != kind);
+  while (t.kind != kind);*/
 }
