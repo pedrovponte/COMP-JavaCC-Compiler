@@ -48,7 +48,7 @@ class SimpleNode implements Node, JmmNode {
   }
   
   public List<JmmNode> getChildren() {
-    return (children == null) ? new ArrayList<>() : Arrays.asList((JmmNode[])children);
+    return JmmNode.convertChildren(children);
   }
   
   public int getNumChildren() {
@@ -102,8 +102,17 @@ class SimpleNode implements Node, JmmNode {
      you need to do. */
 
   public String toString() {
-    return ParserTreeConstants.jjtNodeName[id];
+    switch (ParserTreeConstants.jjtNodeName[id]) {
+      case "Type": case "Class": case "Method": case "Identifier": case "Integer": case "Extends":
+        return ParserTreeConstants.jjtNodeName[id] + "[" + this.value + "]";
+      default:
+        return ParserTreeConstants.jjtNodeName[id];
+    }
   }
+
+  /*public String toString() {
+    return ParserTreeConstants.jjtNodeName[id];
+  }*/
   public String toString(String prefix) { return prefix + toString(); }
 
   /* Override this method if you want to customize how the node dumps

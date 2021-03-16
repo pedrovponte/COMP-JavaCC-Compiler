@@ -100,7 +100,7 @@ SimpleNode Program() : {}
 }
 
 
-void ImportDeclaration() : {}
+void ImportDeclaration() #Import : {}
 {
     <IMPORT> Name() <SEMICOLON>
 }
@@ -114,11 +114,11 @@ void Name() : {Token t;}
     t = <IDENTIFIER> {jjtThis.value = t.image;} (LOOKAHEAD(2) <DOT> t = <IDENTIFIER> {jjtThis.value = t.image;} )*
 }
 
-void ClassDeclaration() : {Token t;}
+void ClassDeclaration() #Class : {Token t, s;}
 {
     <CLASS>
     t=<IDENTIFIER> {jjtThis.value = t.image;}
-    (<EXTENDS> t=<IDENTIFIER> {jjtThis.value = t.image;})?
+    (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image;} #Extends)?
     <LBRACE>
     (VarDeclaration() <SEMICOLON>)*
     (MethodDeclaration())*
@@ -130,7 +130,7 @@ void VarDeclaration() : {}
     Type() Identifier()
 }
 
-void MethodDeclaration() : {Token t;}
+void MethodDeclaration() #Method : {Token t;}
 {
     <PUBLIC>
     (
@@ -142,27 +142,27 @@ void MethodDeclaration() : {Token t;}
             (
                 <COMMA> VarDeclaration()
             )*
-        )?
+        )? #ParamList
         <RPAREN>
         <LBRACE>
-        MethodDeclarationBody()
-        <RETURN> Expression() <SEMICOLON>
+        MethodDeclarationBody() #MethodDeclarationBody
+        <RETURN> Expression() <SEMICOLON> #Return
         <RBRACE>
     |
          <STATIC>
          <VOID>
-         <MAIN>
+         t=<MAIN> {jjtThis.value = t.image;}
          <LPAREN>
          t=<STRINGARR> {jjtThis.value = t.image;}
          Identifier()
          <RPAREN>
          <LBRACE>
-         MethodDeclarationBody()
+         MethodDeclarationBody() #MethodDeclarationBody
          <RBRACE>
     )
 }
 
-void Identifier() : { Token t; }
+void Identifier() #Identifier : { Token t; }
 {
     t = <IDENTIFIER> {jjtThis.value = t.image;}
 }
@@ -228,39 +228,39 @@ void ArrayInitializer() : {}
     <LBRACE> [VariableInitializer() (LOOKAHEAD(2) <COMMA> VariableInitializer())*][<COMMA>] <RBRACE>
 }
 
-void Expression() : {}
+void Expression() #void : {}
 {
     ConditionalAndExpression()
 }
 
-void ConditionalAndExpression() : {}
+void ConditionalAndExpression() #void : {}
 {
-    RelationalExpression() (<SC_AND> RelationalExpression())*
+    RelationalExpression() (<SC_AND> RelationalExpression() #And(2))*
 }
 
-void RelationalExpression() : {}
+void RelationalExpression() #void : {}
 {
-    AdditiveExpression() (<LESS> AdditiveExpression())*
+    AdditiveExpression() (<LESS> AdditiveExpression() #Less(2))*
 }
 
-void AdditiveExpression() : {}
+void AdditiveExpression() #void : {}
 {
-    MultiplicativeExpression() ((<PLUS> | <MINUS>) MultiplicativeExpression())*
+    MultiplicativeExpression() ((<PLUS> | <MINUS>) MultiplicativeExpression() #AdditiveExpression(2))*
 }
 
-void MultiplicativeExpression() : {}
+void MultiplicativeExpression() #void : {}
 {
-    UnaryExpression() ((<STAR> | <SLASH>) UnaryExpression())*
+    UnaryExpression() ((<STAR> | <SLASH>) UnaryExpression() #MultiplicativeExpression(2))*
 }
 
-void UnaryExpression() : {}
+void UnaryExpression() #void : {}
 {
     UnaryExpressionNotPlusMinus()
 }
 
-void UnaryExpressionNotPlusMinus() : {}
+void UnaryExpressionNotPlusMinus() #void : {}
 {
-    <BANG> UnaryExpression()
+    <BANG> UnaryExpression() #Not(1)
     |
     PrimaryExpression()
 }
@@ -274,7 +274,7 @@ void PrimaryPrefix() : {}
 {
     Literal()
     |
-    <THIS>
+    <THIS> #This
     |
     <LPAREN> Expression() <RPAREN>
     |
@@ -293,16 +293,16 @@ void PrimarySuffix() : {Token t;}
     Arguments()
 }
 
-void Literal() : {Token t;}
+void Literal() #void : {Token t;}
 {
-    t=<NUMERIC> {jjtThis.value = t.image;}
+    t=<NUMERIC> {jjtThis.value = t.image;} #Numeric
     |
-    t=<IDENTIFIER> {jjtThis.value = t.image;}
+    t=<IDENTIFIER> {jjtThis.value = t.image;} #Identifier
     |
     BooleanLiteral()
 }
 
-void BooleanLiteral() : {Token t;}
+void BooleanLiteral() #Boolean : {Token t;}
 {
     t=<TRUE> {jjtThis.value = t.image;}
     |
@@ -326,7 +326,7 @@ void AllocationExpression() : {Token t;}
         t=<INT> InsideArray() {jjtThis.value = t.image + "[]";}
         |
         t=<IDENTIFIER> <LPAREN> <RPAREN> {jjtThis.value = t.image;}
-    )
+    ) #New
 }
 
 void InsideArray() : {}
@@ -334,7 +334,7 @@ void InsideArray() : {}
     <LBRACKET> Expression() <RBRACKET>
 }
 
-void Statement() : {}
+void Statement() #void : {}
 {
     IfStatement()
     |
@@ -351,16 +351,16 @@ void Statement() : {}
 
 void IfStatement() : {}
 {
-    <IF> <LPAREN> Expression() <RPAREN> Statement()
+    <IF> <LPAREN> Expression() #Condition <RPAREN> Statement()
     <ELSE> Statement()
 }
 
-void WhileStatement() : {}
+void WhileStatement() #While : {}
 {
    <WHILE> WhileCondition() Statement()
 }
 
-void WhileCondition() : {}
+void WhileCondition() #Condition : {}
 {
   try {
     <LPAREN> Expression() <RPAREN>
