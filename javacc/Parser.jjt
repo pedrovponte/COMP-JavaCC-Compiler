@@ -96,7 +96,13 @@ TOKEN:
 
 SimpleNode Program() : {}
 {
-    ( ImportDeclaration() )* ClassDeclaration() <EOF> {return jjtThis;}
+    ( ImportDeclaration() )* ClassDeclaration() <EOF> {
+
+    if (token_source.errors>= 1) {
+        throw new ParseException(token_source.errors + " Errors found in the execution of the program");
+    }
+    else
+        return jjtThis;}
 }
 
 

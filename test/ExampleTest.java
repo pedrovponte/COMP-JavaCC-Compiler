@@ -137,37 +137,37 @@ public class ExampleTest {
 
     @Test
     public void testFail_BlowUp() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/BlowUp.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/BlowUp.jmm");
         TestUtils.parse(jmmCode);
     }
 
     @Test
     public void testFail_CompleteWhileTest() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/CompleteWhileTest.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/CompleteWhileTest.jmm");
         TestUtils.parse(jmmCode);
     }
 
     @Test
     public void testFail_LengthError() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/CompleteLengthError.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/CompleteLengthError.jmm");
         TestUtils.parse(jmmCode);
     }
 
     @Test
     public void testFail_MissingRightPar() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/MissingRightPar.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MissingRightPar.jmm");
         TestUtils.parse(jmmCode);
     }
 
     @Test
     public void testFail_MultipleSequential() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/MultipleSequential.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MultipleSequential.jmm");
         TestUtils.parse(jmmCode);
     }
 
     @Test
     public void testFail_NestedLoop() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntatical/NestedLoop.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
         TestUtils.parse(jmmCode);
     }
 
