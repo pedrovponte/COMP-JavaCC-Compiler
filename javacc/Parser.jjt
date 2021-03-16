@@ -152,7 +152,7 @@ void MethodDeclaration() #Method : {Token t;}
         )? #ParamList
         <RPAREN>
         <LBRACE>
-        MethodDeclarationBody() #MethodDeclarationBody
+        MethodDeclarationBody()
         <RETURN> Expression() <SEMICOLON> #Return
         <RBRACE>
     |
@@ -164,7 +164,7 @@ void MethodDeclaration() #Method : {Token t;}
          Identifier()
          <RPAREN>
          <LBRACE>
-         MethodDeclarationBody() #MethodDeclarationBody
+         MethodDeclarationBody()
          <RBRACE>
     )
 }
@@ -174,12 +174,12 @@ void Identifier() #Identifier : { Token t; }
     t = <IDENTIFIER> {jjtThis.value = t.image;}
 }
 
-void MethodDeclarationBody() : {}
+void MethodDeclarationBody() #void : {}
 {
     (BlockStatement())*
 }
 
-void BlockStatement() : {}
+void BlockStatement() #void: {}
 {
     LOOKAHEAD(2)
     LocalVariableDeclaration()
@@ -213,14 +213,14 @@ void PrimitiveType() : {Token t; Boolean b = false;}
     )
 }
 
-void VariableDeclarator() : {}
+void VariableDeclarator() #void : {}
 {
     VariableDeclaratorId() [<ASSIGN> VariableInitializer()]
 }
 
-void VariableDeclaratorId() : {Token t;}
+void VariableDeclaratorId() #void : {Token t;}
 {
-    t=<IDENTIFIER> {jjtThis.value = t.image;} (<LBRACKET> <RBRACKET>)*
+    Identifier() (<LBRACKET> <RBRACKET>)*
 }
 
 void VariableInitializer() : {}
@@ -250,7 +250,7 @@ void RelationalExpression() #void : {}
     AdditiveExpression() (<LESS> AdditiveExpression() #Less(2))*
 }
 
-void AdditiveExpression() #void : {}
+void AdditiveExpression() #void : {Token t;}
 {
     MultiplicativeExpression() ((<PLUS> | <MINUS>) MultiplicativeExpression() #AdditiveExpression(2))*
 }

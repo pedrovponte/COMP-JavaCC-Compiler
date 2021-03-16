@@ -103,7 +103,7 @@ class SimpleNode implements Node, JmmNode {
 
   public String toString() {
     switch (ParserTreeConstants.jjtNodeName[id]) {
-      case "Type": case "Class": case "Method": case "Identifier": case "Integer": case "Extends": case "InsideArray":
+      case "Type": case "Class": case "Method": case "Identifier": case "Integer": case "Extends": case "InsideArray": case "Numeric": case "PrimitiveType":
         return ParserTreeConstants.jjtNodeName[id] + "[" + this.value + "]";
       default:
         return ParserTreeConstants.jjtNodeName[id];
