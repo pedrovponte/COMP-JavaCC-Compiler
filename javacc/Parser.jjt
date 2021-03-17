@@ -252,7 +252,8 @@ void RelationalExpression() #void : {}
 
 void AdditiveExpression() #void : {Token t;}
 {
-    MultiplicativeExpression() ((<PLUS> | <MINUS>) MultiplicativeExpression() #AdditiveExpression(2))*
+
+    MultiplicativeExpression() ((t=<PLUS> | t=<MINUS>) MultiplicativeExpression() {jjtThis.value = t.image;} #AdditiveExpression(2))*
 }
 
 void MultiplicativeExpression() #void : {}
@@ -272,7 +273,7 @@ void UnaryExpressionNotPlusMinus() #void : {}
     PrimaryExpression()
 }
 
-void PrimaryExpression() : {}
+void PrimaryExpression() #void : {}
 {
     PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
@@ -295,7 +296,7 @@ void PrimarySuffix() : {Token t;}
     |
     <LBRACKET> Expression() <RBRACKET>
     |
-    <DOT> <LENGTH>
+    t=<DOT> <LENGTH> {jjtThis.value = t.image;}
     |
     Arguments()
 }
@@ -326,7 +327,7 @@ void ArgumentList() : {}
     Expression() (<COMMA> Expression())*
 }
 
-void AllocationExpression() : {Token t;}
+void AllocationExpression() #void : {Token t;}
 {
     <NEW>
     (
@@ -396,14 +397,14 @@ void WhileCondition() #Condition : {}
         }
 }
 
-void IdentifierStatement() : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
+void IdentifierStatement()  : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
     Identifier() AfterIdentifier() <SEMICOLON>
 }
 
-void AfterIdentifier() : {}
+void AfterIdentifier(): {Token t;}
 {
-    <ASSIGN> Expression()
+    t=<ASSIGN>  Expression() {jjtThis.value = t.image;}
     |
     InsideArray() <ASSIGN> Expression()
 }
