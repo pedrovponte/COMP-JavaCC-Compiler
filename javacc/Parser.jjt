@@ -153,7 +153,7 @@ void MethodDeclaration() #Method : {Token t;}
         <RPAREN>
         <LBRACE>
         MethodDeclarationBody()
-        <RETURN> Expression() <SEMICOLON> #Return
+        <RETURN> Expression() <SEMICOLON>  #Return
         <RBRACE>
     |
          <STATIC>
@@ -192,9 +192,9 @@ void LocalVariableDeclaration() : {}
     Type() VariableDeclarator() (<COMMA> VariableDeclarator())* <SEMICOLON>
 }
 
-void Type() : {Token t;}
+void Type() #void: {Token t;}
 {
-    t = <IDENTIFIER> {jjtThis.value = t.image;}
+    t = <IDENTIFIER> {jjtThis.value = t.image;} #Type
     |
     PrimitiveType() // "int", "[", "]", "boolean", "int"
 }
@@ -289,14 +289,14 @@ void PrimaryPrefix() #void : {}
     AllocationExpression()
 }
 
-void PrimarySuffix() : {Token t;}
+void PrimarySuffix() : {Token t; Token s;}
 {
     LOOKAHEAD(2)
-    <DOT> t=<IDENTIFIER> {jjtThis.value = t.image;}
+    t=<DOT> s=<IDENTIFIER> {jjtThis.value = s.image;}
     |
     <LBRACKET> Expression() <RBRACKET>
     |
-    t=<DOT> <LENGTH> {jjtThis.value = t.image;}
+    t=<DOT> s=<LENGTH> {jjtThis.value = s.image;}
     |
     Arguments()
 }
@@ -317,7 +317,7 @@ void BooleanLiteral() #Boolean : {Token t;}
     t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image);}
 }
 
-void Arguments() : {}
+void Arguments() #void : {}
 {
     <LPAREN> [ArgumentList()] <RPAREN>
 }
@@ -333,7 +333,7 @@ void AllocationExpression() #void : {Token t;}
     (
         t=<INT> InsideArray() {jjtThis.value = t.image + "[]";}
         |
-        t=<IDENTIFIER> <LPAREN> <RPAREN> {jjtThis.value = t.image;}
+        t=<IDENTIFIER> <LPAREN> <RPAREN> {jjtThis.value = t.image;} #Identifier
     ) #New
 }
 
