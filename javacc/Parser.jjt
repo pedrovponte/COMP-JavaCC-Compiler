@@ -124,16 +124,15 @@ void ImportDeclaration() #Import : {}
  * A lookahead of 2 is required below since "Name" can be followed
  * by a ".*" when used in the context of an "ImportDeclaration".
  */
-void Name() #void : {/*Token t;*/}
+void Name() #void : {}
 {
-    // t = <IDENTIFIER> {jjtThis.value = t.image;} (LOOKAHEAD(2) <DOT> t = <IDENTIFIER> {jjtThis.value = t.image;} )*
     Identifier() (LOOKAHEAD(2) <DOT> Identifier() )*
 }
 
 void ClassDeclaration() #Class : {Token t, s;}
 {
     <CLASS>
-    t=<IDENTIFIER> {jjtThis.value = t.image;}
+    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image); System.out.println("IMAGE: " + t.image);}
     (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image;} #Extends)?
     <LBRACE>
     (VarDeclaration() <SEMICOLON>)*
@@ -267,17 +266,17 @@ void AdditiveExpression() #void : {Token t;}
 
 void MultiplicativeExpression() #void : {}
 {
-    UnaryExpression() ((<STAR> | <SLASH>) UnaryExpression() #MultiplicativeExpression(2))*
+    UnaryExpressionNotPlusMinus() ((<STAR> | <SLASH>) UnaryExpressionNotPlusMinus() #MultiplicativeExpression(2))*
 }
 
-void UnaryExpression() #void : {}
+/*void UnaryExpression() #void : {}
 {
     UnaryExpressionNotPlusMinus()
-}
+}*/
 
 void UnaryExpressionNotPlusMinus() #void : {}
 {
-    <BANG> UnaryExpression() #Not(1)
+    <BANG> UnaryExpressionNotPlusMinus() #Not(1)
     |
     PrimaryExpression()
 }
