@@ -13,6 +13,40 @@ import java.util.ArrayList;
 
 public class Parser {
 
+    int errors = 0;
+    ArrayList<Report> syntacticErrors =  new ArrayList<Report>();
+
+    ArrayList<Report> getSyntacticErrors() {
+        return syntacticErrors;
+    };
+
+    void errorFunction(ParseException e) {
+        Report error = new Report(ReportType.ERROR,Stage.SYNTATIC,e.currentToken.beginLine,"Encountered \"" + e.currentToken.image+ "\", column " + e.currentToken.beginColumn + ".");
+        this.syntacticErrors.add(error);
+
+        this.errors ++;
+        //System.out.prisntln("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
+
+        Token t = getToken(0);
+        // Advances while there are no 2 ")" in a row or if the following character is not a "{"
+        while (true) {
+            if (t.kind == RPAREN && getToken(1).kind != RPAREN) {
+                break;
+            }
+            else if (getToken(1).kind == LBRACE){
+                break;
+            }
+
+            t = getNextToken();
+        }
+
+        if (this.errors>= 10) {
+            for(Report r : this.syntacticErrors) {
+               System.out.println(r.toString());
+            }
+            throw new RuntimeException("Ten errors were found. Program terminated.");
+        }
+    };
 }
 
 PARSER_END(Parser)
@@ -103,14 +137,15 @@ SimpleNode Program() : {}
 {
     ( ImportDeclaration() )* ClassDeclaration() <EOF> {
 
-    if (token_source.errors>= 1) {
-        for(Report r : token_source.syntacticErrors) {
+    if (errors>= 1) {
+        for(Report r : syntacticErrors) {
           System.out.println(r.toString());
         }
-        throw new ParseException(token_source.errors + " Errors found in the execution of the program");
+        throw new ParseException(errors + " Errors found in the execution of the program");
     }
-    else
+    else {
         return jjtThis;
+    }
     }
 }
 
@@ -382,33 +417,9 @@ void WhileCondition() #Condition : {}
   try {
     <LPAREN> Expression() <RPAREN>}
     catch (ParseException e)
-        {
-            Report error = new Report(ReportType.ERROR,Stage.SYNTATIC,e.currentToken.beginLine,"Encountered \"" + e.currentToken.image+ "\", column " + e.currentToken.beginColumn + ".");
-            token_source.syntacticErrors.add(error);
-
-            token_source.errors ++;
-            //System.out.println("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
-
-            Token t = getToken(0);
-            // Advances while there are no 2 ")" in a row or if the following character is not a "{"
-            while (true) {
-                if (t.kind == RPAREN && getToken(1).kind != RPAREN) {
-                    break;
-                }
-                else if (getToken(1).kind == LBRACE){
-                    break;
-                }
-
-                t = getNextToken();
-            }
-
-            if (token_source.errors>= 10) {
-                for(Report r : token_source.syntacticErrors) {
-                   System.out.println(r.toString());
-                }
-                throw new ParseException("Ten errors were found. Program terminated.");
-            }
-        }
+    {
+        errorFunction(e);
+    }
 }
 
 void IdentifierStatement()  : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
@@ -421,29 +432,4 @@ void AfterIdentifier(): {Token t;}
     t=<ASSIGN>  Expression() {jjtThis.value = t.image;}
     |
     InsideArray() <ASSIGN> Expression()
-}
-
-
-
-TOKEN_MGR_DECLS : {
-    int errors = 0;
-    ArrayList<Report> syntacticErrors =  new ArrayList<Report>();
-}
-
-JAVACODE
-void error_skipto(int kind) {
-  ParseException e = generateParseException();  // generate the exception object
-  System.out.println("ParseException: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
-  Token t;
-
-  if(token_source.errors==10){System.out.println("10 errors found, stopping program!"); System.exit(-1);}
-  do {
-      t = getNextToken();
-  } while (t.kind != kind);
-  /*
-  do {
-    getNextToken();
-    t = getToken(1);
-  }
-  while (t.kind != kind);*/
 }
