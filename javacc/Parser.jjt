@@ -6,6 +6,11 @@ options
 
 PARSER_BEGIN(Parser)
 
+import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.report.Stage;
+import java.util.ArrayList;
+
 public class Parser {
 
 }
@@ -99,10 +104,14 @@ SimpleNode Program() : {}
     ( ImportDeclaration() )* ClassDeclaration() <EOF> {
 
     if (token_source.errors>= 1) {
+        for(Report r : token_source.syntacticErrors) {
+          System.out.println(r.toString());
+        }
         throw new ParseException(token_source.errors + " Errors found in the execution of the program");
     }
     else
-        return jjtThis;}
+        return jjtThis;
+    }
 }
 
 
@@ -374,9 +383,11 @@ void WhileCondition() #Condition : {}
     <LPAREN> Expression() <RPAREN>}
     catch (ParseException e)
         {
-            token_source.errors ++;
+            Report error = new Report(ReportType.ERROR,Stage.SYNTATIC,e.currentToken.beginLine,"Encountered \"" + e.currentToken.image+ "\", column " + e.currentToken.beginColumn + ".");
+            token_source.syntacticErrors.add(error);
 
-            System.out.println("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
+            token_source.errors ++;
+            //System.out.println("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
 
             Token t = getToken(0);
             // Advances while there are no 2 ")" in a row or if the following character is not a "{"
@@ -392,6 +403,9 @@ void WhileCondition() #Condition : {}
             }
 
             if (token_source.errors>= 10) {
+                for(Report r : token_source.syntacticErrors) {
+                   System.out.println(r.toString());
+                }
                 throw new ParseException("Ten errors were found. Program terminated.");
             }
         }
@@ -409,47 +423,11 @@ void AfterIdentifier(): {Token t;}
     InsideArray() <ASSIGN> Expression()
 }
 
-/*
 
-JAVACODE
-void recover_while_error() {
-    ParseException e = generateParseException();
-    System.out.println(e.toString());
-    Token t;
-
-    //skip tokens until first parenthesis is reacherd
-    do {
-        t = getNextToken();
-    } while (t.kind != ParenthesisEnd);
-
-    //skip extra parenthesis
-    while (getToken(1).kind == ParenthesisEnd) {
-        t = getNextToken();
-    }
-}
-
-*/
-
-
-/*
-JAVACODE void error_skipto(int kind) #SyntaticError
-{
-  Json.syntaticError = true;
-  ParseException e = generateParseException()
-; // generate the exception object.
-System.out.println("Error found at column "+ e.currentToken.beginColumn+ " line "+ e.currentToken.beginLine);
-Token t;
-do
-{
-  t = getNextToken();
-  if (t.kind == CBRA) return;
-}
-
-while (t.kind != kind);
-}*/
 
 TOKEN_MGR_DECLS : {
     int errors = 0;
+    ArrayList<Report> syntacticErrors =  new ArrayList<Report>();
 }
 
 JAVACODE
