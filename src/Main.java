@@ -2,6 +2,8 @@
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.report.Stage;
 import pt.up.fe.specs.util.SpecsIo;
 
 import java.io.*;
@@ -13,13 +15,29 @@ public class Main implements JmmParser {
 	public JmmParserResult parse(String jmmCode) {
 
 		try {
-		    Parser myParser = new Parser(new StringReader(jmmCode));
+		    Parser myParser = new Parser(new FileInputStream(jmmCode));
     		SimpleNode root = myParser.Program(); // returns reference to root node
-            	
+
     		root.dump(""); // prints the tree on the screen
-    		return new JmmParserResult(root, myParser.getSyntacticErrors());
-		} catch(ParseException e) {
-			throw new RuntimeException("Error while parsing", e);
+
+			FileOutputStream jsonFile = new FileOutputStream("AST.json");
+
+			JmmParserResult parserResult = new JmmParserResult(root, myParser.getSyntacticErrors());
+			jsonFile.write(parserResult.toJson().getBytes());
+
+			jsonFile.close();
+
+			return parserResult;
+		} catch(Exception e) {
+			ArrayList<Report> reports = new ArrayList<Report>();
+			if (e instanceof ParseException) {
+				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, ((ParseException) e).currentToken.beginLine, "Detected generic error: " + e.getMessage()));
+			}
+			else if (e instanceof RuntimeException)
+			{
+				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, -1, "Detected generic error: " + e.getMessage()));
+			}
+			return new JmmParserResult(null, reports);
 		}
 
 	}
@@ -39,20 +57,7 @@ public class Main implements JmmParser {
 			return;
 		}
 
-		try {
-			Parser myParser = new Parser(in);
-			SimpleNode root = myParser.Program(); // returns reference to root node
-
-			root.dump(""); // prints the tree on the screen
-
-			FileOutputStream outputStream = new FileOutputStream("AST.json");
-			outputStream.write(root.toJson().getBytes(StandardCharsets.UTF_8));
-			outputStream.flush();
-
-		} catch(ParseException | FileNotFoundException e) {
-			throw new RuntimeException("Error while parsing", e);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Main main = new Main();
+		main.parse(args[0]);
 	}
 }

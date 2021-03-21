@@ -1,708 +1,81 @@
 {
-  "kind": "Program",
-  "attributes": {},
-  "children": [
+  "rootNode": {
+    "kind": "Program",
+    "attributes": {},
+    "children": [
+      {
+        "kind": "Class[MultipleSequential]",
+        "attributes": {
+          "name": "MultipleSequential"
+        },
+        "children": [
+          {
+            "kind": "Method[String[]]",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "Identifier[args]",
+                "attributes": {
+                  "name": "args"
+                },
+                "children": []
+              },
+              {
+                "kind": "While",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Condition",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier[i]",
+                        "attributes": {
+                          "value": "i"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "While",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Condition",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier[j]",
+                        "attributes": {
+                          "value": "j"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "reports": [
     {
-      "kind": "Import",
-      "attributes": {},
-      "children": [
-        {
-          "kind": "Identifier[io]",
-          "attributes": {
-            "name": "io"
-          },
-          "children": []
-        }
-      ]
+      "type": "ERROR",
+      "stage": "SYNTATIC",
+      "line": 3,
+      "message": "Encountered \"\u003c\", column 12."
     },
     {
-      "kind": "Class[WhileAndIF]",
-      "attributes": {
-        "name": "WhileAndIF"
-      },
-      "children": [
-        {
-          "kind": "Method[String[]]",
-          "attributes": {},
-          "children": [
-            {
-              "kind": "Identifier[args]",
-              "attributes": {
-                "name": "args"
-              },
-              "children": []
-            },
-            {
-              "kind": "LocaVariableDeclaration",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "PrimitiveType[int]",
-                  "attributes": {
-                    "type": "int"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "Identifier[a]",
-                  "attributes": {
-                    "name": "a"
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "kind": "LocaVariableDeclaration",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "PrimitiveType[int]",
-                  "attributes": {
-                    "type": "int"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "Identifier[b]",
-                  "attributes": {
-                    "name": "b"
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "kind": "LocaVariableDeclaration",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "PrimitiveType[int]",
-                  "attributes": {
-                    "type": "int"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "Identifier[c]",
-                  "attributes": {
-                    "name": "c"
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "kind": "LocaVariableDeclaration",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "PrimitiveType[int[]]",
-                  "attributes": {
-                    "type": "int[]"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "Identifier[d]",
-                  "attributes": {
-                    "name": "d"
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "kind": "IdentifierStatement",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Identifier[a]",
-                  "attributes": {
-                    "name": "a"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "AfterIdentifier[\u003d]",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Numeric[20]",
-                      "attributes": {
-                        "value": "20"
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "IdentifierStatement",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Identifier[b]",
-                  "attributes": {
-                    "name": "b"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "AfterIdentifier[\u003d]",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Numeric[10]",
-                      "attributes": {
-                        "value": "10"
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "IdentifierStatement",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Identifier[d]",
-                  "attributes": {
-                    "name": "d"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "AfterIdentifier[\u003d]",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "New",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "Array",
-                          "attributes": {},
-                          "children": [
-                            {
-                              "kind": "Numeric[10]",
-                              "attributes": {
-                                "value": "10"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "IfStatement",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Condition",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Less",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "Identifier[a]",
-                          "attributes": {
-                            "value": "a"
-                          },
-                          "children": []
-                        },
-                        {
-                          "kind": "Identifier[b]",
-                          "attributes": {
-                            "value": "b"
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[c]",
-                      "attributes": {
-                        "name": "c"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[a]",
-                              "attributes": {
-                                "value": "a"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[c]",
-                      "attributes": {
-                        "name": "c"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[b]",
-                              "attributes": {
-                                "value": "b"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "While",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Condition",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Less",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Numeric[0]",
-                              "attributes": {
-                                "value": "0"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "Identifier[c]",
-                          "attributes": {
-                            "value": "c"
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[d]",
-                      "attributes": {
-                        "name": "d"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[null]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "Array",
-                          "attributes": {},
-                          "children": [
-                            {
-                              "kind": "Identifier[c]",
-                              "attributes": {
-                                "value": "c"
-                              },
-                              "children": []
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[a]",
-                              "attributes": {
-                                "value": "a"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Identifier[b]",
-                              "attributes": {
-                                "value": "b"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[c]",
-                      "attributes": {
-                        "name": "c"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[c]",
-                              "attributes": {
-                                "value": "c"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[a]",
-                      "attributes": {
-                        "name": "a"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[a]",
-                              "attributes": {
-                                "value": "a"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[b]",
-                      "attributes": {
-                        "name": "b"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[-]",
-                          "attributes": {
-                            "operation": "-"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[b]",
-                              "attributes": {
-                                "value": "b"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "IdentifierStatement",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Identifier[c]",
-                  "attributes": {
-                    "name": "c"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "AfterIdentifier[\u003d]",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Numeric[0]",
-                      "attributes": {
-                        "value": "0"
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "kind": "While",
-              "attributes": {},
-              "children": [
-                {
-                  "kind": "Condition",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[c]",
-                      "attributes": {
-                        "value": "c"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "Less",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "Identifier[d]",
-                          "attributes": {
-                            "value": "d"
-                          },
-                          "children": []
-                        },
-                        {
-                          "kind": "PrimarySuffix[length]",
-                          "attributes": {
-                            "attribute": "length"
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "Identifier[io]",
-                  "attributes": {
-                    "value": "io"
-                  },
-                  "children": []
-                },
-                {
-                  "kind": "PrimarySuffix[.]",
-                  "attributes": {
-                    "attribute": "."
-                  },
-                  "children": [
-                    {
-                      "kind": "Identifier[println]",
-                      "attributes": {
-                        "name": "println"
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "kind": "PrimarySuffix[null]",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "ArgumentList",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "Identifier[d]",
-                          "attributes": {
-                            "value": "d"
-                          },
-                          "children": []
-                        },
-                        {
-                          "kind": "PrimarySuffix[null]",
-                          "attributes": {},
-                          "children": [
-                            {
-                              "kind": "Identifier[c]",
-                              "attributes": {
-                                "value": "c"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "IdentifierStatement",
-                  "attributes": {},
-                  "children": [
-                    {
-                      "kind": "Identifier[c]",
-                      "attributes": {
-                        "name": "c"
-                      },
-                      "children": []
-                    },
-                    {
-                      "kind": "AfterIdentifier[\u003d]",
-                      "attributes": {},
-                      "children": [
-                        {
-                          "kind": "AdditiveExpression[+]",
-                          "attributes": {
-                            "operation": "+"
-                          },
-                          "children": [
-                            {
-                              "kind": "Identifier[c]",
-                              "attributes": {
-                                "value": "c"
-                              },
-                              "children": []
-                            },
-                            {
-                              "kind": "Numeric[1]",
-                              "attributes": {
-                                "value": "1"
-                              },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "type": "ERROR",
+      "stage": "SYNTATIC",
+      "line": 5,
+      "message": "Encountered \"\u003c\", column 12."
     }
   ]
 }

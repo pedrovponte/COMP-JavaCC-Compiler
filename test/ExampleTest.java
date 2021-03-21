@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.io.StringReader;
 
 import pt.up.fe.comp.TestUtils;
+import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.specs.util.SpecsIo;
 
 
@@ -137,38 +138,42 @@ public class ExampleTest {
 
     @Test
     public void testFail_BlowUp() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/BlowUp.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/BlowUp.jmm");
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_CompleteWhileTest() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/CompleteWhileTest.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/CompleteWhileTest.jmm");
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_LengthError() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/CompleteLengthError.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/LengthError.jmm");
+        assertEquals("Program", res.getRootNode().getKind());
+        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
     }
 
     @Test
     public void testFail_MissingRightPar() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MissingRightPar.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/MissingRightPar.jmm");
+        assertEquals("Program", res.getRootNode().getKind());
+        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
     }
 
     @Test
     public void testFail_MultipleSequential() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MultipleSequential.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/MultipleSequential.jmm");
+        assertEquals("Program", res.getRootNode().getKind());
+        assertEquals(2, TestUtils.getNumErrors(res.getReports()));
     }
 
     @Test
     public void testFail_NestedLoop() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
-        TestUtils.parse(jmmCode);
+        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/NestedLoop.jmm");
+        assertEquals("Program", res.getRootNode().getKind());
+        assertEquals(2, TestUtils.getNumErrors(res.getReports()));
     }
 
 }
