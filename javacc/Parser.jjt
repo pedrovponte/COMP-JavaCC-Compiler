@@ -36,6 +36,10 @@ public class Parser {
             else if (getToken(1).kind == LBRACE){
                 break;
             }
+            else if (getToken(1).kind == EOF)
+            {
+                break;
+            }
 
             t = getNextToken();
         }
@@ -141,11 +145,8 @@ SimpleNode Program() : {}
         for(Report r : syntacticErrors) {
           System.out.println(r.toString());
         }
-        throw new ParseException(errors + " Errors found in the execution of the program");
     }
-    else {
-        return jjtThis;
-    }
+    return jjtThis;
     }
 }
 
