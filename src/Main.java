@@ -28,6 +28,7 @@ public class Main implements JmmParser {
 	// java jmm [-r=<num>] [-o] <input_file.jmm> ou java –jar jmm.jar [-r=<num>] [-o] <input_file.jmm>
 	// java -jar comp2021-5e.jar test/fixtures/public/HelloWorld.jmm
 	// java -cp "./build/classes/java/main/" Main test/fixtures/public/HelloWorld.jmm
+	// .\comp2021-5e.bat Main test/fixtures/public/WhileAndIF.jmm
     public static void main(String[] args) {
 		InputStream in = null;
 
