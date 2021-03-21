@@ -159,17 +159,16 @@ void ImportDeclaration() #Import : {}
  * A lookahead of 2 is required below since "Name" can be followed
  * by a ".*" when used in the context of an "ImportDeclaration".
  */
-void Name() #void : {/*Token t;*/}
+void Name() #void : {}
 {
-    // t = <IDENTIFIER> {jjtThis.value = t.image;} (LOOKAHEAD(2) <DOT> t = <IDENTIFIER> {jjtThis.value = t.image;} )*
     Identifier() (LOOKAHEAD(2) <DOT> Identifier() )*
 }
 
 void ClassDeclaration() #Class : {Token t, s;}
 {
     <CLASS>
-    t=<IDENTIFIER> {jjtThis.value = t.image;}
-    (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image;} #Extends)?
+    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);}
+    (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image; jjtThis.put("extends", s.image);} #Extends)?
     <LBRACE>
     (VarDeclaration() <SEMICOLON>)*
     (MethodDeclaration())*
@@ -215,7 +214,7 @@ void MethodDeclaration() #Method : {Token t;}
 
 void Identifier() #Identifier : { Token t; }
 {
-    t = <IDENTIFIER> {jjtThis.value = t.image;}
+    t = <IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);}
 }
 
 void MethodDeclarationBody() #void : {}
@@ -238,21 +237,25 @@ void LocalVariableDeclaration() : {}
 
 void Type() #void: {Token t;}
 {
-    t = <IDENTIFIER> {jjtThis.value = t.image;} #Type
+    Identifier() #Type
     |
     PrimitiveType() // "int", "[", "]", "boolean", "int"
 }
 
 void PrimitiveType() : {Token t; Boolean b = false;}
 {
-    t = <BOOLEAN> {jjtThis.value = t.image;}
+    t = <BOOLEAN> {jjtThis.value = t.image; jjtThis.put("type", t.image);}
     |
     (
         t = <INT> (<LBRACKET> <RBRACKET> {b = true;})? {
-            if(b)
+            if(b) {
                 jjtThis.value = t.image + "[]"; // int[]
-            else
+                jjtThis.put("type", t.image + "[]");
+            }
+            else {
                 jjtThis.value = t.image; // int
+                jjtThis.put("type", t.image);
+            }
         }
     )
 }
@@ -297,22 +300,17 @@ void RelationalExpression() #void : {}
 void AdditiveExpression() #void : {Token t;}
 {
 
-    MultiplicativeExpression() ((t=<PLUS> | t=<MINUS>) MultiplicativeExpression() {jjtThis.value = t.image;} #AdditiveExpression(2))*
+    MultiplicativeExpression() ((t=<PLUS> | t=<MINUS>) MultiplicativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #AdditiveExpression(2))*
 }
 
-void MultiplicativeExpression() #void : {}
+void MultiplicativeExpression() #void : {Token t;}
 {
-    UnaryExpression() ((<STAR> | <SLASH>) UnaryExpression() #MultiplicativeExpression(2))*
-}
-
-void UnaryExpression() #void : {}
-{
-    UnaryExpressionNotPlusMinus()
+    UnaryExpressionNotPlusMinus() ((t=<STAR> | t=<SLASH>) UnaryExpressionNotPlusMinus() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #MultiplicativeExpression(2))*
 }
 
 void UnaryExpressionNotPlusMinus() #void : {}
 {
-    <BANG> UnaryExpression() #Not(1)
+    <BANG> UnaryExpressionNotPlusMinus() #Not(1)
     |
     PrimaryExpression()
 }
@@ -336,29 +334,29 @@ void PrimaryPrefix() #void : {}
 void PrimarySuffix() : {Token t; Token s;}
 {
     LOOKAHEAD(2)
-    t=<DOT> s=<IDENTIFIER> {jjtThis.value = s.image;}
+    t=<DOT> {jjtThis.value = t.image; jjtThis.put("attribute", t.image);} Identifier()
     |
     <LBRACKET> Expression() <RBRACKET>
     |
-    t=<DOT> s=<LENGTH> {jjtThis.value = s.image;}
+    t=<DOT> {jjtThis.value = t.image; jjtThis.put("attribute", t.image);} s=<LENGTH> {jjtThis.value = s.image; jjtThis.put("attribute", s.image);}
     |
     Arguments()
 }
 
 void Literal() #void : {Token t;}
 {
-    t=<NUMERIC> {jjtThis.value = Integer.valueOf(t.image);} #Numeric
+    t=<NUMERIC> {jjtThis.value = Integer.valueOf(t.image); jjtThis.put("value", t.image);} #Numeric
     |
-    t=<IDENTIFIER> {jjtThis.value = t.image;} #Identifier
+    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("value", t.image);} #Identifier
     |
     BooleanLiteral()
 }
 
 void BooleanLiteral() #Boolean : {Token t;}
 {
-    t=<TRUE> {jjtThis.value = Boolean.valueOf(t.image);}
+    t=<TRUE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
     |
-    t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image);}
+    t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
 }
 
 void Arguments() #void : {}
