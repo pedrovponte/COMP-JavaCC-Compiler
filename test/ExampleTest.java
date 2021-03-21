@@ -67,7 +67,7 @@ public class ExampleTest {
 
     @Test
     public void testWhileAndIf() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/WhileAndIf.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/WhileAndIF.jmm");
         TestUtils.parse(jmmCode);
     }
 

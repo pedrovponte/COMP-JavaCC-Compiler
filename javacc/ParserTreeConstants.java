@@ -44,6 +44,7 @@ public interface ParserTreeConstants {
     public int JJTIDENTIFIERSTATEMENT = 42;
     public int JJTAFTERIDENTIFIER = 43;
     public int JJTERROR_SKIPTO = 44;
+    public int JJTLENGTH = 45;
 
     public String[] jjtNodeName = {
         "Class",
@@ -87,9 +88,10 @@ public interface ParserTreeConstants {
         "Statement",
         "IfStatement",
         "While",
-        "Consdition",
+        "Condition",
         "IdentifierStatement",
         "AfterIdentifier",
         "Error_SkipTo",
+        "Length"
     };
 }
