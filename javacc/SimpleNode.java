@@ -32,7 +32,6 @@ class SimpleNode implements Node, JmmNode {
     parser = p;
   }
 
-
   public String getKind() {
 	  return toString();
   }

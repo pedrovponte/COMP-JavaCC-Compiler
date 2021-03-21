@@ -132,7 +132,7 @@ void Name() #void : {}
 void ClassDeclaration() #Class : {Token t, s;}
 {
     <CLASS>
-    t=<IDENTIFIER> {jjtThis.value = t.image;}
+    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image); System.out.println("IMAGE: " + t.image);}
     (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image;} #Extends)?
     <LBRACE>
     (VarDeclaration() <SEMICOLON>)*
