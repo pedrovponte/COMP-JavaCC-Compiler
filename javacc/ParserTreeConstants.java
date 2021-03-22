@@ -47,8 +47,9 @@ public interface ParserTreeConstants {
     public int JJTAFTERIDENTIFIER = 45;
     public int JJTERROR_SKIPTO = 46;
     public int JJTLENGTH = 47;
-    public int JJTDOT = 48;
-    public int JJTASSIGN = 49;
+    public int JJTASSIGN = 48;
+    public int JJTDOTEXPRESSION = 49;
+    public int JJTDOT = 50;
 
     public String[] jjtNodeName = {
         "Class",
@@ -99,7 +100,8 @@ public interface ParserTreeConstants {
         "AfterIdentifier",
         "Error_SkipTo",
         "Length",
-        "Dot",
-        "Assign"
+        "Assign",
+        "DotExpression",
+        "Dot"
     };
 }

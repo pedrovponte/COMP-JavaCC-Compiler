@@ -311,14 +311,14 @@ void MultiplicativeExpression() #void : {Token t;}
 
 void UnaryExpressionNotPlusMinus() #void : {}
 {
-    <BANG> UnaryExpressionNotPlusMinus() #Not(1)
+    <BANG> UnaryExpressionNotPlusMinus() #Not
     |
     PrimaryExpression()
 }
 
 void PrimaryExpression() #void : {}
 {
-    PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+    PrimaryPrefix() (PrimarySuffix())?
 }
 
 void PrimaryPrefix() #void : {}
@@ -329,19 +329,24 @@ void PrimaryPrefix() #void : {}
     |
     <LPAREN> Expression() <RPAREN>
     |
-    AllocationExpression()
+    AllocationExpression() #New
 }
 
-void PrimarySuffix() : {Token t;}
+void PrimarySuffix() #void : {}
 {
-    LOOKAHEAD(2)
-    t=<DOT> {jjtThis.value = t.image; jjtThis.put("attribute", t.image);} Identifier()
+    InsideArray()
     |
-    <LBRACKET> Expression() <RBRACKET>
-    |
-    <DOT> t=<LENGTH> {jjtThis.value = "." + t.image; jjtThis.put("attribute", "." + t.image);}
-    |
-    Arguments()
+    DotExpression()
+}
+
+void DotExpression() #void : {Token t;}
+{
+    <DOT>
+    (
+        <LENGTH> #Length
+        |
+        (t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);} <LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN>) #Dot
+    )
 }
 
 void Literal() #void : {Token t;}
@@ -360,6 +365,29 @@ void BooleanLiteral() #Boolean : {Token t;}
     t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
 }
 
+/*void PrimaryExpression() #void : {}
+{
+    PrimaryPrefix() (PrimarySuffix())?
+}
+
+void PrimaryPrefix() #void : {}
+{
+    Literal()
+    |
+    AllocationExpression() #New
+    |
+    <LPAREN> Expression() <LPAREN>
+    |
+    <THIS> #This
+}
+
+void PrimarySuffix() #void : {}
+{
+    InsideArray()
+    |
+    DotExpression()
+}*/
+
 void Arguments() #void : {}
 {
     <LPAREN> [ArgumentList()] <RPAREN>
@@ -374,10 +402,10 @@ void AllocationExpression() #void : {Token t;}
 {
     <NEW>
     (
-        t=<INT> InsideArray() {jjtThis.value = t.image + "[]";}
+        <INT> InsideArray()
         |
-        t=<IDENTIFIER> <LPAREN> <RPAREN> {jjtThis.value = t.image;} #Identifier
-    ) #New
+        t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);} #Class <LPAREN> <RPAREN>
+    )
 }
 
 void InsideArray() #Array : {}

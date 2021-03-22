@@ -8,41 +8,28 @@
         "attributes": {},
         "children": [
           {
-            "kind": "Identifier[MathUtils]",
+            "kind": "Identifier[io]",
             "attributes": {
-              "name": "MathUtils"
+              "name": "io"
             },
             "children": []
           }
         ]
       },
       {
-        "kind": "Import",
-        "attributes": {},
-        "children": [
-          {
-            "kind": "Identifier[ioPlus]",
-            "attributes": {
-              "name": "ioPlus"
-            },
-            "children": []
-          }
-        ]
-      },
-      {
-        "kind": "Class[MonteCarloPi]",
+        "kind": "Class[WhileAndIF]",
         "attributes": {
-          "name": "MonteCarloPi"
+          "name": "WhileAndIF"
         },
         "children": [
           {
-            "kind": "Method[performSingleEstimate]",
+            "kind": "Method[String[]]",
             "attributes": {},
             "children": [
               {
-                "kind": "PrimitiveType[boolean]",
+                "kind": "Identifier[args]",
                 "attributes": {
-                  "type": "boolean"
+                  "name": "args"
                 },
                 "children": []
               },
@@ -54,9 +41,9 @@
                 "children": []
               },
               {
-                "kind": "Identifier[rand1]",
+                "kind": "Identifier[a]",
                 "attributes": {
-                  "name": "rand1"
+                  "name": "a"
                 },
                 "children": []
               },
@@ -68,23 +55,9 @@
                 "children": []
               },
               {
-                "kind": "Identifier[rand2]",
+                "kind": "Identifier[b]",
                 "attributes": {
-                  "name": "rand2"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[boolean]",
-                "attributes": {
-                  "type": "boolean"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[in_circle]",
-                "attributes": {
-                  "name": "in_circle"
+                  "name": "b"
                 },
                 "children": []
               },
@@ -96,85 +69,30 @@
                 "children": []
               },
               {
-                "kind": "Identifier[squareDist]",
+                "kind": "Identifier[c]",
                 "attributes": {
-                  "name": "squareDist"
+                  "name": "c"
                 },
                 "children": []
               },
               {
-                "kind": "Identifier[rand1]",
+                "kind": "PrimitiveType[int[]]",
                 "attributes": {
-                  "name": "rand1"
+                  "type": "int[]"
                 },
                 "children": []
               },
               {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Identifier[MathUtils]",
+                "kind": "Identifier[d]",
                 "attributes": {
-                  "value": "MathUtils"
+                  "name": "d"
                 },
                 "children": []
               },
               {
-                "kind": "PrimarySuffix[.]",
+                "kind": "Identifier[a]",
                 "attributes": {
-                  "attribute": "."
-                },
-                "children": [
-                  {
-                    "kind": "Identifier[random]",
-                    "attributes": {
-                      "name": "random"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[null]",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "AdditiveExpression[-]",
-                    "attributes": {
-                      "operation": "-"
-                    },
-                    "children": [
-                      {
-                        "kind": "Numeric[0]",
-                        "attributes": {
-                          "value": "0"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[100]",
-                        "attributes": {
-                          "value": "100"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "Numeric[100]",
-                    "attributes": {
-                      "value": "100"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Identifier[rand2]",
-                "attributes": {
-                  "name": "rand2"
+                  "name": "a"
                 },
                 "children": []
               },
@@ -184,66 +102,16 @@
                 "children": []
               },
               {
-                "kind": "Identifier[MathUtils]",
+                "kind": "Numeric[20]",
                 "attributes": {
-                  "value": "MathUtils"
+                  "value": "20"
                 },
                 "children": []
               },
               {
-                "kind": "PrimarySuffix[.]",
+                "kind": "Identifier[b]",
                 "attributes": {
-                  "attribute": "."
-                },
-                "children": [
-                  {
-                    "kind": "Identifier[random]",
-                    "attributes": {
-                      "name": "random"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[null]",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "AdditiveExpression[-]",
-                    "attributes": {
-                      "operation": "-"
-                    },
-                    "children": [
-                      {
-                        "kind": "Numeric[0]",
-                        "attributes": {
-                          "value": "0"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[100]",
-                        "attributes": {
-                          "value": "100"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "Numeric[100]",
-                    "attributes": {
-                      "value": "100"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Identifier[squareDist]",
-                "attributes": {
-                  "name": "squareDist"
+                  "name": "b"
                 },
                 "children": []
               },
@@ -253,69 +121,40 @@
                 "children": []
               },
               {
-                "kind": "MultiplicativeExpression",
+                "kind": "Numeric[10]",
                 "attributes": {
-                  "operation": "/"
+                  "value": "10"
                 },
+                "children": []
+              },
+              {
+                "kind": "Identifier[d]",
+                "attributes": {
+                  "name": "d"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "New",
+                "attributes": {},
                 "children": [
                   {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
+                    "kind": "Array",
+                    "attributes": {},
                     "children": [
                       {
-                        "kind": "MultiplicativeExpression",
+                        "kind": "Numeric[10]",
                         "attributes": {
-                          "operation": "*"
+                          "value": "10"
                         },
-                        "children": [
-                          {
-                            "kind": "Identifier[rand1]",
-                            "attributes": {
-                              "value": "rand1"
-                            },
-                            "children": []
-                          },
-                          {
-                            "kind": "Identifier[rand1]",
-                            "attributes": {
-                              "value": "rand1"
-                            },
-                            "children": []
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "MultiplicativeExpression",
-                        "attributes": {
-                          "operation": "*"
-                        },
-                        "children": [
-                          {
-                            "kind": "Identifier[rand2]",
-                            "attributes": {
-                              "value": "rand2"
-                            },
-                            "children": []
-                          },
-                          {
-                            "kind": "Identifier[rand2]",
-                            "attributes": {
-                              "value": "rand2"
-                            },
-                            "children": []
-                          }
-                        ]
+                        "children": []
                       }
                     ]
-                  },
-                  {
-                    "kind": "Numeric[100]",
-                    "attributes": {
-                      "value": "100"
-                    },
-                    "children": []
                   }
                 ]
               },
@@ -329,25 +168,25 @@
                 "attributes": {},
                 "children": [
                   {
-                    "kind": "Identifier[squareDist]",
+                    "kind": "Identifier[a]",
                     "attributes": {
-                      "value": "squareDist"
+                      "value": "a"
                     },
                     "children": []
                   },
                   {
-                    "kind": "Numeric[100]",
+                    "kind": "Identifier[b]",
                     "attributes": {
-                      "value": "100"
+                      "value": "b"
                     },
                     "children": []
                   }
                 ]
               },
               {
-                "kind": "Identifier[in_circle]",
+                "kind": "Identifier[c]",
                 "attributes": {
-                  "name": "in_circle"
+                  "name": "c"
                 },
                 "children": []
               },
@@ -357,11 +196,26 @@
                 "children": []
               },
               {
-                "kind": "Boolean[true]",
+                "kind": "AdditiveExpression[-]",
                 "attributes": {
-                  "value": "true"
+                  "operation": "-"
                 },
-                "children": []
+                "children": [
+                  {
+                    "kind": "Identifier[a]",
+                    "attributes": {
+                      "value": "a"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Numeric[1]",
+                    "attributes": {
+                      "value": "1"
+                    },
+                    "children": []
+                  }
+                ]
               },
               {
                 "kind": "Else",
@@ -369,9 +223,9 @@
                 "children": []
               },
               {
-                "kind": "Identifier[in_circle]",
+                "kind": "Identifier[c]",
                 "attributes": {
-                  "name": "in_circle"
+                  "name": "c"
                 },
                 "children": []
               },
@@ -381,116 +235,216 @@
                 "children": []
               },
               {
-                "kind": "Boolean[false]",
+                "kind": "AdditiveExpression[-]",
                 "attributes": {
-                  "value": "false"
+                  "operation": "-"
                 },
-                "children": []
+                "children": [
+                  {
+                    "kind": "Identifier[b]",
+                    "attributes": {
+                      "value": "b"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Numeric[1]",
+                    "attributes": {
+                      "value": "1"
+                    },
+                    "children": []
+                  }
+                ]
               },
               {
-                "kind": "Return",
+                "kind": "While",
                 "attributes": {},
-                "children": []
+                "children": [
+                  {
+                    "kind": "Less",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "AdditiveExpression[-]",
+                        "attributes": {
+                          "operation": "-"
+                        },
+                        "children": [
+                          {
+                            "kind": "Numeric[0]",
+                            "attributes": {
+                              "value": "0"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Numeric[1]",
+                            "attributes": {
+                              "value": "1"
+                            },
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "Identifier[c]",
+                        "attributes": {
+                          "value": "c"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Identifier[d]",
+                    "attributes": {
+                      "name": "d"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Array",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier[c]",
+                        "attributes": {
+                          "value": "c"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier[a]",
+                        "attributes": {
+                          "value": "a"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier[b]",
+                        "attributes": {
+                          "value": "b"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Identifier[c]",
+                    "attributes": {
+                      "name": "c"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier[c]",
+                        "attributes": {
+                          "value": "c"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Identifier[a]",
+                    "attributes": {
+                      "name": "a"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier[a]",
+                        "attributes": {
+                          "value": "a"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Identifier[b]",
+                    "attributes": {
+                      "name": "b"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier[b]",
+                        "attributes": {
+                          "value": "b"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "kind": "Identifier[in_circle]",
+                "kind": "Identifier[c]",
                 "attributes": {
-                  "value": "in_circle"
-                },
-                "children": []
-              }
-            ]
-          },
-          {
-            "kind": "Method[estimatePi100]",
-            "attributes": {},
-            "children": [
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[n]",
-                "attributes": {
-                  "name": "n"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[samples_in_circle]",
-                "attributes": {
-                  "name": "samples_in_circle"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[samples_so_far]",
-                "attributes": {
-                  "name": "samples_so_far"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[pi_estimate]",
-                "attributes": {
-                  "name": "pi_estimate"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[samples_so_far]",
-                "attributes": {
-                  "name": "samples_so_far"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Numeric[0]",
-                "attributes": {
-                  "value": "0"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[samples_in_circle]",
-                "attributes": {
-                  "name": "samples_in_circle"
+                  "name": "c"
                 },
                 "children": []
               },
@@ -511,59 +465,69 @@
                 "attributes": {},
                 "children": [
                   {
+                    "kind": "Identifier[c]",
+                    "attributes": {
+                      "value": "c"
+                    },
+                    "children": []
+                  },
+                  {
                     "kind": "Less",
                     "attributes": {},
                     "children": [
                       {
-                        "kind": "Identifier[samples_so_far]",
+                        "kind": "Identifier[d]",
                         "attributes": {
-                          "value": "samples_so_far"
+                          "value": "d"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Identifier[n]",
-                        "attributes": {
-                          "value": "n"
-                        },
+                        "kind": "Length",
+                        "attributes": {},
                         "children": []
                       }
                     ]
                   },
                   {
-                    "kind": "If",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "This",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "PrimarySuffix[.]",
+                    "kind": "Identifier[io]",
                     "attributes": {
-                      "attribute": "."
+                      "value": "io"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot[println]",
+                    "attributes": {
+                      "name": "println"
                     },
                     "children": [
                       {
-                        "kind": "Identifier[performSingleEstimate]",
+                        "kind": "Identifier[d]",
                         "attributes": {
-                          "name": "performSingleEstimate"
+                          "value": "d"
                         },
                         "children": []
+                      },
+                      {
+                        "kind": "Array",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier[c]",
+                            "attributes": {
+                              "value": "c"
+                            },
+                            "children": []
+                          }
+                        ]
                       }
                     ]
                   },
                   {
-                    "kind": "PrimarySuffix[null]",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier[samples_in_circle]",
+                    "kind": "Identifier[c]",
                     "attributes": {
-                      "name": "samples_in_circle"
+                      "name": "c"
                     },
                     "children": []
                   },
@@ -579,9 +543,9 @@
                     },
                     "children": [
                       {
-                        "kind": "Identifier[samples_in_circle]",
+                        "kind": "Identifier[c]",
                         "attributes": {
-                          "value": "samples_in_circle"
+                          "value": "c"
                         },
                         "children": []
                       },
@@ -593,272 +557,6 @@
                         "children": []
                       }
                     ]
-                  },
-                  {
-                    "kind": "Else",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier[samples_so_far]",
-                    "attributes": {
-                      "name": "samples_so_far"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Assign",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
-                    "children": [
-                      {
-                        "kind": "Identifier[samples_so_far]",
-                        "attributes": {
-                          "value": "samples_so_far"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[1]",
-                        "attributes": {
-                          "value": "1"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "Identifier[pi_estimate]",
-                "attributes": {
-                  "name": "pi_estimate"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "MultiplicativeExpression",
-                "attributes": {
-                  "operation": "/"
-                },
-                "children": [
-                  {
-                    "kind": "MultiplicativeExpression",
-                    "attributes": {
-                      "operation": "*"
-                    },
-                    "children": [
-                      {
-                        "kind": "Numeric[400]",
-                        "attributes": {
-                          "value": "400"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Identifier[samples_in_circle]",
-                        "attributes": {
-                          "value": "samples_in_circle"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "Identifier[n]",
-                    "attributes": {
-                      "value": "n"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Return",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Identifier[pi_estimate]",
-                "attributes": {
-                  "value": "pi_estimate"
-                },
-                "children": []
-              }
-            ]
-          },
-          {
-            "kind": "Method[String[]]",
-            "attributes": {},
-            "children": [
-              {
-                "kind": "Identifier[args]",
-                "attributes": {
-                  "name": "args"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[pi_estimate_times_100]",
-                "attributes": {
-                  "name": "pi_estimate_times_100"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[num_samples]",
-                "attributes": {
-                  "name": "num_samples"
-                },
-                "children": []
-              },
-              {
-                "kind": "Identifier[num_samples]",
-                "attributes": {
-                  "name": "num_samples"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Identifier[ioPlus]",
-                "attributes": {
-                  "value": "ioPlus"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimarySuffix[.]",
-                "attributes": {
-                  "attribute": "."
-                },
-                "children": [
-                  {
-                    "kind": "Identifier[requestNumber]",
-                    "attributes": {
-                      "name": "requestNumber"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[null]",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Identifier[pi_estimate_times_100]",
-                "attributes": {
-                  "name": "pi_estimate_times_100"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "New",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "Identifier[MonteCarloPi]",
-                    "attributes": {},
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[.]",
-                "attributes": {
-                  "attribute": "."
-                },
-                "children": [
-                  {
-                    "kind": "Identifier[estimatePi100]",
-                    "attributes": {
-                      "name": "estimatePi100"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[null]",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "Identifier[num_samples]",
-                    "attributes": {
-                      "value": "num_samples"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Identifier[ioPlus]",
-                "attributes": {
-                  "value": "ioPlus"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimarySuffix[.]",
-                "attributes": {
-                  "attribute": "."
-                },
-                "children": [
-                  {
-                    "kind": "Identifier[printResult]",
-                    "attributes": {
-                      "name": "printResult"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "PrimarySuffix[null]",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "Identifier[pi_estimate_times_100]",
-                    "attributes": {
-                      "value": "pi_estimate_times_100"
-                    },
-                    "children": []
                   }
                 ]
               }
