@@ -11,12 +11,7 @@ import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.specs.util.SpecsIo;
 
 
-public class ExampleTest {
-
-    /*@Test
-    public void testExpression() {		
-		assertEquals("Expression", TestUtils.parse("2+3\n").getRootNode().getKind());
-	}*/
+public class Tests {
 
     @Test
     public void testHelloWorld() {

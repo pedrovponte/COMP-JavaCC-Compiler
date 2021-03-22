@@ -39,12 +39,16 @@ public interface ParserTreeConstants {
     public int JJTARRAY = 37;
     public int JJTSTATEMENT = 38;
     public int JJTIFSTATEMENT = 39;
-    public int JJTWHILE = 40;
-    public int JJTCONDITION = 41;
-    public int JJTIDENTIFIERSTATEMENT = 42;
-    public int JJTAFTERIDENTIFIER = 43;
-    public int JJTERROR_SKIPTO = 44;
-    public int JJTLENGTH = 45;
+    public int JJTIF = 40;
+    public int JJTELSE = 41;
+    public int JJTWHILE = 42;
+    public int JJTCONDITION = 43;
+    public int JJTIDENTIFIERSTATEMENT = 44;
+    public int JJTAFTERIDENTIFIER = 45;
+    public int JJTERROR_SKIPTO = 46;
+    public int JJTLENGTH = 47;
+    public int JJTDOT = 48;
+    public int JJTASSIGN = 49;
 
     public String[] jjtNodeName = {
         "Class",
@@ -87,11 +91,15 @@ public interface ParserTreeConstants {
         "Array",
         "Statement",
         "IfStatement",
+        "If",
+        "Else",
         "While",
         "Condition",
         "IdentifierStatement",
         "AfterIdentifier",
         "Error_SkipTo",
-        "Length"
+        "Length",
+        "Dot",
+        "Assign"
     };
 }

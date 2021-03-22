@@ -176,7 +176,7 @@ void ClassDeclaration() #Class : {Token t, s;}
     <RBRACE>
 }
 
-void VarDeclaration() : {}
+void VarDeclaration() #void : {}
 {
     Type() Identifier()
 }
@@ -193,11 +193,11 @@ void MethodDeclaration() #Method : {Token t;}
             (
                 <COMMA> VarDeclaration()
             )*
-        )? #ParamList
+        )?
         <RPAREN>
         <LBRACE>
         MethodDeclarationBody()
-        <RETURN> Expression() <SEMICOLON>  #Return
+        <RETURN> #Return Expression() <SEMICOLON>
         <RBRACE>
     |
          <STATIC>
@@ -231,7 +231,7 @@ void BlockStatement() #void: {}
     Statement()
 }
 
-void LocalVariableDeclaration() : {}
+void LocalVariableDeclaration() #void : {}
 {
     Type() VariableDeclarator() (<COMMA> VariableDeclarator())* <SEMICOLON>
 }
@@ -332,14 +332,14 @@ void PrimaryPrefix() #void : {}
     AllocationExpression()
 }
 
-void PrimarySuffix() : {Token t; Token s;}
+void PrimarySuffix() : {Token t;}
 {
     LOOKAHEAD(2)
     t=<DOT> {jjtThis.value = t.image; jjtThis.put("attribute", t.image);} Identifier()
     |
     <LBRACKET> Expression() <RBRACKET>
     |
-    t=<DOT> {jjtThis.value = t.image; jjtThis.put("attribute", t.image);} s=<LENGTH> {jjtThis.value = s.image; jjtThis.put("attribute", s.image);}
+    <DOT> t=<LENGTH> {jjtThis.value = "." + t.image; jjtThis.put("attribute", "." + t.image);}
     |
     Arguments()
 }
@@ -365,7 +365,7 @@ void Arguments() #void : {}
     <LPAREN> [ArgumentList()] <RPAREN>
 }
 
-void ArgumentList() : {}
+void ArgumentList() #void : {}
 {
     Expression() (<COMMA> Expression())*
 }
@@ -400,18 +400,18 @@ void Statement() #void : {}
     <LBRACE> (Statement())* <RBRACE>
 }
 
-void IfStatement() : {}
+void IfStatement() #void : {Token t, s;}
 {
-    <IF> <LPAREN> Expression() #Condition <RPAREN> Statement()
-    <ELSE> Statement()
+    t=<IF> {jjtThis.value = t.image;} #If <LPAREN> Expression() <RPAREN> Statement()
+    s=<ELSE> {jjtThis.value = s.image;} #Else Statement()
 }
 
-void WhileStatement() #While : {}
+void WhileStatement() #While : {Token t;}
 {
-   <WHILE> WhileCondition() Statement()
+   t=<WHILE> {jjtThis.value = t.image;} WhileCondition() Statement()
 }
 
-void WhileCondition() #Condition : {}
+void WhileCondition() #void : {}
 {
   try {
     <LPAREN> Expression() <RPAREN>}
@@ -421,14 +421,14 @@ void WhileCondition() #Condition : {}
     }
 }
 
-void IdentifierStatement()  : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
+void IdentifierStatement() #void : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
     Identifier() AfterIdentifier() <SEMICOLON>
 }
 
-void AfterIdentifier(): {Token t;}
+void AfterIdentifier() #void : {}
 {
-    t=<ASSIGN>  Expression() {jjtThis.value = t.image;}
+    <ASSIGN> #Assign Expression()
     |
     InsideArray() <ASSIGN> Expression()
 }
