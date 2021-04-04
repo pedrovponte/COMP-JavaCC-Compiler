@@ -15,7 +15,7 @@ public class Main implements JmmParser {
 	public JmmParserResult parse(String jmmCode) {
 
 		try {
-		    Parser myParser = new Parser(new FileInputStream(jmmCode));
+		    Parser myParser = new Parser(new ByteArrayInputStream(jmmCode.getBytes()));
     		SimpleNode root = myParser.Program(); // returns reference to root node
 
     		root.dump(""); // prints the tree on the screen
@@ -26,14 +26,14 @@ public class Main implements JmmParser {
 			jsonFile.write(parserResult.toJson().getBytes());
 
 			jsonFile.close();
-
 			return parserResult;
 		} catch(Exception e) {
 			ArrayList<Report> reports = new ArrayList<Report>();
+			e.printStackTrace();
 			if (e instanceof ParseException) {
 				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, ((ParseException) e).currentToken.beginLine, "Detected generic error: " + e.getMessage()));
 			}
-			else if (e instanceof RuntimeException)
+			else
 			{
 				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, -1, "Detected generic error: " + e.getMessage()));
 			}
@@ -47,17 +47,7 @@ public class Main implements JmmParser {
 	// java -cp "./build/classes/java/main/" Main test/fixtures/public/HelloWorld.jmm
 	// .\comp2021-5e.bat Main test/fixtures/public/WhileAndIF.jmm
     public static void main(String[] args) {
-		InputStream in = null;
-
-		try {
-			System.out.printf(args[0]);
-			in = new FileInputStream(args[0]);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		}
-
 		Main main = new Main();
-		main.parse(args[0]);
+		main.parse(SpecsIo.read(args[0]));
 	}
 }
