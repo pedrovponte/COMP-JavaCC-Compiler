@@ -2,9 +2,9 @@ import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SymbolTableImp implements SymbolTable {
     private List<String> imports;
@@ -48,8 +48,9 @@ public class SymbolTableImp implements SymbolTable {
     @Override
     public List<String> getMethods() {
         List<String> methodsNames = new ArrayList<String>();
-        for(int i = 0; i < this.methods.size(); i++) {
+        for (int i = 0; i < this.methods.size(); i++) {
             methodsNames.add(this.methods.get(i).getName());
+        }
         return methodsNames;
     }
 
@@ -107,8 +108,8 @@ public class SymbolTableImp implements SymbolTable {
 
     public void addParameters(String methodName, String name, Type type) {
         Symbol symbol = new Symbol(type, name);
-        if(this.parameters.contains(methodName)) {
-            if(!this.parameters.get(methodName).contais(symbol)) {
+        if(this.parameters.containsKey(methodName)) {
+            if(!this.parameters.get(methodName).contains(symbol)) {
                 this.parameters.get(methodName).add(symbol);
             }
         }
@@ -121,7 +122,7 @@ public class SymbolTableImp implements SymbolTable {
 
     public void addLocalVariables(String methodName, String name, Type type) {
         Symbol symbol = new Symbol(type, name);
-        if(this.localVariables.contains(methodName)) {
+        if(this.localVariables.containsKey(methodName)) {
             if(!this.localVariables.get(methodName).contains(symbol)) {
                 this.localVariables.get(methodName).add(symbol);
             }
