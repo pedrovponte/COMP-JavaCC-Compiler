@@ -102,30 +102,38 @@ class SimpleNode implements Node, JmmNode {
      toString(String), otherwise overriding toString() is probably all
      you need to do. */
 
+
+
   public String toString() {
-    switch (ParserTreeConstants.jjtNodeName[id]) {
-      case "Type": case "Class": case "Method": case "Identifier": case "Integer": case "Extends": case "InsideArray": case "Numeric": case "PrimitiveType": case "AfterIdentifier": case "AdditiveExpression": case "Boolean": case "PrimarySuffix": case "Dot":
-        return ParserTreeConstants.jjtNodeName[id] + "[" + this.value + "]";
-      default:
-        return ParserTreeConstants.jjtNodeName[id];
-    }
+    return ParserTreeConstants.jjtNodeName[id];
   }
 
-  /*public String toString() {
-    return ParserTreeConstants.jjtNodeName[id];
-  }*/
   public String toString(String prefix) { return prefix + toString(); }
 
   /* Override this method if you want to customize how the node dumps
      out its children. */
 
-  public void dump(String prefix) {
+  /*public void dump(String prefix) {
     System.out.println(toString(prefix));
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         SimpleNode n = (SimpleNode)children[i];
         if (n != null) {
           n.dump(prefix + " ");
+        }
+      }
+    }
+  }*/
+
+  public void dump(String prefix) {
+    System.out.println(toString(prefix));
+    if(children == null && this.value != null)
+      System.out.println(prefix + "\t[ "+this.value+" ]");
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        SimpleNode n = (SimpleNode)children[i];
+        if (n != null) {
+          n.dump(prefix + "  ");
         }
       }
     }

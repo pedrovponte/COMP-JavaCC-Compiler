@@ -26,6 +26,38 @@ public class Main implements JmmParser {
 			jsonFile.write(parserResult.toJson().getBytes());
 
 			jsonFile.close();
+
+			for(int i = 0; i < root.jjtGetNumChildren(); i++) { // Import, class
+				//System.out.println("Child: " + root.jjtGetChild(i).toString());
+				if(root.jjtGetChild(i).toString().equals("Import")) {
+					SimpleNode node = (SimpleNode) root.jjtGetChild(i);
+					System.out.println("Import: " + node.jjtGetChild(0));
+				}
+				else if(root.jjtGetChild(i).toString().equals("Class")) {
+					SimpleNode node = (SimpleNode) root.jjtGetChild(i);
+					for(int j = 0; j < node.jjtGetNumChildren(); j++) { // Extends, Method, PrimitiveType(varDeclaration), Type
+						//System.out.println("Child: " + node.jjtGetChild(j).toString());
+						if(node.jjtGetChild(j).toString().equals("Extends")) {
+							SimpleNode extendsNode = (SimpleNode) node.jjtGetChild(j);
+							System.out.println("Extends: " + extendsNode.jjtGetChild(0));
+						}
+						if(node.jjtGetChild(j).toString().equals("Method")) { // Main or another
+							SimpleNode methodNode = (SimpleNode) node.jjtGetChild(j);
+							System.out.println("Method: " + methodNode.jjtGetChild(0));
+						}
+						if(node.jjtGetChild(j).toString().equals("PrimitiveType")) {
+							System.out.println("Bla");
+						}
+
+						/*else {
+							System.out.println("Child: " + node.jjtGetChild(j).toString());
+						}*/
+					}
+				}
+			}
+
+
+
 			return parserResult;
 		} catch(Exception e) {
 			ArrayList<Report> reports = new ArrayList<Report>();

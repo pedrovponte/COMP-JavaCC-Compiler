@@ -151,7 +151,7 @@ SimpleNode Program() : {}
 }
 
 
-void ImportDeclaration() #Import : {}
+void ImportDeclaration() : {}
 {
     <IMPORT> Name() <SEMICOLON>
 }
@@ -165,11 +165,11 @@ void Name() #void : {}
     Identifier() (LOOKAHEAD(2) <DOT> Identifier() )*
 }
 
-void ClassDeclaration() #Class : {Token t, s;}
+void ClassDeclaration() : {}
 {
     <CLASS>
-    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);}
-    (<EXTENDS> s=<IDENTIFIER> {jjtThis.value = s.image; jjtThis.put("extends", s.image);} #Extends)?
+    Identifier()
+    (<EXTENDS> Identifier() #Extends(1))?
     <LBRACE>
     (VarDeclaration() <SEMICOLON>)*
     (MethodDeclaration())*
@@ -178,39 +178,18 @@ void ClassDeclaration() #Class : {Token t, s;}
 
 void VarDeclaration() #void : {}
 {
+    LOOKAHEAD(2)
     Type() Identifier()
+    |
+    Expression()
 }
 
-void MethodDeclaration() #Method : {Token t;}
+void MethodDeclaration() #void : {}
 {
-    <PUBLIC>
-    (
-        Type()
-        t=<IDENTIFIER> {jjtThis.value = t.image;}
-        <LPAREN>
-        (
-            VarDeclaration()
-            (
-                <COMMA> VarDeclaration()
-            )*
-        )?
-        <RPAREN>
-        <LBRACE>
-        MethodDeclarationBody()
-        <RETURN> #Return Expression() <SEMICOLON>
-        <RBRACE>
+    LOOKAHEAD(2)
+    Method()
     |
-         <STATIC>
-         <VOID>
-         t=<MAIN> {jjtThis.value = t.image;}
-         <LPAREN>
-         t=<STRINGARR> {jjtThis.value = t.image;}
-         Identifier()
-         <RPAREN>
-         <LBRACE>
-         MethodDeclarationBody()
-         <RBRACE>
-    )
+    Main()
 }
 
 void Identifier() #Identifier : { Token t; }
@@ -218,7 +197,46 @@ void Identifier() #Identifier : { Token t; }
     t = <IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);}
 }
 
-void MethodDeclarationBody() #void : {}
+void Method() : {}
+{
+    <PUBLIC>
+    Type()
+    Identifier()
+    <LPAREN>
+    (
+        Args()
+    )?
+    <RPAREN>
+    <LBRACE>
+    MethodDeclarationBody()
+    <RETURN> #Return Expression() <SEMICOLON>
+    <RBRACE>
+}
+
+void Args() : {}
+{
+   VarDeclaration()
+   (
+       <COMMA> VarDeclaration()
+   )*
+}
+
+void Main() : {}
+{
+    <PUBLIC>
+    <STATIC>
+    <VOID>
+    <MAIN>
+    <LPAREN>
+    <STRINGARR>
+    Identifier()
+    <RPAREN>
+    <LBRACE>
+    MethodDeclarationBody()
+    <RBRACE>
+}
+
+void MethodDeclarationBody() : {}
 {
     (BlockStatement())*
 }
@@ -231,34 +249,22 @@ void BlockStatement() #void: {}
     Statement()
 }
 
-void LocalVariableDeclaration() #void : {}
+void LocalVariableDeclaration() : {}
 {
     Type() VariableDeclarator() (<COMMA> VariableDeclarator())* <SEMICOLON>
 }
 
-void Type() #void: {Token t;}
+void Type() #void : {}
 {
-    Identifier() #Type
+    Identifier()
     |
-    PrimitiveType() // "int", "[", "]", "boolean", "int"
-}
+    <BOOLEAN> #Boolean
+    |
+    LOOKAHEAD(2)
+    <INT> <LBRACKET> <RBRACKET> #ArrayInt
+    |
+    <INT> #Integer
 
-void PrimitiveType() : {Token t; Boolean b = false;}
-{
-    t = <BOOLEAN> {jjtThis.value = t.image; jjtThis.put("type", t.image);}
-    |
-    (
-        t = <INT> (<LBRACKET> <RBRACKET> {b = true;})? {
-            if(b) {
-                jjtThis.value = t.image + "[]"; // int[]
-                jjtThis.put("type", t.image + "[]");
-            }
-            else {
-                jjtThis.value = t.image; // int
-                jjtThis.put("type", t.image);
-            }
-        }
-    )
 }
 
 void VariableDeclarator() #void : {}
@@ -300,13 +306,22 @@ void RelationalExpression() #void : {}
 
 void AdditiveExpression() #void : {Token t;}
 {
+    SubtrativeExpression() (t=<PLUS> SubtrativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #AdditiveExpression(2))*
+}
 
-    MultiplicativeExpression() ((t=<PLUS> | t=<MINUS>) MultiplicativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #AdditiveExpression(2))*
+void SubtrativeExpression() #void : {Token t;}
+{
+    MultiplicativeExpression() (t=<MINUS> MultiplicativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #SubtrativeExpression(2))*
 }
 
 void MultiplicativeExpression() #void : {Token t;}
 {
-    UnaryExpressionNotPlusMinus() ((t=<STAR> | t=<SLASH>) UnaryExpressionNotPlusMinus() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #MultiplicativeExpression(2))*
+    DivisionExpression() (t=<STAR> DivisionExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #MultiplicativeExpression(2))*
+}
+
+void DivisionExpression() #void : {Token t;}
+{
+    UnaryExpressionNotPlusMinus() (t=<SLASH> UnaryExpressionNotPlusMinus() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #DivisionExpression(2))*
 }
 
 void UnaryExpressionNotPlusMinus() #void : {}
@@ -339,13 +354,13 @@ void PrimarySuffix() #void : {}
     DotExpression()
 }
 
-void DotExpression() #void : {Token t;}
+void DotExpression() #void : {}
 {
     <DOT>
     (
-        <LENGTH> #Length
+        (<LENGTH> #Length) #Dot(2)
         |
-        (t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);} <LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN>) #Dot
+        (Identifier() <LPAREN> (Args())? <RPAREN>) #Dot(2)
     )
 }
 
@@ -364,29 +379,6 @@ void BooleanLiteral() #Boolean : {Token t;}
     |
     t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
 }
-
-/*void PrimaryExpression() #void : {}
-{
-    PrimaryPrefix() (PrimarySuffix())?
-}
-
-void PrimaryPrefix() #void : {}
-{
-    Literal()
-    |
-    AllocationExpression() #New
-    |
-    <LPAREN> Expression() <LPAREN>
-    |
-    <THIS> #This
-}
-
-void PrimarySuffix() #void : {}
-{
-    InsideArray()
-    |
-    DotExpression()
-}*/
 
 void Arguments() #void : {}
 {
@@ -413,7 +405,7 @@ void InsideArray() #Array : {}
     <LBRACKET> Expression() <RBRACKET>
 }
 
-void Statement() #void : {}
+void Statement() : {}
 {
     IfStatement()
     |
@@ -458,5 +450,5 @@ void AfterIdentifier() #void : {}
 {
     <ASSIGN> #Assign Expression()
     |
-    InsideArray() <ASSIGN> Expression()
+    InsideArray() <ASSIGN> #Assign Expression()
 }

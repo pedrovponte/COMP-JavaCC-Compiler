@@ -7,7 +7,7 @@ public interface ParserTreeConstants {
     public int JJTRETURN = 5;
     public int JJTIDENTIFIER = 6;
     public int JJTPROGRAM = 7;
-    public int JJTIMPORT = 8;
+    public int JJTIMPORTDECLARATION = 8;
     public int JJTNAME = 9;
     public int JJTVARDECLARATION = 10;
     public int JJTMETHODD = 11;
@@ -50,6 +50,14 @@ public interface ParserTreeConstants {
     public int JJTASSIGN = 48;
     public int JJTDOTEXPRESSION = 49;
     public int JJTDOT = 50;
+    public int JJTSTRINGARR = 51;
+    public int JJTMAIN = 52;
+    public int JJTINTEGER = 53;
+    public int JJTARRAYINT = 54;
+    public int JJTCLASSDECLARATION = 55;
+    public int JJTARGS = 56;
+    public int JJTSUBTRATIVEEXPRESSION = 57;
+    public int JJTDIVISIONEXPRESSION = 58;
 
     public String[] jjtNodeName = {
         "Class",
@@ -102,6 +110,14 @@ public interface ParserTreeConstants {
         "Length",
         "Assign",
         "DotExpression",
-        "Dot"
+        "Dot",
+        "StringArr",
+        "Main",
+        "int",
+        "int[]",
+        "ClassDeclaration",
+        "Args",
+        "SubtractiveExpression",
+        "DivisionExpression"
     };
 }

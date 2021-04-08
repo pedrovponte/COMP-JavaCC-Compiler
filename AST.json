@@ -8,42 +8,1086 @@
         "attributes": {},
         "children": [
           {
-            "kind": "Identifier[ioPlus]",
+            "kind": "MathUtils",
             "attributes": {
-              "name": "ioPlus"
+              "name": "MathUtils"
             },
             "children": []
           }
         ]
       },
       {
-        "kind": "Class[HelloWorld]",
-        "attributes": {
-          "name": "HelloWorld"
-        },
+        "kind": "Import",
+        "attributes": {},
         "children": [
           {
-            "kind": "Method[String[]]",
+            "kind": "Quicksort",
+            "attributes": {
+              "name": "Quicksort"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "Class",
+        "attributes": {},
+        "children": [
+          {
+            "kind": "Lazysort",
+            "attributes": {
+              "name": "Lazysort"
+            },
+            "children": []
+          },
+          {
+            "kind": "Extends",
             "attributes": {},
             "children": [
               {
-                "kind": "Identifier[args]",
+                "kind": "Quicksort",
                 "attributes": {
-                  "name": "args"
+                  "name": "Quicksort"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "Main",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "StringArr",
+                "attributes": {
+                  "name": "String[]"
+                },
+                "children": [
+                  {
+                    "kind": "a",
+                    "attributes": {
+                      "name": "a"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "PrimitiveType[int[]]",
+                "attributes": {
+                  "type": "int[]"
                 },
                 "children": []
               },
               {
-                "kind": "Identifier[ioPlus]",
+                "kind": "L",
                 "attributes": {
-                  "value": "ioPlus"
+                  "name": "L"
                 },
                 "children": []
               },
               {
-                "kind": "Dot[printHelloWorld]",
+                "kind": "PrimitiveType[int]",
                 "attributes": {
-                  "name": "printHelloWorld"
+                  "type": "int"
+                },
+                "children": []
+              },
+              {
+                "kind": "i",
+                "attributes": {
+                  "name": "i"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[boolean]",
+                "attributes": {
+                  "type": "boolean"
+                },
+                "children": []
+              },
+              {
+                "kind": "d",
+                "attributes": {
+                  "name": "d"
+                },
+                "children": []
+              },
+              {
+                "kind": "Type",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Lazysort",
+                    "attributes": {
+                      "name": "Lazysort"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "q",
+                "attributes": {
+                  "name": "q"
+                },
+                "children": []
+              },
+              {
+                "kind": "L",
+                "attributes": {
+                  "name": "L"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "New",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Array",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Numeric[10]",
+                        "attributes": {
+                          "value": "10"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "i",
+                "attributes": {
+                  "name": "i"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Numeric[0]",
+                "attributes": {
+                  "value": "0"
+                },
+                "children": []
+              },
+              {
+                "kind": "While",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "i",
+                    "attributes": {
+                      "value": "i"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Less",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "L",
+                        "attributes": {
+                          "value": "L"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Length",
+                        "attributes": {},
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "name": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Array",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "i",
+                        "attributes": {
+                          "value": "i"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Length",
+                        "attributes": {},
+                        "children": []
+                      },
+                      {
+                        "kind": "i",
+                        "attributes": {
+                          "value": "i"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "i",
+                    "attributes": {
+                      "name": "i"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[+]",
+                    "attributes": {
+                      "operation": "+"
+                    },
+                    "children": [
+                      {
+                        "kind": "i",
+                        "attributes": {
+                          "value": "i"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "q",
+                "attributes": {
+                  "name": "q"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "New",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Class",
+                    "attributes": {
+                      "name": "Lazysort"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "q",
+                "attributes": {
+                  "value": "q"
+                },
+                "children": []
+              },
+              {
+                "kind": "Dot[quicksort]",
+                "attributes": {
+                  "name": "quicksort"
+                },
+                "children": [
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "d",
+                "attributes": {
+                  "name": "d"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "q",
+                "attributes": {
+                  "value": "q"
+                },
+                "children": []
+              },
+              {
+                "kind": "Dot[printL]",
+                "attributes": {
+                  "name": "printL"
+                },
+                "children": [
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "PrimitiveType[boolean]",
+                "attributes": {
+                  "type": "boolean"
+                },
+                "children": []
+              },
+              {
+                "kind": "quicksort",
+                "attributes": {
+                  "name": "quicksort"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int[]]",
+                "attributes": {
+                  "type": "int[]"
+                },
+                "children": []
+              },
+              {
+                "kind": "L",
+                "attributes": {
+                  "name": "L"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[boolean]",
+                "attributes": {
+                  "type": "boolean"
+                },
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int]",
+                "attributes": {
+                  "type": "int"
+                },
+                "children": []
+              },
+              {
+                "kind": "rand",
+                "attributes": {
+                  "name": "rand"
+                },
+                "children": []
+              },
+              {
+                "kind": "rand",
+                "attributes": {
+                  "name": "rand"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "MathUtils",
+                "attributes": {
+                  "value": "MathUtils"
+                },
+                "children": []
+              },
+              {
+                "kind": "Dot[random]",
+                "attributes": {
+                  "name": "random"
+                },
+                "children": [
+                  {
+                    "kind": "Numeric[0]",
+                    "attributes": {
+                      "value": "0"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Numeric[5]",
+                    "attributes": {
+                      "value": "5"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "If",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Less",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "rand",
+                    "attributes": {
+                      "value": "rand"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Numeric[4]",
+                    "attributes": {
+                      "value": "4"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "This",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Dot[beLazy]",
+                "attributes": {
+                  "name": "beLazy"
+                },
+                "children": [
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Boolean[true]",
+                "attributes": {
+                  "value": "true"
+                },
+                "children": []
+              },
+              {
+                "kind": "Else",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Boolean[false]",
+                "attributes": {
+                  "value": "false"
+                },
+                "children": []
+              },
+              {
+                "kind": "If",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "value": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Not",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "lazy",
+                    "attributes": {
+                      "value": "lazy"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Else",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "This",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Dot[quicksort]",
+                "attributes": {
+                  "name": "quicksort"
+                },
+                "children": [
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Numeric[0]",
+                    "attributes": {
+                      "value": "0"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "value": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[-]",
+                    "attributes": {
+                      "operation": "-"
+                    },
+                    "children": [
+                      {
+                        "kind": "Length",
+                        "attributes": {},
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Return",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "lazy",
+                "attributes": {
+                  "value": "lazy"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "PrimitiveType[boolean]",
+                "attributes": {
+                  "type": "boolean"
+                },
+                "children": []
+              },
+              {
+                "kind": "beLazy",
+                "attributes": {
+                  "name": "beLazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int[]]",
+                "attributes": {
+                  "type": "int[]"
+                },
+                "children": []
+              },
+              {
+                "kind": "L",
+                "attributes": {
+                  "name": "L"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int]",
+                "attributes": {
+                  "type": "int"
+                },
+                "children": []
+              },
+              {
+                "kind": "_allowedNameL",
+                "attributes": {
+                  "name": "_allowedNameL"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int]",
+                "attributes": {
+                  "type": "int"
+                },
+                "children": []
+              },
+              {
+                "kind": "$allowedNameI",
+                "attributes": {
+                  "name": "$allowedNameI"
+                },
+                "children": []
+              },
+              {
+                "kind": "PrimitiveType[int]",
+                "attributes": {
+                  "type": "int"
+                },
+                "children": []
+              },
+              {
+                "kind": "rand",
+                "attributes": {
+                  "name": "rand"
+                },
+                "children": []
+              },
+              {
+                "kind": "_allowedNameL",
+                "attributes": {
+                  "name": "_allowedNameL"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "L",
+                "attributes": {
+                  "value": "L"
+                },
+                "children": []
+              },
+              {
+                "kind": "Length",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "$allowedNameI",
+                "attributes": {
+                  "name": "$allowedNameI"
+                },
+                "children": []
+              },
+              {
+                "kind": "Assign",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Numeric[0]",
+                "attributes": {
+                  "value": "0"
+                },
+                "children": []
+              },
+              {
+                "kind": "While",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Less",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "MultiplicativeExpression",
+                        "attributes": {
+                          "operation": "/"
+                        },
+                        "children": [
+                          {
+                            "kind": "_allowedNameL",
+                            "attributes": {
+                              "value": "_allowedNameL"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Numeric[2]",
+                            "attributes": {
+                              "value": "2"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "name": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Array",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "MathUtils",
+                    "attributes": {
+                      "value": "MathUtils"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot[random]",
+                    "attributes": {
+                      "name": "random"
+                    },
+                    "children": [
+                      {
+                        "kind": "Numeric[0]",
+                        "attributes": {
+                          "value": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[10]",
+                        "attributes": {
+                          "value": "10"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "$allowedNameI",
+                    "attributes": {
+                      "name": "$allowedNameI"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[+]",
+                    "attributes": {
+                      "operation": "+"
+                    },
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "While",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Less",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "_allowedNameL",
+                        "attributes": {
+                          "value": "_allowedNameL"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "rand",
+                    "attributes": {
+                      "name": "rand"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "MathUtils",
+                    "attributes": {
+                      "value": "MathUtils"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot[random]",
+                    "attributes": {
+                      "name": "random"
+                    },
+                    "children": [
+                      {
+                        "kind": "Numeric[0]",
+                        "attributes": {
+                          "value": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[10]",
+                        "attributes": {
+                          "value": "10"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "L",
+                    "attributes": {
+                      "name": "L"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Array",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "AdditiveExpression[+]",
+                    "attributes": {
+                      "operation": "+"
+                    },
+                    "children": [
+                      {
+                        "kind": "rand",
+                        "attributes": {
+                          "value": "rand"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "$allowedNameI",
+                    "attributes": {
+                      "name": "$allowedNameI"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "AdditiveExpression[+]",
+                    "attributes": {
+                      "operation": "+"
+                    },
+                    "children": [
+                      {
+                        "kind": "$allowedNameI",
+                        "attributes": {
+                          "value": "$allowedNameI"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Numeric[1]",
+                        "attributes": {
+                          "value": "1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Return",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Boolean[true]",
+                "attributes": {
+                  "value": "true"
                 },
                 "children": []
               }
