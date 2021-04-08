@@ -21,7 +21,7 @@ public class Parser {
     };
 
     void errorFunction(ParseException e) {
-        Report error = new Report(ReportType.ERROR,Stage.SYNTATIC,e.currentToken.beginLine,"Encountered \"" + e.currentToken.image+ "\", column " + e.currentToken.beginColumn + ".");
+        Report error = new Report(ReportType.ERROR,Stage.SYNTATIC,e.currentToken.beginLine, e.currentToken.beginColumn,"Encountered \"" + e.currentToken.image+ "\" " + ".");
         this.syntacticErrors.add(error);
 
         this.errors ++;

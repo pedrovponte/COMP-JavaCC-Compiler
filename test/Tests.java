@@ -135,42 +135,51 @@ public class Tests {
 
     @Test
     public void testFail_BlowUp() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/BlowUp.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/BlowUp.jmm");
+        var res = TestUtils.parse(jmmCode);
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
+
     }
 
     @Test
     public void testFail_CompleteWhileTest() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/CompleteWhileTest.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/CompleteWhileTest.jmm");
+        var res = TestUtils.parse(jmmCode);
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_LengthError() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/LengthError.jmm");
-        // assertEquals("Program", res.getRootNode().getKind());
-        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/LengthError.jmm");
+        var res = TestUtils.parse(jmmCode);
+        //System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_MissingRightPar() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/MissingRightPar.jmm");
-        //assertEquals("Program", res.getRootNode().getKind());
-        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MissingRightPar.jmm");
+        var res = TestUtils.parse(jmmCode);
+        //System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_MultipleSequential() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/MultipleSequential.jmm");
-        //assertEquals("Program", res.getRootNode().getKind());
-        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MultipleSequential.jmm");
+        var res = TestUtils.parse(jmmCode);
+        //System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_NestedLoop() {
-        JmmParserResult res = TestUtils.parse("test/fixtures/public/fail/syntactical/NestedLoop.jmm");
-        // assertEquals("Program", res.getRootNode().getKind());
-        assertEquals(1, TestUtils.getNumErrors(res.getReports()));
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
+        var res = TestUtils.parse(jmmCode);
+        //System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
 }
