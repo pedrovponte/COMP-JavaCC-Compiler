@@ -176,7 +176,7 @@ void ClassDeclaration() : {}
     <RBRACE>
 }
 
-void VarDeclaration() #void : {}
+void VarDeclaration() : {}
 {
     LOOKAHEAD(2)
     Type() Identifier()
@@ -366,9 +366,9 @@ void DotExpression() #void : {}
 
 void Literal() #void : {Token t;}
 {
-    t=<NUMERIC> {jjtThis.value = Integer.valueOf(t.image); jjtThis.put("value", t.image);} #Numeric
+    t=<NUMERIC> {jjtThis.value = Integer.valueOf(t.image); jjtThis.put("value", t.image);} #Integer
     |
-    t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("value", t.image);} #Identifier
+    Identifier()
     |
     BooleanLiteral()
 }
@@ -394,13 +394,13 @@ void AllocationExpression() #void : {Token t;}
 {
     <NEW>
     (
-        <INT> InsideArray()
+        <INT> InsideArray() #Array(1)
         |
-        t=<IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);} #Class <LPAREN> <RPAREN>
+        Identifier() #Class <LPAREN> <RPAREN>
     )
 }
 
-void InsideArray() #Array : {}
+void InsideArray() #void : {}
 {
     <LBRACKET> Expression() <RBRACKET>
 }
