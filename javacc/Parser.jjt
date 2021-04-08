@@ -396,7 +396,7 @@ void AllocationExpression() #void : {Token t;}
     (
         <INT> InsideArray() #Array(1)
         |
-        Identifier() #Class <LPAREN> <RPAREN>
+        Identifier() #ClassCall <LPAREN> <RPAREN>
     )
 }
 

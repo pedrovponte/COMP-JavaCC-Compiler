@@ -142,6 +142,7 @@ class SimpleNode implements Node, JmmNode {
   public int getId() {
     return id;
   }
+
 }
 
 /* JavaCC - OriginalChecksum=d33fdb2b8063d5de3474649324d5d160 (do not edit this line) */

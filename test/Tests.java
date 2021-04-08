@@ -133,6 +133,7 @@ public class Tests {
 
     /*Fail syntactical*/
 
+    // este teste parece nao estar a funcionar direito
     @Test
     public void testFail_BlowUp() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/BlowUp.jmm");

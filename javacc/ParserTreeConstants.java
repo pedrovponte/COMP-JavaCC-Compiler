@@ -1,5 +1,5 @@
 public interface ParserTreeConstants {
-    public int JJTCLASS = 0;
+    public int JJTCLASSCALL = 0;
     public int JJTEXTENDS = 1;
     public int JJTMETHOD = 2;
     public int JJTPARAMLIST = 3;
@@ -60,7 +60,7 @@ public interface ParserTreeConstants {
     public int JJTDIVISIONEXPRESSION = 58;
 
     public String[] jjtNodeName = {
-        "Class",
+        "ClassCall",
         "Extends",
         "Method",
         "ParamList",
@@ -115,7 +115,7 @@ public interface ParserTreeConstants {
         "Main",
         "int",
         "int[]",
-        "ClassDeclaration",
+        "Class",
         "Args",
         "SubtractiveExpression",
         "DivisionExpression"
