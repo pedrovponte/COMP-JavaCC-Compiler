@@ -8,6 +8,7 @@ import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmAnalysis;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.ast.examples.ExamplePostorderVisitor;
 import pt.up.fe.comp.jmm.ast.examples.ExamplePreorderVisitor;
 import pt.up.fe.comp.jmm.ast.examples.ExamplePrintVariables;
@@ -34,26 +35,48 @@ public class AnalysisStage implements JmmAnalysis {
         }
 
         JmmNode node = parserResult.getRootNode();
+        // System.out.println("NODE: " + node.getClass());
 
-        System.out.println("Dump tree with Visitor where you control tree traversal");
-        ExampleVisitor visitor = new ExampleVisitor("Identifier", "id");
+        SymbolTableImp symbolTable = new SymbolTableImp();
+
+        System.out.println("Import Visitor");
+        ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
+        System.out.println(visitorImport.visit(node, ""));
+
+        System.out.println("SYMBOL TABLE: " + symbolTable.getImports());
+
+        System.out.println("Class Visitor");
+        ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
+        System.out.println(visitorClass.visit(node, ""));
+
+        System.out.println("SYMBOL TABLE CLASS: " + symbolTable.getClassName());
+        System.out.println("SYMBOL TABLE SUPER: " + symbolTable.getSuper());
+        System.out.println("SYMBOL TABLE MAIN: " + symbolTable.getMethods());
+//        System.out.println("SYMBOL TABLE PARAMETERS QUICKSORT: " + symbolTable.getParameters("quicksort"));
+//        System.out.println("SYMBOL TABLE PARAMETERS BELAZY: " + symbolTable.getParameters("beLazy"));
+//        System.out.println("SYMBOL TABLE PARAMETERS MAIN: " + symbolTable.getParameters("main"));
+        System.out.println("SYMBOL TABLE FIELDS: " + symbolTable.getFields());
+
+
+        /*System.out.println("Dump tree with Visitor where you control tree traversal");
+        ExampleVisitor visitor = new ExampleVisitor("Identifier", "name");
         System.out.println(visitor.visit(node, ""));
 
         System.out.println("Dump tree with Visitor that automatically performs preorder tree traversal");
         var preOrderVisitor = new ExamplePreorderVisitor("Identifier", "id");
-        System.out.println(preOrderVisitor.visit(node, ""));
+        System.out.println(preOrderVisitor.visit(node, ""));*/
 
-        System.out.println(
+        /*System.out.println(
                 "Create histogram of node kinds with Visitor that automatically performs postorder tree traversal");
         var postOrderVisitor = new ExamplePostorderVisitor();
         var kindCount = new HashMap<String, Integer>();
         postOrderVisitor.visit(node, kindCount);
-        System.out.println("Kinds count: " + kindCount + "\n");
+        System.out.println("Kinds count: " + kindCount + "\n");*/
 
-        System.out.println(
+        /*System.out.println(
                 "Print variables name and line, and their corresponding parent with Visitor that automatically performs preorder tree traversal");
         var varPrinter = new ExamplePrintVariables("Variable", "name", "line");
-        varPrinter.visit(node, null);
+        varPrinter.visit(node, null);*/
 
         // No Symbol Table being calculated yet
         return new JmmSemanticsResult(parserResult, null, new ArrayList<>());

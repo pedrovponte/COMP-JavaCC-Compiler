@@ -236,7 +236,7 @@ void Main() : {}
     <RBRACE>
 }
 
-void MethodDeclarationBody() : {}
+void MethodDeclarationBody() #void : {}
 {
     (BlockStatement())*
 }

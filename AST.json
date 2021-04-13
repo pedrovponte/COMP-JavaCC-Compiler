@@ -8,7 +8,7 @@
         "attributes": {},
         "children": [
           {
-            "kind": "MathUtils",
+            "kind": "Identifier",
             "attributes": {
               "name": "MathUtils"
             },
@@ -21,7 +21,7 @@
         "attributes": {},
         "children": [
           {
-            "kind": "Quicksort",
+            "kind": "Identifier",
             "attributes": {
               "name": "Quicksort"
             },
@@ -34,7 +34,7 @@
         "attributes": {},
         "children": [
           {
-            "kind": "Lazysort",
+            "kind": "Identifier",
             "attributes": {
               "name": "Lazysort"
             },
@@ -45,7 +45,7 @@
             "attributes": {},
             "children": [
               {
-                "kind": "Quicksort",
+                "kind": "Identifier",
                 "attributes": {
                   "name": "Quicksort"
                 },
@@ -54,219 +54,133 @@
             ]
           },
           {
-            "kind": "Method",
+            "kind": "Main",
             "attributes": {},
             "children": [
               {
-                "kind": "Main",
-                "attributes": {},
+                "kind": "Identifier",
+                "attributes": {
+                  "name": "a"
+                },
                 "children": []
               },
               {
-                "kind": "StringArr",
-                "attributes": {
-                  "name": "String[]"
-                },
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
                 "children": [
                   {
-                    "kind": "a",
+                    "kind": "int[]",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
                     "attributes": {
-                      "name": "a"
+                      "name": "L"
                     },
                     "children": []
                   }
                 ]
               },
               {
-                "kind": "PrimitiveType[int[]]",
-                "attributes": {
-                  "type": "int[]"
-                },
-                "children": []
-              },
-              {
-                "kind": "L",
-                "attributes": {
-                  "name": "L"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "i",
-                "attributes": {
-                  "name": "i"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[boolean]",
-                "attributes": {
-                  "type": "boolean"
-                },
-                "children": []
-              },
-              {
-                "kind": "d",
-                "attributes": {
-                  "name": "d"
-                },
-                "children": []
-              },
-              {
-                "kind": "Type",
+                "kind": "LocaVariableDeclaration",
                 "attributes": {},
                 "children": [
                   {
-                    "kind": "Lazysort",
+                    "kind": "int",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "i"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Boolean",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "d"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
                     "attributes": {
                       "name": "Lazysort"
                     },
                     "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "q",
-                "attributes": {
-                  "name": "q"
-                },
-                "children": []
-              },
-              {
-                "kind": "L",
-                "attributes": {
-                  "name": "L"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "New",
-                "attributes": {},
-                "children": [
+                  },
                   {
-                    "kind": "Array",
-                    "attributes": {},
-                    "children": [
-                      {
-                        "kind": "Numeric[10]",
-                        "attributes": {
-                          "value": "10"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "i",
-                "attributes": {
-                  "name": "i"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Numeric[0]",
-                "attributes": {
-                  "value": "0"
-                },
-                "children": []
-              },
-              {
-                "kind": "While",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "i",
+                    "kind": "Identifier",
                     "attributes": {
-                      "value": "i"
+                      "name": "q"
                     },
                     "children": []
-                  },
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
                   {
-                    "kind": "Less",
-                    "attributes": {},
-                    "children": [
-                      {
-                        "kind": "L",
-                        "attributes": {
-                          "value": "L"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Length",
-                        "attributes": {},
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "L",
+                    "kind": "Identifier",
                     "attributes": {
                       "name": "L"
                     },
                     "children": []
                   },
                   {
-                    "kind": "Array",
+                    "kind": "Assign",
                     "attributes": {},
-                    "children": [
-                      {
-                        "kind": "i",
-                        "attributes": {
-                          "value": "i"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
                     "children": []
                   },
                   {
-                    "kind": "AdditiveExpression[-]",
-                    "attributes": {
-                      "operation": "-"
-                    },
+                    "kind": "New",
+                    "attributes": {},
                     "children": [
                       {
-                        "kind": "Length",
+                        "kind": "Array",
                         "attributes": {},
-                        "children": []
-                      },
-                      {
-                        "kind": "i",
-                        "attributes": {
-                          "value": "i"
-                        },
-                        "children": []
+                        "children": [
+                          {
+                            "kind": "int",
+                            "attributes": {
+                              "value": "10"
+                            },
+                            "children": []
+                          }
+                        ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
                   {
-                    "kind": "i",
+                    "kind": "Identifier",
                     "attributes": {
                       "name": "i"
                     },
@@ -278,632 +192,169 @@
                     "children": []
                   },
                   {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
-                    "children": [
-                      {
-                        "kind": "i",
-                        "attributes": {
-                          "value": "i"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[1]",
-                        "attributes": {
-                          "value": "1"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "q",
-                "attributes": {
-                  "name": "q"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "New",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "Class",
-                    "attributes": {
-                      "name": "Lazysort"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "q",
-                "attributes": {
-                  "value": "q"
-                },
-                "children": []
-              },
-              {
-                "kind": "Dot[quicksort]",
-                "attributes": {
-                  "name": "quicksort"
-                },
-                "children": [
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "d",
-                "attributes": {
-                  "name": "d"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "q",
-                "attributes": {
-                  "value": "q"
-                },
-                "children": []
-              },
-              {
-                "kind": "Dot[printL]",
-                "attributes": {
-                  "name": "printL"
-                },
-                "children": [
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
-                    "children": []
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Method",
-            "attributes": {},
-            "children": [
-              {
-                "kind": "PrimitiveType[boolean]",
-                "attributes": {
-                  "type": "boolean"
-                },
-                "children": []
-              },
-              {
-                "kind": "quicksort",
-                "attributes": {
-                  "name": "quicksort"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int[]]",
-                "attributes": {
-                  "type": "int[]"
-                },
-                "children": []
-              },
-              {
-                "kind": "L",
-                "attributes": {
-                  "name": "L"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[boolean]",
-                "attributes": {
-                  "type": "boolean"
-                },
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "name": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "rand",
-                "attributes": {
-                  "name": "rand"
-                },
-                "children": []
-              },
-              {
-                "kind": "rand",
-                "attributes": {
-                  "name": "rand"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "MathUtils",
-                "attributes": {
-                  "value": "MathUtils"
-                },
-                "children": []
-              },
-              {
-                "kind": "Dot[random]",
-                "attributes": {
-                  "name": "random"
-                },
-                "children": [
-                  {
-                    "kind": "Numeric[0]",
+                    "kind": "int",
                     "attributes": {
                       "value": "0"
                     },
                     "children": []
-                  },
-                  {
-                    "kind": "Numeric[5]",
-                    "attributes": {
-                      "value": "5"
-                    },
-                    "children": []
                   }
                 ]
               },
               {
-                "kind": "If",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Less",
+                "kind": "Statement",
                 "attributes": {},
                 "children": [
                   {
-                    "kind": "rand",
-                    "attributes": {
-                      "value": "rand"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Numeric[4]",
-                    "attributes": {
-                      "value": "4"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "This",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Dot[beLazy]",
-                "attributes": {
-                  "name": "beLazy"
-                },
-                "children": [
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "name": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Boolean[true]",
-                "attributes": {
-                  "value": "true"
-                },
-                "children": []
-              },
-              {
-                "kind": "Else",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "name": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Boolean[false]",
-                "attributes": {
-                  "value": "false"
-                },
-                "children": []
-              },
-              {
-                "kind": "If",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "value": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "name": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Not",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "lazy",
-                    "attributes": {
-                      "value": "lazy"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Else",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "name": "lazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "This",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Dot[quicksort]",
-                "attributes": {
-                  "name": "quicksort"
-                },
-                "children": [
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Numeric[0]",
-                    "attributes": {
-                      "value": "0"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "value": "L"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "AdditiveExpression[-]",
-                    "attributes": {
-                      "operation": "-"
-                    },
-                    "children": [
-                      {
-                        "kind": "Length",
-                        "attributes": {},
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[1]",
-                        "attributes": {
-                          "value": "1"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "Return",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "lazy",
-                "attributes": {
-                  "value": "lazy"
-                },
-                "children": []
-              }
-            ]
-          },
-          {
-            "kind": "Method",
-            "attributes": {},
-            "children": [
-              {
-                "kind": "PrimitiveType[boolean]",
-                "attributes": {
-                  "type": "boolean"
-                },
-                "children": []
-              },
-              {
-                "kind": "beLazy",
-                "attributes": {
-                  "name": "beLazy"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int[]]",
-                "attributes": {
-                  "type": "int[]"
-                },
-                "children": []
-              },
-              {
-                "kind": "L",
-                "attributes": {
-                  "name": "L"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "_allowedNameL",
-                "attributes": {
-                  "name": "_allowedNameL"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "$allowedNameI",
-                "attributes": {
-                  "name": "$allowedNameI"
-                },
-                "children": []
-              },
-              {
-                "kind": "PrimitiveType[int]",
-                "attributes": {
-                  "type": "int"
-                },
-                "children": []
-              },
-              {
-                "kind": "rand",
-                "attributes": {
-                  "name": "rand"
-                },
-                "children": []
-              },
-              {
-                "kind": "_allowedNameL",
-                "attributes": {
-                  "name": "_allowedNameL"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "L",
-                "attributes": {
-                  "value": "L"
-                },
-                "children": []
-              },
-              {
-                "kind": "Length",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "$allowedNameI",
-                "attributes": {
-                  "name": "$allowedNameI"
-                },
-                "children": []
-              },
-              {
-                "kind": "Assign",
-                "attributes": {},
-                "children": []
-              },
-              {
-                "kind": "Numeric[0]",
-                "attributes": {
-                  "value": "0"
-                },
-                "children": []
-              },
-              {
-                "kind": "While",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "Less",
+                    "kind": "While",
                     "attributes": {},
                     "children": [
                       {
-                        "kind": "$allowedNameI",
-                        "attributes": {
-                          "value": "$allowedNameI"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "MultiplicativeExpression",
-                        "attributes": {
-                          "operation": "/"
-                        },
+                        "kind": "Less",
+                        "attributes": {},
                         "children": [
                           {
-                            "kind": "_allowedNameL",
+                            "kind": "Identifier",
                             "attributes": {
-                              "value": "_allowedNameL"
+                              "name": "i"
                             },
                             "children": []
                           },
                           {
-                            "kind": "Numeric[2]",
-                            "attributes": {
-                              "value": "2"
-                            },
-                            "children": []
+                            "kind": "Dot",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Length",
+                                "attributes": {},
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "i"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "SubtractiveExpression",
+                                "attributes": {
+                                  "operation": "-"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Dot",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "Identifier",
+                                        "attributes": {
+                                          "name": "L"
+                                        },
+                                        "children": []
+                                      },
+                                      {
+                                        "kind": "Length",
+                                        "attributes": {},
+                                        "children": []
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "i"
+                                    },
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "i"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "AdditiveExpression",
+                                "attributes": {
+                                  "operation": "+"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "i"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "int",
+                                    "attributes": {
+                                      "value": "1"
+                                    },
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
                   {
-                    "kind": "L",
+                    "kind": "Identifier",
                     "attributes": {
-                      "name": "L"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Array",
-                    "attributes": {},
-                    "children": [
-                      {
-                        "kind": "$allowedNameI",
-                        "attributes": {
-                          "value": "$allowedNameI"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "MathUtils",
-                    "attributes": {
-                      "value": "MathUtils"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Dot[random]",
-                    "attributes": {
-                      "name": "random"
-                    },
-                    "children": [
-                      {
-                        "kind": "Numeric[0]",
-                        "attributes": {
-                          "value": "0"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[10]",
-                        "attributes": {
-                          "value": "10"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "$allowedNameI",
-                    "attributes": {
-                      "name": "$allowedNameI"
+                      "name": "q"
                     },
                     "children": []
                   },
@@ -913,22 +364,163 @@
                     "children": []
                   },
                   {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
+                    "kind": "New",
+                    "attributes": {},
                     "children": [
                       {
-                        "kind": "$allowedNameI",
+                        "kind": "ClassCall",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "Lazysort"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "q"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier",
                         "attributes": {
-                          "value": "$allowedNameI"
+                          "name": "quicksort"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Numeric[1]",
+                        "kind": "Args",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "VarDeclaration",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "d"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "q"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier",
                         "attributes": {
-                          "value": "1"
+                          "name": "printL"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Args",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "VarDeclaration",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "Boolean",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Identifier",
+                "attributes": {
+                  "name": "quicksort"
+                },
+                "children": []
+              },
+              {
+                "kind": "Args",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "VarDeclaration",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "int[]",
+                        "attributes": {},
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "name": "L"
                         },
                         "children": []
                       }
@@ -937,31 +529,47 @@
                 ]
               },
               {
-                "kind": "While",
+                "kind": "LocaVariableDeclaration",
                 "attributes": {},
                 "children": [
                   {
-                    "kind": "Less",
+                    "kind": "Boolean",
                     "attributes": {},
-                    "children": [
-                      {
-                        "kind": "$allowedNameI",
-                        "attributes": {
-                          "value": "$allowedNameI"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "_allowedNameL",
-                        "attributes": {
-                          "value": "_allowedNameL"
-                        },
-                        "children": []
-                      }
-                    ]
+                    "children": []
                   },
                   {
-                    "kind": "rand",
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "lazy"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "int",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "rand"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
                     "attributes": {
                       "name": "rand"
                     },
@@ -973,107 +581,368 @@
                     "children": []
                   },
                   {
-                    "kind": "MathUtils",
+                    "kind": "Identifier",
                     "attributes": {
-                      "value": "MathUtils"
+                      "name": "MathUtils"
                     },
                     "children": []
                   },
                   {
-                    "kind": "Dot[random]",
-                    "attributes": {
-                      "name": "random"
-                    },
-                    "children": [
-                      {
-                        "kind": "Numeric[0]",
-                        "attributes": {
-                          "value": "0"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Numeric[10]",
-                        "attributes": {
-                          "value": "10"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "L",
-                    "attributes": {
-                      "name": "L"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Array",
+                    "kind": "Dot",
                     "attributes": {},
                     "children": [
                       {
-                        "kind": "$allowedNameI",
+                        "kind": "Identifier",
                         "attributes": {
-                          "value": "$allowedNameI"
-                        },
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
-                    "children": [
-                      {
-                        "kind": "rand",
-                        "attributes": {
-                          "value": "rand"
+                          "name": "random"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Numeric[1]",
-                        "attributes": {
-                          "value": "1"
-                        },
-                        "children": []
+                        "kind": "Args",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "VarDeclaration",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "int",
+                                "attributes": {
+                                  "value": "0"
+                                },
+                                "children": []
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "VarDeclaration",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "int",
+                                "attributes": {
+                                  "value": "5"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
                   {
-                    "kind": "$allowedNameI",
-                    "attributes": {
-                      "name": "$allowedNameI"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Assign",
+                    "kind": "If",
                     "attributes": {},
                     "children": []
                   },
                   {
-                    "kind": "AdditiveExpression[+]",
-                    "attributes": {
-                      "operation": "+"
-                    },
+                    "kind": "Less",
+                    "attributes": {},
                     "children": [
                       {
-                        "kind": "$allowedNameI",
+                        "kind": "Identifier",
                         "attributes": {
-                          "value": "$allowedNameI"
+                          "name": "rand"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Numeric[1]",
+                        "kind": "int",
                         "attributes": {
-                          "value": "1"
+                          "value": "4"
                         },
                         "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Statement",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "This",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "Dot",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "beLazy"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Args",
+                                "attributes": {},
+                                "children": [
+                                  {
+                                    "kind": "VarDeclaration",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "Identifier",
+                                        "attributes": {
+                                          "name": "L"
+                                        },
+                                        "children": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "lazy"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Assign",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "Boolean",
+                            "attributes": {
+                              "value": "true"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Else",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Statement",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "lazy"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Assign",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "Boolean",
+                            "attributes": {
+                              "value": "false"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "If",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "lazy"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Statement",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "lazy"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Assign",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "Not",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "lazy"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Else",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Statement",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "lazy"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Assign",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "This",
+                            "attributes": {},
+                            "children": []
+                          },
+                          {
+                            "kind": "Dot",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "quicksort"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Args",
+                                "attributes": {},
+                                "children": [
+                                  {
+                                    "kind": "VarDeclaration",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "Identifier",
+                                        "attributes": {
+                                          "name": "L"
+                                        },
+                                        "children": []
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "VarDeclaration",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "int",
+                                        "attributes": {
+                                          "value": "0"
+                                        },
+                                        "children": []
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "VarDeclaration",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "SubtractiveExpression",
+                                        "attributes": {
+                                          "operation": "-"
+                                        },
+                                        "children": [
+                                          {
+                                            "kind": "Dot",
+                                            "attributes": {},
+                                            "children": [
+                                              {
+                                                "kind": "Identifier",
+                                                "attributes": {
+                                                  "name": "L"
+                                                },
+                                                "children": []
+                                              },
+                                              {
+                                                "kind": "Length",
+                                                "attributes": {},
+                                                "children": []
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "value": "1"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -1085,7 +954,541 @@
                 "children": []
               },
               {
-                "kind": "Boolean[true]",
+                "kind": "Identifier",
+                "attributes": {
+                  "name": "lazy"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {},
+            "children": [
+              {
+                "kind": "Boolean",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Identifier",
+                "attributes": {
+                  "name": "beLazy"
+                },
+                "children": []
+              },
+              {
+                "kind": "Args",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "VarDeclaration",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "int[]",
+                        "attributes": {},
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "name": "L"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "int",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "_allowedNameL"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "int",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "$allowedNameI"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocaVariableDeclaration",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "int",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "rand"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "_allowedNameL"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "Dot",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "name": "L"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Length",
+                        "attributes": {},
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "name": "$allowedNameI"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Assign",
+                    "attributes": {},
+                    "children": []
+                  },
+                  {
+                    "kind": "int",
+                    "attributes": {
+                      "value": "0"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "While",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Less",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "$allowedNameI"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "DivisionExpression",
+                            "attributes": {
+                              "operation": "/"
+                            },
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "_allowedNameL"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "int",
+                                "attributes": {
+                                  "value": "2"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "$allowedNameI"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "MathUtils"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Dot",
+                                "attributes": {},
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "random"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "Args",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "VarDeclaration",
+                                        "attributes": {},
+                                        "children": [
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "value": "0"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "VarDeclaration",
+                                        "attributes": {},
+                                        "children": [
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "value": "10"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "$allowedNameI"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "AdditiveExpression",
+                                "attributes": {
+                                  "operation": "+"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "$allowedNameI"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "int",
+                                    "attributes": {
+                                      "value": "1"
+                                    },
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {},
+                "children": [
+                  {
+                    "kind": "While",
+                    "attributes": {},
+                    "children": [
+                      {
+                        "kind": "Less",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "$allowedNameI"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "name": "_allowedNameL"
+                            },
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "Statement",
+                        "attributes": {},
+                        "children": [
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "rand"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "MathUtils"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Dot",
+                                "attributes": {},
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "random"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "Args",
+                                    "attributes": {},
+                                    "children": [
+                                      {
+                                        "kind": "VarDeclaration",
+                                        "attributes": {},
+                                        "children": [
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "value": "0"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "VarDeclaration",
+                                        "attributes": {},
+                                        "children": [
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "value": "10"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "L"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "$allowedNameI"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "AdditiveExpression",
+                                "attributes": {
+                                  "operation": "+"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "rand"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "int",
+                                    "attributes": {
+                                      "value": "1"
+                                    },
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "Statement",
+                            "attributes": {},
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "name": "$allowedNameI"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "Assign",
+                                "attributes": {},
+                                "children": []
+                              },
+                              {
+                                "kind": "AdditiveExpression",
+                                "attributes": {
+                                  "operation": "+"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "name": "$allowedNameI"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "int",
+                                    "attributes": {
+                                      "value": "1"
+                                    },
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Return",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "kind": "Boolean",
                 "attributes": {
                   "value": "true"
                 },

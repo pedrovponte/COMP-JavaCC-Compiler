@@ -8,6 +8,7 @@ import java.io.StringReader;
 
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParserResult;
+import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.specs.util.SpecsIo;
 
 
@@ -22,13 +23,15 @@ public class Tests {
     @Test
     public void testFindMaximum() {
         String jmmCode = SpecsIo.getResource("fixtures/public/FindMaximum.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
     }
 
     @Test
     public void testLazysort() {
         String jmmCode = SpecsIo.getResource("fixtures/public/Lazysort.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
     }
 
     @Test
@@ -72,7 +75,7 @@ public class Tests {
     @Test
     public void testFail_ArrIndexNotInt() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/arr_index_not_int.jmm");
-        var res = TestUtils.analyse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
