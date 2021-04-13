@@ -43,19 +43,24 @@ public class AnalysisStage implements JmmAnalysis {
         ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
         System.out.println(visitorImport.visit(node, ""));
 
-        System.out.println("SYMBOL TABLE: " + symbolTable.getImports());
-
         System.out.println("Class Visitor");
         ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
         System.out.println(visitorClass.visit(node, ""));
 
-        System.out.println("SYMBOL TABLE CLASS: " + symbolTable.getClassName());
-        System.out.println("SYMBOL TABLE SUPER: " + symbolTable.getSuper());
-        System.out.println("SYMBOL TABLE MAIN: " + symbolTable.getMethods());
-//        System.out.println("SYMBOL TABLE PARAMETERS QUICKSORT: " + symbolTable.getParameters("quicksort"));
-//        System.out.println("SYMBOL TABLE PARAMETERS BELAZY: " + symbolTable.getParameters("beLazy"));
+//        System.out.println("SYMBOL TABLE IMPORTS: " + symbolTable.getImports());
+//        System.out.println("SYMBOL TABLE CLASS: " + symbolTable.getClassName());
+//        System.out.println("SYMBOL TABLE SUPER: " + symbolTable.getSuper());
+//        System.out.println("SYMBOL TABLE FIELDS: " + symbolTable.getFields());
+//        System.out.println("SYMBOL TABLE METHODS: " + symbolTable.getMethods());
+
 //        System.out.println("SYMBOL TABLE PARAMETERS MAIN: " + symbolTable.getParameters("main"));
-        System.out.println("SYMBOL TABLE FIELDS: " + symbolTable.getFields());
+//        System.out.println("SYMBOL TABLE LOCAL VARS MAIN: " + symbolTable.getLocalVariables("main"));
+//        System.out.println("SYMBOL TABLE PARAMETERS QUICKSORT: " + symbolTable.getParameters("quicksort"));
+//        System.out.println("SYMBOL TABLE LOCAL VARS QUICKSORT: " + symbolTable.getLocalVariables("quicksort"));
+//        System.out.println("SYMBOL TABLE PARAMETERS BELAZY: " + symbolTable.getParameters("beLazy"));
+//        System.out.println("SYMBOL TABLE LOCAL VARS BELAZY: " + symbolTable.getLocalVariables("beLazy"));
+
+
 
 
         /*System.out.println("Dump tree with Visitor where you control tree traversal");
@@ -79,7 +84,7 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // No Symbol Table being calculated yet
-        return new JmmSemanticsResult(parserResult, null, new ArrayList<>());
+        return new JmmSemanticsResult(parserResult, symbolTable, new ArrayList<>());
 
     }
 

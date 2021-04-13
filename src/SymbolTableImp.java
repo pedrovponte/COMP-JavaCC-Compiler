@@ -130,7 +130,7 @@ public class SymbolTableImp implements SymbolTable {
         else {
             ArrayList<Symbol> a = new ArrayList<Symbol>();
             a.add(symbol);
-            this.parameters.put(methodName, a);
+            this.localVariables.put(methodName, a);
         }
     }
 }

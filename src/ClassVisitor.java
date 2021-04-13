@@ -35,6 +35,25 @@ public class ClassVisitor extends AJmmVisitor<String, String> {
                 symbolTable.addMethod(new Type("void", false), "main");
                 symbolTable.addParameters("main", child.getChildren().get(0).get("name"), new Type("String", true));
                 //return space + "MAINNAME: " + children.get(i).getChildren().get(0).get("name") + "\n";
+
+                for(int j = 1; j < child.getNumChildren(); j++) {
+                    if(child.getChildren().get(j).getKind().equals("LocalVariableDeclaration")) {
+                        JmmNode localVar = child.getChildren().get(j);
+
+                        if(localVar.getChildren().get(0).getKind().equals("Identifier")) {
+                            symbolTable.addLocalVariables("main", localVar.getChildren().get(1).get("name"), new Type(localVar.getChildren().get(0).get("name"), false));
+                        }
+                        else {
+                            String nameVar = localVar.getChildren().get(0).getKind();
+                            if(nameVar.equals("int[]")) {
+                                symbolTable.addLocalVariables("main", localVar.getChildren().get(1).get("name"), new Type("int", true));
+                            }
+                            else {
+                                symbolTable.addLocalVariables("main", localVar.getChildren().get(1).get("name"), new Type(nameVar, false));
+                            }
+                        }
+                    }
+                }
             }
             if(child.getKind().equals("VarDeclaration")) {
                 if(child.getChildren().get(0).getKind().equals("Identifier")) {
@@ -86,7 +105,20 @@ public class ClassVisitor extends AJmmVisitor<String, String> {
 
                     }
                     if(child.getChildren().get(j).getKind().equals("LocalVariableDeclaration")) {
+                        JmmNode localVar = child.getChildren().get(j);
 
+                        if(localVar.getChildren().get(0).getKind().equals("Identifier")) {
+                            symbolTable.addLocalVariables(child.getChildren().get(1).get("name"), localVar.getChildren().get(1).get("name"), new Type(localVar.getChildren().get(0).get("name"), false));
+                        }
+                        else {
+                            String nameVar = localVar.getChildren().get(0).getKind();
+                            if(nameVar.equals("int[]")) {
+                                symbolTable.addLocalVariables(child.getChildren().get(1).get("name"), localVar.getChildren().get(1).get("name"), new Type("int", true));
+                            }
+                            else {
+                                symbolTable.addLocalVariables(child.getChildren().get(1).get("name"), localVar.getChildren().get(1).get("name"), new Type(nameVar, false));
+                            }
+                        }
                     }
                 }
             }
