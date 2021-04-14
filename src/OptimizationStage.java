@@ -3,6 +3,7 @@ import java.util.List;
 
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.ollir.JmmOptimization;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
@@ -26,7 +27,11 @@ public class OptimizationStage implements JmmOptimization {
     @Override
     public OllirResult toOllir(JmmSemanticsResult semanticsResult) {
 
-        JmmNode node = semanticsResult.getRootNode();
+        SimpleNode node = (SimpleNode) semanticsResult.getRootNode();
+        SymbolTable table = semanticsResult.getSymbolTable();
+
+        var emitter = new OllirEmitter(table);
+        emitter.generate(node);
 
         // Convert the AST to a String containing the equivalent OLLIR code
         String ollirCode = ""; // Convert node ...
