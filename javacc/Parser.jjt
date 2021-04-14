@@ -186,10 +186,8 @@ void VarDeclaration() : {}
 
 void MethodDeclaration() #void : {}
 {
-    LOOKAHEAD(2)
-    Method()
-    |
-    Main()
+    <PUBLIC>
+    (Method() | Main())
 }
 
 void Identifier() #Identifier : { Token t; }
@@ -199,7 +197,6 @@ void Identifier() #Identifier : { Token t; }
 
 void Method() : {}
 {
-    <PUBLIC>
     Type()
     Identifier()
     <LPAREN>
@@ -223,7 +220,6 @@ void Args() : {}
 
 void Main() : {}
 {
-    <PUBLIC>
     <STATIC>
     <VOID>
     <MAIN>
@@ -400,7 +396,7 @@ void AllocationExpression() #void : {Token t;}
     )
 }
 
-void InsideArray() #void : {}
+void InsideArray() : {}
 {
     <LBRACKET> Expression() <RBRACKET>
 }

@@ -58,6 +58,7 @@ public interface ParserTreeConstants {
     public int JJTARGS = 56;
     public int JJTSUBTRATIVEEXPRESSION = 57;
     public int JJTDIVISIONEXPRESSION = 58;
+    public int JJTINSIDEARRAY = 59;
 
     public String[] jjtNodeName = {
         "ClassCall",
@@ -118,6 +119,7 @@ public interface ParserTreeConstants {
         "Class",
         "Args",
         "SubtractiveExpression",
-        "DivisionExpression"
+        "DivisionExpression",
+        "InsideArray"
     };
 }

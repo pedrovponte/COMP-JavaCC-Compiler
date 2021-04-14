@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmNode;
@@ -60,7 +61,9 @@ public class AnalysisStage implements JmmAnalysis {
 //        System.out.println("SYMBOL TABLE PARAMETERS BELAZY: " + symbolTable.getParameters("beLazy"));
 //        System.out.println("SYMBOL TABLE LOCAL VARS BELAZY: " + symbolTable.getLocalVariables("beLazy"));
 
-
+        List<Report> reports = new ArrayList<>();
+        LengthVisitor lengthVisitor = new LengthVisitor(symbolTable);
+        lengthVisitor.visit(node, reports);
 
 
         /*System.out.println("Dump tree with Visitor where you control tree traversal");
@@ -84,7 +87,7 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // No Symbol Table being calculated yet
-        return new JmmSemanticsResult(parserResult, symbolTable, new ArrayList<>());
+        return new JmmSemanticsResult(parserResult, symbolTable, reports);
 
     }
 

@@ -80,59 +80,77 @@ public class Tests {
         TestUtils.mustFail(res.getReports());
     }
 
-    /*@Test
+    @Test
     public void testFail_ArrSizeNotInt() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/arr_size_not_int.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_BadArguments() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/badArguments.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_BinopIncomp() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/bino_incomp.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_FuncNotFound() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/funcNotFound.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_SimpleLength() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/simple_length.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_VarExpIncomp() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/var_exp_incomp.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_LitIncomp() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/var_lit_incomp.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_VarUndef() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/var_undef.jmm");
-        TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
     }
 
     @Test
     public void testFail_VarNotInit() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/varNotInit.jmm");
-        TestUtils.parse(jmmCode);
-    }*/
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
+    }
 
     /*Fail syntactical*/
 

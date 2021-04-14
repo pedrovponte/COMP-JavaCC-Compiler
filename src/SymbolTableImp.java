@@ -17,8 +17,8 @@ public class SymbolTableImp implements SymbolTable {
 
     public SymbolTableImp() {
         this.imports = new ArrayList<String>();
-        this.className = " ";
-        this.superName = " ";
+        this.className = null;
+        this.superName = null;
         this.fields = new ArrayList<Symbol>();
         this.methods = new ArrayList<Symbol>();
         this.parameters = new HashMap<String, ArrayList<Symbol>>(); // methodName -> array with parameters
