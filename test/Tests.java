@@ -98,7 +98,7 @@ public class Tests {
 
     @Test
     public void testFail_BinopIncomp() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/bino_incomp.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/binop_incomp.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
@@ -176,7 +176,7 @@ public class Tests {
     public void testFail_LengthError() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/LengthError.jmm");
         var res = TestUtils.parse(jmmCode);
-        //System.out.println("Report: " + res.getReports());
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
 
@@ -184,7 +184,7 @@ public class Tests {
     public void testFail_MissingRightPar() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MissingRightPar.jmm");
         var res = TestUtils.parse(jmmCode);
-        //System.out.println("Report: " + res.getReports());
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
 
@@ -192,7 +192,7 @@ public class Tests {
     public void testFail_MultipleSequential() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/MultipleSequential.jmm");
         var res = TestUtils.parse(jmmCode);
-        //System.out.println("Report: " + res.getReports());
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
 
@@ -200,7 +200,7 @@ public class Tests {
     public void testFail_NestedLoop() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
         var res = TestUtils.parse(jmmCode);
-        //System.out.println("Report: " + res.getReports());
+        System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
 

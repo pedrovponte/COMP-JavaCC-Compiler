@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 // ----- Type verification -----
-// operaçoes com o mesmo tipo de operandos (int + boolean -> erro)
-// nao e possivel utilizar arrays diretamente para operaçoes aritmeticas (array1 + array2)
-// verificar se um array access e de facto feito sobre um array (1[10] nao e permitido)
-// verificar se o indice do array access é um inteiro (e.g. a[true] não é permitido)
+// operaçoes com o mesmo tipo de operandos (int + boolean -> erro) (done)
+// nao e possivel utilizar arrays diretamente para operaçoes aritmeticas (array1 + array2) (done)
+// verificar se um array access e de facto feito sobre um array (1[10] nao e permitido) (done)
+// verificar se o indice do array access é um inteiro (e.g. a[true] não é permitido) (done)
 // verificar se valor do assignee é igual ao do assigned (a_int = b_boolean não é permitido!)
 // verificar se operação booleana (&&, < ou !) é efetuada só com booleanos
 // verificar se conditional expressions (if e while) resulta num booleano
@@ -25,28 +25,22 @@ import java.util.List;
 //	verificar se o tipo dos parâmetros coincide com o tipo dos argumentos
 
 
-public class LengthVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
+public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     private SymbolTableImp symbolTable;
-    public LengthVisitor(SymbolTableImp symbolTable) {
+    public SemanticVisitor(SymbolTableImp symbolTable) {
         this.symbolTable = symbolTable;
         addVisit("Dot", this::visitDot);
         addVisit("InsideArray", this::visitInsideArray);
+        addVisit("AdditiveExpression", this::visitArithmetic);
+        addVisit("MultiplicativeExpression", this::visitArithmetic);
+        addVisit("SubtractiveExpression", this::visitArithmetic);
+        addVisit("DivisionExpression", this::visitArithmetic);
     }
 
     private Boolean visitDot(JmmNode node, List<Report> reports) {
-        String methodName = " ";
+        String methodName = null;
         if(node.getChildren().get(1).getKind().equals("Length")) {
-            if(node.getAncestor("Method").isPresent()) {
-                if(node.getChildren().get(0).getKind().equals("Identifier")) {
-                    methodName = node.getChildren().get(1).get("name");
-                }
-                else {
-                    methodName = node.getChildren().get(1).get("name");
-                }
-            }
-            else {
-                methodName = "main";
-            }
+            methodName = getNodeMethod(node);
             if(node.getChildren().get(0).getKind().equals("This")) {
                 System.out.println("ANCESTOR: " + (node.getAncestor("Method").isPresent() || node.getAncestor("Main").isPresent()));
                 if ((symbolTable.getSuper() == null || symbolTable.getSuper().isEmpty()) && !symbolTable.getMethods().contains(methodName)) { // falta o caso de o metodo nao tar declarado
@@ -73,5 +67,67 @@ public class LengthVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Array indices must be integer"));
         }
         return true;
+    }
+
+    // caso tenha this antes?
+    private Boolean visitArithmetic(JmmNode node, List<Report> reports) {
+        String methodName = null;
+        System.out.println("ARITHMETIC: " + node.getChildren().get(0).getKind());
+        methodName = getNodeMethod(node);
+        JmmNode firstChild = node.getChildren().get(0);
+        JmmNode secondChild = node.getChildren().get(1);
+
+        List<Symbol> allVariables = new ArrayList<>();
+        List<String> allNames = new ArrayList<>();
+        allVariables.addAll(symbolTable.getParameters(methodName));
+        allVariables.addAll(symbolTable.getLocalVariables(methodName));
+        allVariables.addAll(symbolTable.getFields());
+
+        for(int i = 0; i < allVariables.size(); i++) {
+            allNames.add(allVariables.get(i).getName());
+        }
+
+        if(firstChild.getKind().equals("Identifier")) {
+            if(allNames.contains(firstChild.get("name"))) {
+                int idx = allNames.indexOf(firstChild.get("name"));
+                if(!allVariables.get(idx).getType().equals("int")) {
+                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+                }
+            }
+        }
+
+        else if(secondChild.getKind().equals("Identifier")) {
+            if(allNames.contains(secondChild.get("name"))) {
+                int idx = allNames.indexOf(secondChild.get("name"));
+                if(!allVariables.get(idx).getType().equals("int")) {
+                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+                }
+            }
+        }
+
+        else if(!firstChild.getKind().equals("int") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+        }
+        else if(!secondChild.getKind().equals("int") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+        }
+
+        return true;
+    }
+
+    public String getNodeMethod(JmmNode node) {
+        String methodName = null;
+        if(node.getAncestor("Method").isPresent()) {
+            if(node.getChildren().get(0).getKind().equals("Identifier")) {
+                methodName = node.getChildren().get(1).get("name");
+            }
+            else {
+                methodName = node.getChildren().get(1).get("name");
+            }
+        }
+        else {
+            methodName = "main";
+        }
+        return methodName;
     }
 }
