@@ -39,7 +39,7 @@ public interface ParserTreeConstants {
     public int JJTARRAY = 37;
     public int JJTSTATEMENT = 38;
     public int JJTIFSTATEMENT = 39;
-    public int JJTIF = 40;
+    public int JJTIFCONDITION = 40;
     public int JJTELSE = 41;
     public int JJTWHILE = 42;
     public int JJTCONDITION = 43;
@@ -59,6 +59,8 @@ public interface ParserTreeConstants {
     public int JJTSUBTRATIVEEXPRESSION = 57;
     public int JJTDIVISIONEXPRESSION = 58;
     public int JJTINSIDEARRAY = 59;
+    public int JJTIFBODY = 60;
+    public int JJTELSEBODY = 61;
 
     public String[] jjtNodeName = {
         "ClassCall",
@@ -120,6 +122,8 @@ public interface ParserTreeConstants {
         "Args",
         "SubtractiveExpression",
         "DivisionExpression",
-        "InsideArray"
+        "InsideArray",
+        "IfBody",
+        "ElseBody"
     };
 }

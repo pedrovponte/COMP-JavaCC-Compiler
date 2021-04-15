@@ -15,7 +15,7 @@ import java.util.List;
 // verificar se o indice do array access é um inteiro (e.g. a[true] não é permitido) (done)
 // verificar se valor do assignee é igual ao do assigned (a_int = b_boolean não é permitido!)
 // verificar se operação booleana (&&, < ou !) é efetuada só com booleanos
-// verificar se conditional expressions (if e while) resulta num booleano
+// verificar se conditional expressions (if e while) resulta num booleano (done)
 
 // ----- Method verification -----
 // verificar se o "target" do método existe, e se este contém o método (e.g. a.foo, ver se 'a' existe e se tem um método 'foo')
@@ -35,6 +35,9 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         addVisit("MultiplicativeExpression", this::visitArithmetic);
         addVisit("SubtractiveExpression", this::visitArithmetic);
         addVisit("DivisionExpression", this::visitArithmetic);
+        //addVisit("Assign", this::visitAssign);
+        addVisit("If", this::visitConditional);
+        addVisit("While", this::visitConditional);
     }
 
     private Boolean visitDot(JmmNode node, List<Report> reports) {
@@ -71,45 +74,69 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
 
     // caso tenha this antes?
     private Boolean visitArithmetic(JmmNode node, List<Report> reports) {
-        String methodName = null;
+        String methodName = getNodeMethod(node);
         System.out.println("ARITHMETIC: " + node.getChildren().get(0).getKind());
-        methodName = getNodeMethod(node);
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
         List<Symbol> allVariables = new ArrayList<>();
         List<String> allNames = new ArrayList<>();
-        allVariables.addAll(symbolTable.getParameters(methodName));
-        allVariables.addAll(symbolTable.getLocalVariables(methodName));
-        allVariables.addAll(symbolTable.getFields());
+        if(symbolTable.getParameters(methodName) != null && !symbolTable.getParameters(methodName).isEmpty()) {
+            allVariables.addAll(symbolTable.getParameters(methodName));
+        }
+        if(symbolTable.getLocalVariables(methodName) != null && !symbolTable.getLocalVariables(methodName).isEmpty()) {
+            allVariables.addAll(symbolTable.getLocalVariables(methodName));
+        }
+
+        if(symbolTable.getFields() != null && !symbolTable.getFields().isEmpty()) {
+            allVariables.addAll(symbolTable.getFields());
+        }
 
         for(int i = 0; i < allVariables.size(); i++) {
             allNames.add(allVariables.get(i).getName());
         }
 
+        String identifierType = " ";
         if(firstChild.getKind().equals("Identifier")) {
             if(allNames.contains(firstChild.get("name"))) {
                 int idx = allNames.indexOf(firstChild.get("name"));
-                if(!allVariables.get(idx).getType().equals("int")) {
-                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Binary operations can only be applied to Integer type variables"));
-                }
+                identifierType = allVariables.get(idx).getType().getName();
             }
         }
 
-        else if(secondChild.getKind().equals("Identifier")) {
+        if(secondChild.getKind().equals("Identifier")) {
             if(allNames.contains(secondChild.get("name"))) {
                 int idx = allNames.indexOf(secondChild.get("name"));
-                if(!allVariables.get(idx).getType().equals("int")) {
-                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Binary operations can only be applied to Integer type variables"));
-                }
+                identifierType = allVariables.get(idx).getType().getName();
             }
         }
 
-        else if(!firstChild.getKind().equals("int") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
+        if(!identifierType.equals("int") && !firstChild.getKind().equals("int") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
+            System.out.println("Add report");
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Binary operations can only be applied to Integer type variables"));
         }
-        else if(!secondChild.getKind().equals("int") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
+        else if(!identifierType.equals("int") && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
+            System.out.println("Add report");
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Binary operations can only be applied to Integer type variables"));
+        }
+
+        return true;
+    }
+
+    private Boolean visitAssign(JmmNode node, List<Report> reports) {
+        System.out.println("Assign");
+        String methodName = getNodeMethod(node);
+
+
+        return true;
+    }
+
+    private Boolean visitConditional(JmmNode node, List<Report> reports) {
+        System.out.println("Conditional: " + node.getKind());
+
+        if(!node.getChildren().get(0).getKind().equals("boolean") && !node.getChildren().get(0).getKind().equals("And") && !node.getChildren().get(0).getKind().equals("Less") && !node.getChildren().get(0).getKind().equals("Not")) {
+            System.out.println("NOT BOOLEAN");
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Conditional expressions (If and While) have to result in a boolean type"));
         }
 
         return true;
@@ -117,13 +144,11 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
 
     public String getNodeMethod(JmmNode node) {
         String methodName = null;
+        System.out.println("NODE: " + node);
         if(node.getAncestor("Method").isPresent()) {
-            if(node.getChildren().get(0).getKind().equals("Identifier")) {
-                methodName = node.getChildren().get(1).get("name");
-            }
-            else {
-                methodName = node.getChildren().get(1).get("name");
-            }
+            JmmNode methodNode = node.getAncestor("Method").get();
+            methodName = methodNode.getChildren().get(1).get("name");
+            System.out.println("METHOD NAME: " + methodName);
         }
         else {
             methodName = "main";

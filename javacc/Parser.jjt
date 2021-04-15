@@ -424,8 +424,8 @@ void Statement() : {}
 
 void IfStatement() #void : {Token t, s;}
 {
-    t=<IF> {jjtThis.value = t.image;} #If <LPAREN> Expression() <RPAREN> Statement()
-    s=<ELSE> {jjtThis.value = s.image;} #Else Statement()
+    <IF> <LPAREN> (Expression()) #IfCondition <RPAREN> (Statement() #IfBody)
+    <ELSE> (Statement() #ElseBody)
 }
 
 void WhileStatement() #While : {Token t;}
