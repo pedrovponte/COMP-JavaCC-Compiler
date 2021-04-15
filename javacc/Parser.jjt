@@ -2,6 +2,7 @@ options
 {
     LOOKAHEAD = 1;
     MULTI = true;
+    NODE_SCOPE_HOOK=true;
 }
 
 PARSER_BEGIN(Parser)
@@ -15,6 +16,14 @@ public class Parser {
 
     int errors = 0;
     ArrayList<Report> syntacticErrors =  new ArrayList<Report>();
+
+    void jjtreeOpenNodeScope(Node n) {
+        ((SimpleNode)n).put("line", Integer.toString(getToken(1).beginLine));
+        ((SimpleNode)n).put("col", Integer.toString(getToken(1).beginColumn));
+    }
+
+    void jjtreeCloseNodeScope(Node n) {
+    }
 
     ArrayList<Report> getSyntacticErrors() {
         return syntacticErrors;
@@ -408,10 +417,7 @@ void Statement() : {}
     WhileStatement()
     |
     ( LOOKAHEAD(2)
-        IdentifierStatement()
-        |
-        Expression() <SEMICOLON>
-    )
+        IdentifierStatement() | Expression() ) <SEMICOLON>
     |
     <LBRACE> (Statement())* <RBRACE>
 }
@@ -437,14 +443,7 @@ void WhileCondition() #void : {}
     }
 }
 
-void IdentifierStatement() #void : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
+void IdentifierStatement() #Assign : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
-    Identifier() AfterIdentifier() <SEMICOLON>
-}
-
-void AfterIdentifier() #void : {}
-{
-    <ASSIGN> #Assign Expression()
-    |
-    InsideArray() <ASSIGN> #Assign Expression()
+    (Identifier() ( InsideArray() ) ?) <ASSIGN> Expression()
 }

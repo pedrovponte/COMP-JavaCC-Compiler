@@ -45,16 +45,16 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 System.out.println("ANCESTOR: " + (node.getAncestor("Method").isPresent() || node.getAncestor("Main").isPresent()));
                 if ((symbolTable.getSuper() == null || symbolTable.getSuper().isEmpty()) && !symbolTable.getMethods().contains(methodName)) { // falta o caso de o metodo nao tar declarado
                     System.out.println("METHOD NOT DECLARED OR EXTENDED");
-                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Builtin \"length\" does not exist over simple types."));
+                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Builtin \"length\" does not exist over simple types."));
                 }
             }
             else if(!node.getChildren().get(0).getKind().equals("Identifier")) {
                 System.out.println("NOT IDENTIFIER");
-                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Builtin \"length\" does not exist over simple types."));
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Builtin \"length\" does not exist over simple types."));
             }
             else if(node.getChildren().get(0).getKind().equals("Identifier") && (!symbolTable.getImports().contains(node.getChildren().get(0).get("name")) && !symbolTable.getLocalVariables(methodName).contains(node.getChildren().get(0).get("name")) || !symbolTable.getParameters(methodName).contains(node.getChildren().get(0).get("name")))) {
                 System.out.println("NOT DECLARED");
-                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Variable " + node.getChildren().get(0).get("name") + " not declared."));
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Variable " + node.getChildren().get(0).get("name") + " not declared."));
             }
         }
         return true;
@@ -64,7 +64,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         System.out.println("INSIDE ARRAY: " + node.getChildren().get(0).getKind());
         if(!node.getChildren().get(0).getKind().equals("int") && !node.getChildren().get(0).getKind().equals("AdditiveExpression") && !node.getChildren().get(0).getKind().equals("SubtractiveExpression") && !node.getChildren().get(0).getKind().equals("MultiplicativeExpression") && !node.getChildren().get(0).getKind().equals("DivisionExpression")) {
             System.out.println("NOT INT");
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Array indices must be integer"));
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Array indices must be integer"));
         }
         return true;
     }
@@ -91,7 +91,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             if(allNames.contains(firstChild.get("name"))) {
                 int idx = allNames.indexOf(firstChild.get("name"));
                 if(!allVariables.get(idx).getType().equals("int")) {
-                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Binary operations can only be applied to Integer type variables"));
                 }
             }
         }
@@ -100,16 +100,16 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             if(allNames.contains(secondChild.get("name"))) {
                 int idx = allNames.indexOf(secondChild.get("name"));
                 if(!allVariables.get(idx).getType().equals("int")) {
-                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+                    reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Binary operations can only be applied to Integer type variables"));
                 }
             }
         }
 
         else if(!firstChild.getKind().equals("int") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Binary operations can only be applied to Integer type variables"));
         }
         else if(!secondChild.getKind().equals("int") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, 0, "Binary operations can only be applied to Integer type variables"));
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Binary operations can only be applied to Integer type variables"));
         }
 
         return true;
