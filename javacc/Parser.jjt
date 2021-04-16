@@ -338,7 +338,7 @@ void UnaryExpressionNotPlusMinus() #void : {}
 
 void PrimaryExpression() #void : {}
 {
-    PrimaryPrefix() (PrimarySuffix())?
+    PrimaryPrefix() (PrimarySuffix() #TwoPartExpression(2))?
 }
 
 void PrimaryPrefix() #void : {}
@@ -359,13 +359,23 @@ void PrimarySuffix() #void : {}
     DotExpression()
 }
 
-void DotExpression() #void : {}
+/*void DotExpression() #void : {}
 {
     <DOT>
     (
         (<LENGTH> #Length) #Dot(2)
         |
         (Identifier() <LPAREN> (Args())? <RPAREN>) #Dot(2)
+    )
+}*/
+
+void DotExpression() : {}
+{
+    <DOT>
+    (
+        <LENGTH> #Length
+        |
+        (Identifier() <LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN>) #MethodCall
     )
 }
 
