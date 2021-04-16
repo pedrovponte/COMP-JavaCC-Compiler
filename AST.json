@@ -1,15 +1,23 @@
 {
   "rootNode": {
     "kind": "Program",
-    "attributes": {},
+    "attributes": {
+      "col": "1",
+      "line": "1"
+    },
     "children": [
       {
         "kind": "Import",
-        "attributes": {},
+        "attributes": {
+          "col": "1",
+          "line": "1"
+        },
         "children": [
           {
             "kind": "Identifier",
             "attributes": {
+              "col": "8",
+              "line": "1",
               "name": "ioPlus"
             },
             "children": []
@@ -18,37 +26,55 @@
       },
       {
         "kind": "Class",
-        "attributes": {},
+        "attributes": {
+          "col": "1",
+          "line": "2"
+        },
         "children": [
           {
             "kind": "Identifier",
             "attributes": {
+              "col": "7",
+              "line": "2",
               "name": "HelloWorld"
             },
             "children": []
           },
           {
             "kind": "Main",
-            "attributes": {},
+            "attributes": {
+              "col": "12",
+              "line": "3"
+            },
             "children": [
               {
                 "kind": "Identifier",
                 "attributes": {
+                  "col": "38",
+                  "line": "3",
                   "name": "args"
                 },
                 "children": []
               },
               {
                 "kind": "Statement",
-                "attributes": {},
+                "attributes": {
+                  "col": "9",
+                  "line": "4"
+                },
                 "children": [
                   {
                     "kind": "Dot",
-                    "attributes": {},
+                    "attributes": {
+                      "col": "16",
+                      "line": "4"
+                    },
                     "children": [
                       {
                         "kind": "Identifier",
                         "attributes": {
+                          "col": "9",
+                          "line": "4",
                           "name": "ioPlus"
                         },
                         "children": []
@@ -56,6 +82,8 @@
                       {
                         "kind": "Identifier",
                         "attributes": {
+                          "col": "16",
+                          "line": "4",
                           "name": "printHelloWorld"
                         },
                         "children": []

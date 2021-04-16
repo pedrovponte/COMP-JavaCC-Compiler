@@ -2,6 +2,7 @@ options
 {
     LOOKAHEAD = 1;
     MULTI = true;
+    NODE_SCOPE_HOOK=true;
 }
 
 PARSER_BEGIN(Parser)
@@ -15,6 +16,14 @@ public class Parser {
 
     int errors = 0;
     ArrayList<Report> syntacticErrors =  new ArrayList<Report>();
+
+    void jjtreeOpenNodeScope(Node n) {
+        ((SimpleNode)n).put("line", Integer.toString(getToken(1).beginLine));
+        ((SimpleNode)n).put("col", Integer.toString(getToken(1).beginColumn));
+    }
+
+    void jjtreeCloseNodeScope(Node n) {
+    }
 
     ArrayList<Report> getSyntacticErrors() {
         return syntacticErrors;
@@ -186,10 +195,8 @@ void VarDeclaration() : {}
 
 void MethodDeclaration() #void : {}
 {
-    LOOKAHEAD(2)
-    Method()
-    |
-    Main()
+    <PUBLIC>
+    (Method() | Main())
 }
 
 void Identifier() #Identifier : { Token t; }
@@ -199,7 +206,6 @@ void Identifier() #Identifier : { Token t; }
 
 void Method() : {}
 {
-    <PUBLIC>
     Type()
     Identifier()
     <LPAREN>
@@ -223,7 +229,6 @@ void Args() : {}
 
 void Main() : {}
 {
-    <PUBLIC>
     <STATIC>
     <VOID>
     <MAIN>
@@ -400,7 +405,7 @@ void AllocationExpression() #void : {Token t;}
     )
 }
 
-void InsideArray() #void : {}
+void InsideArray() : {}
 {
     <LBRACKET> Expression() <RBRACKET>
 }
@@ -412,18 +417,15 @@ void Statement() : {}
     WhileStatement()
     |
     ( LOOKAHEAD(2)
-        IdentifierStatement()
-        |
-        Expression() <SEMICOLON>
-    )
+        IdentifierStatement() | Expression() ) <SEMICOLON>
     |
     <LBRACE> (Statement())* <RBRACE>
 }
 
 void IfStatement() #void : {Token t, s;}
 {
-    t=<IF> {jjtThis.value = t.image;} #If <LPAREN> Expression() <RPAREN> Statement()
-    s=<ELSE> {jjtThis.value = s.image;} #Else Statement()
+    <IF> <LPAREN> (Expression()) #IfCondition <RPAREN> (Statement() #IfBody)
+    <ELSE> (Statement() #ElseBody)
 }
 
 void WhileStatement() #While : {Token t;}
@@ -441,14 +443,7 @@ void WhileCondition() #void : {}
     }
 }
 
-void IdentifierStatement() #void : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
+void IdentifierStatement() #Assign : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
-    Identifier() AfterIdentifier() <SEMICOLON>
-}
-
-void AfterIdentifier() #void : {}
-{
-    <ASSIGN> #Assign Expression()
-    |
-    InsideArray() <ASSIGN> #Assign Expression()
+    (Identifier() ( InsideArray() ) ?) <ASSIGN> Expression()
 }

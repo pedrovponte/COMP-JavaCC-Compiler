@@ -16,13 +16,13 @@ public class SymbolTableImp implements SymbolTable {
     private HashMap<String, ArrayList<Symbol>> localVariables;
 
     public SymbolTableImp() {
-        this.imports = new ArrayList<String>();
-        this.className = " ";
-        this.superName = " ";
-        this.fields = new ArrayList<Symbol>();
-        this.methods = new ArrayList<Symbol>();
-        this.parameters = new HashMap<String, ArrayList<Symbol>>(); // methodName -> array with parameters
-        this.localVariables = new HashMap<String, ArrayList<Symbol>>(); // methodName -> array with parameters
+        this.imports = new ArrayList<>();
+        this.className = null;
+        this.superName = null;
+        this.fields = new ArrayList<>();
+        this.methods = new ArrayList<>();
+        this.parameters = new HashMap<>(); // methodName -> array with parameters
+        this.localVariables = new HashMap<>(); // methodName -> array with parameters
     }
 
     @Override
