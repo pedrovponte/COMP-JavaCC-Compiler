@@ -27,14 +27,17 @@ public class OptimizationStage implements JmmOptimization {
     @Override
     public OllirResult toOllir(JmmSemanticsResult semanticsResult) {
 
-        SimpleNode node = (SimpleNode) semanticsResult.getRootNode();
+       // SimpleNode node = (SimpleNode) semanticsResult.getRootNode();
         SymbolTable table = semanticsResult.getSymbolTable();
+        JmmNode node= semanticsResult.getRootNode();
 
         var emitter = new OllirEmitter(table);
-        emitter.generate(node);
-
+        emitter.visit(node);
         // Convert the AST to a String containing the equivalent OLLIR code
-        String ollirCode = ""; // Convert node ...
+        String ollirCode = emitter.getMethodCode(); // Convert node ...
+
+        System.out.println("OLLIR CODE: " + ollirCode + "\n\n\n");
+
 
         // More reports from this stage
         List<Report> reports = new ArrayList<>();
