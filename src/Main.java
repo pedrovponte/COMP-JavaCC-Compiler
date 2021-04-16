@@ -27,6 +27,7 @@ public class Main implements JmmParser {
 
 			jsonFile.close();
 
+
 			/*for(int i = 0; i < root.jjtGetNumChildren(); i++) { // Import, Class
 				//System.out.println("Child: " + root.jjtGetChild(i).toString());
 				if(root.jjtGetChild(i).toString().equals("Import")) {

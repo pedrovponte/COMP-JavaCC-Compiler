@@ -1,86 +1,92 @@
 {
   "rootNode": {
     "kind": "Program",
-    "attributes": {},
+    "attributes": {
+      "col": "1",
+      "line": "1"
+    },
     "children": [
       {
-        "kind": "Class",
-        "attributes": {},
+        "kind": "Import",
+        "attributes": {
+          "col": "1",
+          "line": "1"
+        },
         "children": [
           {
             "kind": "Identifier",
             "attributes": {
-              "name": "T"
+              "col": "8",
+              "line": "1",
+              "name": "ioPlus"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "Class",
+        "attributes": {
+          "col": "1",
+          "line": "2"
+        },
+        "children": [
+          {
+            "kind": "Identifier",
+            "attributes": {
+              "col": "7",
+              "line": "2",
+              "name": "HelloWorld"
             },
             "children": []
           },
           {
             "kind": "Main",
-            "attributes": {},
+            "attributes": {
+              "col": "12",
+              "line": "3"
+            },
             "children": [
               {
                 "kind": "Identifier",
                 "attributes": {
-                  "name": "a"
+                  "col": "38",
+                  "line": "3",
+                  "name": "args"
                 },
                 "children": []
               },
               {
-                "kind": "LocalVariableDeclaration",
-                "attributes": {},
-                "children": [
-                  {
-                    "kind": "int[]",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "name": "a"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
                 "kind": "Statement",
-                "attributes": {},
+                "attributes": {
+                  "col": "9",
+                  "line": "4"
+                },
                 "children": [
                   {
-                    "kind": "Identifier",
+                    "kind": "Dot",
                     "attributes": {
-                      "name": "a"
+                      "col": "16",
+                      "line": "4"
                     },
-                    "children": []
-                  },
-                  {
-                    "kind": "Assign",
-                    "attributes": {},
-                    "children": []
-                  },
-                  {
-                    "kind": "New",
-                    "attributes": {},
                     "children": [
                       {
-                        "kind": "Array",
-                        "attributes": {},
-                        "children": [
-                          {
-                            "kind": "InsideArray",
-                            "attributes": {},
-                            "children": [
-                              {
-                                "kind": "boolean",
-                                "attributes": {
-                                  "value": "true"
-                                },
-                                "children": []
-                              }
-                            ]
-                          }
-                        ]
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "4",
+                          "name": "ioPlus"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "16",
+                          "line": "4",
+                          "name": "printHelloWorld"
+                        },
+                        "children": []
                       }
                     ]
                   }

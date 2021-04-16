@@ -1,4 +1,5 @@
 import pt.up.fe.comp.jmm.JmmNode;
+import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 import pt.up.fe.comp.jmm.ast.AJmmVisitor;
 
@@ -17,6 +18,7 @@ public class ClassVisitor extends AJmmVisitor<String, String> {
         //addVisit(identifierType, this::dealWithExtends);
         setDefaultVisit(this::defaultVisit); // Method reference
     }
+
 
     public String dealWithClass(JmmNode node, String space) {
         List<JmmNode> children = node.getChildren();

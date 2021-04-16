@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+    import java.util.function.BiFunction;
+    import java.util.stream.Collectors;
 
 //import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
+    import pt.up.fe.comp.jmm.JmmNode;
     import pt.up.fe.comp.jmm.analysis.table.Symbol;
     import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
+    import pt.up.fe.comp.jmm.ast.JmmVisitor;
 
-    public class OllirEmitter {
+    public class OllirEmitter implements JmmVisitor {
 
         private PrintWriter printWriterFile;
         private  SymbolTable symbolTable;
@@ -21,6 +25,7 @@ import java.util.HashMap;
         private int totalStack;
         private StringBuilder methodCode;
         private StringBuilder bodyCode;
+
 
 
 
@@ -35,73 +40,118 @@ import java.util.HashMap;
             this.bodyCode = new StringBuilder();
         }
 
-
-        private PrintWriter createOutputFile(String className) {
-            try {
-                File dir = new File("./");
-                if (!dir.exists())
-                    dir.mkdirs();
-
-                File file = new File(dir + "/" + className + ".j");
-                if (!file.exists())
-                    file.createNewFile();
-
-                return new PrintWriter(file);
-
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-            return null;
+        public String getMethodCode() {
+            return methodCode.toString();
         }
 
-        public void generate(SimpleNode node) {
+        @Override
+        public Object visit(JmmNode node, Object data) {
 
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                if (node.jjtGetChild(i) instanceof ASTClassDeclaration) {
-                    ASTClassDeclaration classNode = (ASTClassDeclaration) node.jjtGetChild(i);
 
-                    this.printWriterFile = createOutputFile(classNode.getKind());
-                    this.generateClass(classNode);
-                    this.printWriterFile.close();
 
-                }
+            System.out.println("NODE: \n\n");
+            System.out.println("String: "  +node.toString());
+            System.out.println("Type: " + node.getClass().getComponentType());
+            System.out.println("Kind: " + node.getKind());
+            System.out.println("Class: " + node.getClass());
+            System.out.println("Attributes: " + node.getAttributes());
+            System.out.println("Children: " + node.getChildren());
+
+
+            switch (node.getKind()) {
+                case "Class":
+                    this.generateClass( node);
+
             }
+
+            return defaultVisit(node,"");
         }
 
-        private void generateClass(ASTClassDeclaration classNode) {
+        private String defaultVisit(JmmNode node, String space) {
+            String content = space + node.getKind();
+            String attrs = node.getAttributes()
+                    .stream()
+                    .filter(a -> !a.equals("line"))
+                    .map(a -> a + "=" + node.get(a))
+                    .collect(Collectors.joining(", ", "[", "]"));
+
+            content += ((attrs.length() > 2) ? attrs : "") + "\n";
+            for (JmmNode child : node.getChildren()) {
+                content += visit(child, space + " ");
+            }
+            return content;
+        }
+
+
+
+        private void generateClass(JmmNode classNode) {
             this.localVars = 0;
-            this.printWriterFile.println(".class public " + classNode.name);
-
-            if (classNode.ext != null)
-                this.printWriterFile.println(".super " + classNode.ext);
-            else
-                this.printWriterFile.println(".super java/lang/Object");
-
-            Symbol symbolClass = (Symbol) this.symbolTable.get(classNode.name);
-
-            generateClassVariables(classNode);
-            generateExtend(classNode);
-            generateMethods(classNode, symbolClass);
+            methodCode.append( ".construct public " + classNode.toString() + "().V");
         }
 
-        private void generateClassVariables(SimpleNode node) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                SimpleNode child = (SimpleNode) node.jjtGetChild(i);
-                if (child instanceof ASTVarDeclaration) {
-                    generateGlobalVar((ASTVarDeclaration) child);
+
+
+        /*
+                public void run(JmmNode node) {
+                    System.out.println("MethodCode: " + methodCode);
+                    String result = null;
+                    for (int i = 0; i < node.getNumChildren(); i++) {
+                        System.out.println("NODE \n");
+                        methodCode.append("A");
+                       if (node.getChildren().get(i) instanceof ASTClassDeclaration) {
+                           ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                           System.out.println("Declaration \n");
+                       }
+                        if (node.getChildren().get(i) instanceof ASTBlockStatement) {
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("Statement \n");
+                        }
+                        if (node.getChildren().get(i) instanceof ASTExpression) {
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("2 \n");
+                        }
+                        if (node.getChildren().get(i) instanceof ASTArgs) {
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("3 \n");
+                        }
+                        if (node.getChildren().get(i) instanceof ASTVarDeclaration) {
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("4 \n");
+                        }
+                        if (node.getChildren().get(i) instanceof ASTequal) {
+
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("5 \n");
+                        }
+                        if (node.getChildren().get(i) instanceof ASTIf) {
+                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
+                            System.out.println("6 \n");
+                        }
+
+
+
+
+
+
+                        this.run(node.getChildren().get(i));
+                    }
+
                 }
-            }
+
+
+                public String getMethodCode() {
+                    return methodCode.toString();
+                }
+        */
+
+
+        @Override
+        public void setDefaultVisit(BiFunction method) {
+
         }
 
-        private void generateGlobalVar(ASTVarDeclaration var) {
+        @Override
+        public void addVisit(String kind, BiFunction method) {
 
-            if (var.jjtGetChild(0) instanceof ASTType) {
-                ASTType nodeType = (ASTType) var.jjtGetChild(0);
-                printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
-            }
         }
-
-
-
-
     }
