@@ -47,21 +47,18 @@ import java.util.HashMap;
         @Override
         public Object visit(JmmNode node, Object data) {
 
-
-
-            System.out.println("NODE: \n\n");
+      /*      System.out.println("NODE: \n\n");
             System.out.println("String: "  +node.toString());
             System.out.println("Type: " + node.getClass().getComponentType());
             System.out.println("Kind: " + node.getKind());
             System.out.println("Class: " + node.getClass());
             System.out.println("Attributes: " + node.getAttributes());
-            System.out.println("Children: " + node.getChildren());
+            System.out.println("Children: " + node.getChildren());*/
 
 
             switch (node.getKind()) {
                 case "Class":
-                    this.generateClass( node);
-
+                    this.generateClass(node);
             }
 
             return defaultVisit(node,"");
@@ -84,65 +81,57 @@ import java.util.HashMap;
 
 
 
+
+
         private void generateClass(JmmNode classNode) {
             this.localVars = 0;
-            methodCode.append( ".construct public " + classNode.toString() + "().V");
+            methodCode.append("class " + symbolTable.getClassName() + "{ \n");
+            methodCode.append(".construct" + symbolTable.getClassName() + ".V" );
+            generateClassVariables(classNode);
+           // generateExtend(classNode);
+           // generateMethods(classNode, symbolClass);
         }
 
-
-
+        private void generateClassVariables(JmmNode node) {
+            for (int i = 1; i < node.getChildren().size(); i++) {
+                JmmNode child = node.getChildren().get(i);
+                methodCode.append(child.toString());
+            }
+        }
         /*
-                public void run(JmmNode node) {
-                    System.out.println("MethodCode: " + methodCode);
-                    String result = null;
-                    for (int i = 0; i < node.getNumChildren(); i++) {
-                        System.out.println("NODE \n");
-                        methodCode.append("A");
-                       if (node.getChildren().get(i) instanceof ASTClassDeclaration) {
-                           ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                           System.out.println("Declaration \n");
-                       }
-                        if (node.getChildren().get(i) instanceof ASTBlockStatement) {
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("Statement \n");
-                        }
-                        if (node.getChildren().get(i) instanceof ASTExpression) {
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("2 \n");
-                        }
-                        if (node.getChildren().get(i) instanceof ASTArgs) {
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("3 \n");
-                        }
-                        if (node.getChildren().get(i) instanceof ASTVarDeclaration) {
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("4 \n");
-                        }
-                        if (node.getChildren().get(i) instanceof ASTequal) {
 
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("5 \n");
-                        }
-                        if (node.getChildren().get(i) instanceof ASTIf) {
-                            ASTClassDeclaration classNode = (ASTClassDeclaration) node.getChildren().get(i);
-                            System.out.println("6 \n");
-                        }
+        private void generateGlobalVar(ASTVarDeclaration var) {
+
+            if (var.jjtGetChild(0) instanceof ASTType) {
+                ASTType nodeType = (ASTType) var.jjtGetChild(0);
+                printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
+            }
+        }
+
+        private String getType(ASTType nodeType) {
+
+            if (nodeType.isArray)
+                return "[I";
+
+            switch (nodeType.type) {
+                case "int":
+                    return "I";
+                case "String":
+                    return "Ljava/lang/String";
+                case "boolean":
+                    return "Z";
+                case "void":
+                    return "V";
+            }
+
+            return "L" + nodeType.type + ";";
+        }
+*/
 
 
 
 
 
-
-                        this.run(node.getChildren().get(i));
-                    }
-
-                }
-
-
-                public String getMethodCode() {
-                    return methodCode.toString();
-                }
-        */
 
 
         @Override

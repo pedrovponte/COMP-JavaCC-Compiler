@@ -27,9 +27,10 @@ public class OptimizationStage implements JmmOptimization {
     @Override
     public OllirResult toOllir(JmmSemanticsResult semanticsResult) {
 
-       // SimpleNode node = (SimpleNode) semanticsResult.getRootNode();
         SymbolTable table = semanticsResult.getSymbolTable();
         JmmNode node= semanticsResult.getRootNode();
+
+        System.out.println("SYMBOL TABLE: " + table + "\n\n\n");
 
         var emitter = new OllirEmitter(table);
         emitter.visit(node);
