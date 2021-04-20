@@ -61,6 +61,8 @@ public interface ParserTreeConstants {
     public int JJTINSIDEARRAY = 59;
     public int JJTIFBODY = 60;
     public int JJTELSEBODY = 61;
+    public int JJTMETHODCALL = 62;
+    public int JJTTWOPARTEXPRESSION = 63;
 
     public String[] jjtNodeName = {
         "ClassCall",
@@ -124,6 +126,8 @@ public interface ParserTreeConstants {
         "DivisionExpression",
         "InsideArray",
         "IfBody",
-        "ElseBody"
+        "ElseBody",
+        "MethodCall",
+        "TwoPartExpression"
     };
 }
