@@ -129,7 +129,7 @@ public class Tests {
     }
 
     @Test
-    public void testFail_LitIncomp() {
+    public void testFail_VarLitIncomp() {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/var_lit_incomp.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         System.out.println("Report: " + res.getReports());

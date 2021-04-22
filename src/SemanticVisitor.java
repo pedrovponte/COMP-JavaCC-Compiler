@@ -13,14 +13,14 @@ import java.util.List;
 // nao e possivel utilizar arrays diretamente para operaçoes aritmeticas (array1 + array2) (done)
 // verificar se um array access e de facto feito sobre um array (1[10] nao e permitido) (done)
 // verificar se o indice do array access é um inteiro (e.g. a[true] não é permitido) (done)
-// verificar se valor do assignee é igual ao do assigned (a_int = b_boolean não é permitido!)
+// verificar se valor do assignee é igual ao do assigned (a_int = b_boolean não é permitido!) (done)
 // verificar se operação booleana (&&, < ou !) é efetuada só com booleanos (done)
 // verificar se conditional expressions (if e while) resulta num booleano (done)
 
 // ----- Method verification -----
-// verificar se o "target" do método existe, e se este contém o método (e.g. a.foo, ver se 'a' existe e se tem um método 'foo')
-// caso seja do tipo da classe declarada (e.g. a usar o this), se não existir declaração na própria classe: se não tiver extends retorna erro, se tiver extends assumir que é da classe super.
-//	caso o método não seja da classe declarada, isto é uma classe importada, assumir como existente e assumir tipos esperados. (e.g. a = Foo.b(), se a é um inteiro, e Foo é uma classe importada, assumir que o método b é estático (pois estamos a aceder a uma método diretamente da classe), que não tem argumentos e que retorna um inteiro)
+// verificar se o "target" do método existe, e se este contém o método (e.g. a.foo, ver se 'a' existe e se tem um método 'foo') (done)
+// caso seja do tipo da classe declarada (e.g. a usar o this), se não existir declaração na própria classe: se não tiver extends retorna erro, se tiver extends assumir que é da classe super. (done)
+//	caso o método não seja da classe declarada, isto é uma classe importada, assumir como existente e assumir tipos esperados. (e.g. a = Foo.b(), se a é um inteiro, e Foo é uma classe importada, assumir que o método b é estático (pois estamos a aceder a uma método diretamente da classe), que não tem argumentos e que retorna um inteiro) (done)
 //	verificar se o número de argumentos na invocação é igual ao número de parâmetros da declaração (done)
 //	verificar se o tipo dos parâmetros coincide com o tipo dos argumentos (done)
 
@@ -35,13 +35,12 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         addVisit("MultiplicativeExpression", this::visitArithmetic);
         addVisit("SubtractiveExpression", this::visitArithmetic);
         addVisit("DivisionExpression", this::visitArithmetic);
-        //addVisit("Assign", this::visitAssign);
+        addVisit("Assign", this::visitAssign);
         addVisit("If", this::visitConditional);
         addVisit("While", this::visitConditional);
         addVisit("Less", this::visitArithmetic);
         addVisit("And", this::visitBoolean);
         addVisit("Not", this::visitNot);
-        //addVisit("MethodCall", this::visitMethodCall);
     }
 
     private Boolean visitDot(JmmNode node, List<Report> reports) {
@@ -130,7 +129,32 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     private Boolean visitAssign(JmmNode node, List<Report> reports) {
         System.out.println("Assign");
         String methodName = getNodeMethod(node);
+        // types: int, int[], boolean, Identifier
+        // left -> identifier (kind int); right -> additive, subtractive, multiplicative, division, identifier -> int, int
+        // left -> identifier (kind boolean); right -> boolean, identifier (kind boolean), less, and, not
 
+        System.out.println("Assign: " + node);
+
+        JmmNode firstChild = node.getChildren().get(0);
+        JmmNode secondChild = node.getChildren().get(1);
+
+        String identifierTypeF = checkIdentifiers(firstChild, methodName);
+        String identifierTypeS = checkIdentifiers(secondChild, methodName);
+
+
+        if(identifierTypeF == null || !identifierTypeF.equals("int") || !identifierTypeF.equals("boolean")) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Assignee must be a previous declared variable"));
+        }
+        else if(identifierTypeF.equals("int")) {
+            if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have int type"));
+            }
+        }
+        else if(identifierTypeF.equals("boolean")) {
+            if(!(identifierTypeS != null && identifierTypeS.equals("boolean")) && !secondChild.getKind().equals("boolean") && !secondChild.getKind().equals("Less") && !secondChild.getKind().equals("And") && !secondChild.getKind().equals("Not")) {
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have boolean type"));
+            }
+        }
 
         return true;
     }
@@ -143,7 +167,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         return true;
     }
 
-    // < e aqui???
+    // less, and, not serao aqui?
     private Boolean visitBoolean(JmmNode node, List<Report> reports) {
         System.out.println("Boolean: " + node.getKind());
 
@@ -176,34 +200,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         }
 
         return true;
-    }
-
-    private Boolean visitMethodCall(JmmNode node, List<Report> reports) {
-        System.out.println("Method Call");
-
-        //if(node.getChildren().get(0).getKind().equals("MethodCall")) {
-
-        //JmmNode methodNode = node.getChildren().get(0);
-        String methodCallName = node.getChildren().get(0).get("name");
-        int argsSize = node.getNumChildren() - 1;
-        List<Symbol> methodArgs = symbolTable.getParameters(methodCallName);
-
-        if(!symbolTable.getMethods().contains(methodCallName)) {
-            System.out.println("METHOD NOT EXIST");
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Method '" + methodCallName + "' not declared in class"));
-        }
-        else if(methodArgs.size() != argsSize) {
-            System.out.println("DIFERENT ARGS SIZE");
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Wrong parameters number for method '" + methodCallName + "' call. Provided " + argsSize + " arguments, but " + methodArgs.size() + " are needed."));
-        }
-        else if(methodArgs.size() == argsSize) {
-            for(int i = 0; i < methodArgs.size(); i++) {
-                //if(methodArgs.get(i).getType().getName().equals(node.getChildren().get(i+1)) )
-            }
-        }
-
-        return true;
-        //}
     }
 
     public String getNodeMethod(JmmNode node) {
