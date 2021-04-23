@@ -64,9 +64,9 @@
                 },
                 "children": [
                   {
-                    "kind": "Dot",
+                    "kind": "TwoPartExpression",
                     "attributes": {
-                      "col": "16",
+                      "col": "15",
                       "line": "4"
                     },
                     "children": [
@@ -80,13 +80,31 @@
                         "children": []
                       },
                       {
-                        "kind": "Identifier",
+                        "kind": "DotExpression",
                         "attributes": {
-                          "col": "16",
-                          "line": "4",
-                          "name": "printHelloWorld"
+                          "col": "15",
+                          "line": "4"
                         },
-                        "children": []
+                        "children": [
+                          {
+                            "kind": "MethodCall",
+                            "attributes": {
+                              "col": "16",
+                              "line": "4"
+                            },
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "col": "16",
+                                  "line": "4",
+                                  "name": "printHelloWorld"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }

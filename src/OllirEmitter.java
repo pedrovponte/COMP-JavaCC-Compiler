@@ -47,13 +47,13 @@ import java.util.HashMap;
         @Override
         public Object visit(JmmNode node, Object data) {
 
-      /*      System.out.println("NODE: \n\n");
+            System.out.println("NODE: \n\n");
             System.out.println("String: "  +node.toString());
             System.out.println("Type: " + node.getClass().getComponentType());
             System.out.println("Kind: " + node.getKind());
             System.out.println("Class: " + node.getClass());
             System.out.println("Attributes: " + node.getAttributes());
-            System.out.println("Children: " + node.getChildren());*/
+            System.out.println("Children: " + node.getChildren());
 
 
             switch (node.getKind()) {
@@ -80,9 +80,6 @@ import java.util.HashMap;
         }
 
 
-
-
-
         private void generateClass(JmmNode classNode) {
             this.localVars = 0;
             methodCode.append("class " + symbolTable.getClassName() + "{ \n");
@@ -95,7 +92,9 @@ import java.util.HashMap;
         private void generateClassVariables(JmmNode node) {
             for (int i = 1; i < node.getChildren().size(); i++) {
                 JmmNode child = node.getChildren().get(i);
-                methodCode.append(child.toString());
+                
+             //   methodCode.append(child.toString());
+              //  methodCode.append(child.getClass().getComponentType());
             }
         }
         /*
@@ -107,10 +106,10 @@ import java.util.HashMap;
                 printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
             }
         }
+*/
+       /* private String getType(JmmmNode nodeType) {
 
-        private String getType(ASTType nodeType) {
-
-            if (nodeType.isArray)
+            if (nodeType.type )
                 return "[I";
 
             switch (nodeType.type) {
@@ -125,8 +124,8 @@ import java.util.HashMap;
             }
 
             return "L" + nodeType.type + ";";
-        }
-*/
+        }*/
+
 
 
 
