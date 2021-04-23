@@ -37,7 +37,7 @@ public class OptimizationStage implements JmmOptimization {
         // Convert the AST to a String containing the equivalent OLLIR code
         String ollirCode = emitter.getMethodCode(); // Convert node ...
 
-        System.out.println("OLLIR CODE: " + ollirCode + "\n\n\n");
+        System.out.println("\n\n OLLIR CODE: \n\n " + ollirCode + "\n\n");
 
 
         // More reports from this stage
