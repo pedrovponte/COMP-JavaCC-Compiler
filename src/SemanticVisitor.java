@@ -6,6 +6,7 @@ import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // ----- Type verification -----
@@ -24,6 +25,9 @@ import java.util.List;
 //	verificar se o número de argumentos na invocação é igual ao número de parâmetros da declaração (done)
 //	verificar se o tipo dos parâmetros coincide com o tipo dos argumentos (done)
 
+// ver a parte dos . fora do length
+// arr_size_not_int (como distinguir o a do int[] do a do string[])
+// import methods used (io.println) deve-se verificar se o import e feito?
 
 public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     private SymbolTableImp symbolTable;
@@ -48,16 +52,13 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         if(node.getChildren().get(1).getKind().equals("DotExpression")) {
             JmmNode dot = node.getChildren().get(1);
             if(dot.getChildren().get(0).getKind().equals("Length")) {
-                if(node.getChildren().get(0).getKind().equals("This")) {
-                    System.out.println("ANCESTOR: " + (node.getAncestor("Method").isPresent() || node.getAncestor("Main").isPresent()));
-                    if ((symbolTable.getSuper() == null || symbolTable.getSuper().isEmpty()) && !symbolTable.getMethods().contains(methodName)) { // falta o caso de o metodo nao tar declarado
-                        reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Builtin \"length\" does not exist over simple types."));
-                    }
-                }
-                else if(!node.getChildren().get(0).getKind().equals("Identifier")) {
+                // caso antes do .length nao seja um identifier, adicionar ao report
+                // caso seja um identifier, se nao estiver declarada a variavel ou se nao for array, adicionar ao report
+
+                if(!node.getChildren().get(0).getKind().equals("Identifier")) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Builtin \"length\" does not exist over simple types."));
                 }
-                else if(node.getChildren().get(0).getKind().equals("Identifier") && checkIdentifiers(node.getChildren().get(0), methodName) == null) {
+                else if(node.getChildren().get(0).getKind().equals("Identifier") && (checkIdentifiers(node.getChildren().get(0), methodName) == null)) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Variable " + node.getChildren().get(0).get("name") + " not declared."));
                 }
             }
@@ -67,6 +68,11 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 int argsSize = methodNode.getNumChildren() - 1;
                 List<Symbol> methodArgs = symbolTable.getParameters(methodCallName);
 
+                Boolean importMethod = false;
+                if(node.getChildren().get(0).getKind().equals("Identifier") && (symbolTable.getImports() != null && symbolTable.getImports().contains(node.getChildren().get(0).get("name")))) {
+                    importMethod = true;
+                }
+
                 if(node.getChildren().get(0).getKind().equals("This")) {
                     System.out.println("ANCESTOR: " + (node.getAncestor("Method").isPresent() || node.getAncestor("Main").isPresent()));
                     if ((symbolTable.getSuper() == null || symbolTable.getSuper().isEmpty()) && !symbolTable.getMethods().contains(methodName)) { // falta o caso de o metodo nao tar declarado
@@ -76,11 +82,11 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 else if(!node.getChildren().get(0).getKind().equals("Identifier")) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Builtin \"length\" does not exist over simple types."));
                 }
-                else if(node.getChildren().get(0).getKind().equals("Identifier") && checkIdentifiers(node.getChildren().get(0), methodName) == null) {
+                else if(node.getChildren().get(0).getKind().equals("Identifier") && (checkIdentifiers(node.getChildren().get(0), methodName) == null && !(symbolTable.getImports() != null && symbolTable.getImports().contains(node.getChildren().get(0).get("name"))))) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Variable " + node.getChildren().get(0).get("name") + " not declared."));
                 }
 
-                if(!symbolTable.getMethods().contains(methodCallName)) {
+                if(!symbolTable.getMethods().contains(methodCallName) && !importMethod) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(methodNode.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Method '" + methodCallName + "' not declared in class"));
                 }
                 else if(methodArgs != null && methodArgs.size() != argsSize) {
@@ -88,7 +94,11 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 }
                 else if(methodArgs != null && methodArgs.size() == argsSize) {
                     for(int i = 0; i < methodArgs.size(); i++) {
-                        String identifierType = checkIdentifiers(methodNode.getChildren().get(i+1), methodName);
+                        Symbol identifierSymbol = checkIdentifiers(methodNode.getChildren().get(i+1), methodName);
+                        String identifierType = null;
+                        if(identifierSymbol != null) {
+                            identifierType = identifierSymbol.getType().getName();
+                        }
                         System.out.println(methodNode.getChildren().get(i+1).getKind());
                         if(!methodArgs.get(i).getType().getName().equals(methodNode.getChildren().get(i+1).getKind()) && !methodArgs.get(i).getType().getName().equals(identifierType)) {
                             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(methodNode.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Wrong type parameter for method '" + methodCallName + "' call."));
@@ -107,16 +117,57 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         return true;
     }
 
-    // caso tenha this antes?
+
     private Boolean visitArithmetic(JmmNode node, List<Report> reports) {
         String methodName = getNodeMethod(node);
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
-        String identifierTypeF = checkIdentifiers(firstChild, methodName);
-        String identifierTypeS = checkIdentifiers(secondChild, methodName);
+        HashMap<Symbol, Boolean> classVars = symbolTable.getClassVarsInit();
+        HashMap<Symbol, Boolean> methodVars = symbolTable.getMethodVarsInit(methodName);
 
-        if(!(identifierTypeF != null && identifierTypeF.equals("int")) && !firstChild.getKind().equals("int") && !firstChild.getKind().equals("AdditiveExpression") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
+        Symbol identifierSymbolF = checkIdentifiers(firstChild, methodName);
+        String identifierTypeF = null;
+        Boolean varInitializedF = false;
+
+        if(identifierSymbolF != null) {
+            identifierTypeF = identifierSymbolF.getType().getName();
+            if(classVars.containsKey(identifierSymbolF)) {
+                varInitializedF = classVars.get(identifierSymbolF);
+            }
+            else if(methodVars.containsKey(identifierSymbolF)) {
+                varInitializedF = methodVars.get(identifierSymbolF);
+            }
+        }
+
+        Symbol identifierSymbolS = checkIdentifiers(secondChild, methodName);
+        String identifierTypeS = null;
+        Boolean varInitializedS = false;
+
+        if(identifierSymbolS != null) {
+            identifierTypeS = identifierSymbolS.getType().getName();
+            if(classVars.containsKey(identifierSymbolS)) {
+                varInitializedS = classVars.get(identifierSymbolS);
+            }
+            else if(methodVars.containsKey(identifierSymbolS)) {
+                varInitializedS = methodVars.get(identifierSymbolS);
+            }
+        }
+
+
+        if(firstChild.getKind().equals("Identifier") && identifierSymbolF == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Variable not declared"));
+        }
+        else if(secondChild.getKind().equals("Identifier") && identifierSymbolS == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("line")), "Variable not declared"));
+        }
+        else if(identifierTypeF != null && varInitializedF == false) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Variable not initialized"));
+        }
+        else if(identifierTypeS != null && varInitializedS == false) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Variable not initialized"));
+        }
+        else if(!(identifierTypeF != null && identifierTypeF.equals("int")) && !firstChild.getKind().equals("int") && !firstChild.getKind().equals("AdditiveExpression") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression")){
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Binary operations can only be applied to Integer type variables"));
         }
         else if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
@@ -127,7 +178,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     }
 
     private Boolean visitAssign(JmmNode node, List<Report> reports) {
-        System.out.println("Assign");
         String methodName = getNodeMethod(node);
         // types: int, int[], boolean, Identifier
         // left -> identifier (kind int); right -> additive, subtractive, multiplicative, division, identifier -> int, int
@@ -138,21 +188,77 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
-        String identifierTypeF = checkIdentifiers(firstChild, methodName);
-        String identifierTypeS = checkIdentifiers(secondChild, methodName);
+        HashMap<Symbol, Boolean> classVars = symbolTable.getClassVarsInit();
+        HashMap<Symbol, Boolean> methodVars = symbolTable.getMethodVarsInit(methodName);
 
+        Symbol identifierSymbolF = checkIdentifiers(firstChild, methodName);
+        String identifierTypeF = null;
 
-        if(identifierTypeF == null || !identifierTypeF.equals("int") || !identifierTypeF.equals("boolean")) {
+        if(identifierSymbolF != null) {
+            identifierTypeF = identifierSymbolF.getType().getName();
+            if(identifierSymbolF.getType().isArray()) {
+                identifierTypeF = identifierTypeF + "[]";
+            }
+        }
+
+        Symbol identifierSymbolS = checkIdentifiers(secondChild, methodName);
+        String identifierTypeS = null;
+        Boolean varInitializedS = false;
+
+        if(identifierSymbolS != null) {
+            identifierTypeS = identifierSymbolS.getType().getName();
+            if(classVars.containsKey(identifierSymbolS)) {
+                varInitializedS = classVars.get(identifierSymbolS);
+            }
+            else if(methodVars.containsKey(identifierSymbolS)) {
+                varInitializedS = methodVars.get(identifierSymbolS);
+            }
+        }
+
+        if(firstChild.getKind().equals("Identifier") && identifierSymbolF == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Variable not declared"));
+        }
+        else if(secondChild.getKind().equals("Identifier") && identifierSymbolS == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("line")), "Variable not declared"));
+        }
+        else if(identifierTypeF == null || (!identifierTypeF.equals("int") && !identifierTypeF.equals("boolean") && !identifierTypeF.equals("int[]"))) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Assignee must be a previous declared variable"));
         }
+        else if(identifierTypeS != null && varInitializedS == false) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Variable not initialized"));
+        }
         else if(identifierTypeF.equals("int")) {
-            if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression")) {
+            if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression") && !secondChild.getKind().equals("TwoPartExpression")) {
                 reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have int type"));
+            }
+            else {
+                if(classVars.containsKey(identifierSymbolF)) {
+                    symbolTable.changeInitClass(identifierSymbolF);
+                }
+                else if(methodVars.containsKey(identifierSymbolF)) {
+                    symbolTable.changeInitMethod(methodName, identifierSymbolF);
+                }
             }
         }
         else if(identifierTypeF.equals("boolean")) {
             if(!(identifierTypeS != null && identifierTypeS.equals("boolean")) && !secondChild.getKind().equals("boolean") && !secondChild.getKind().equals("Less") && !secondChild.getKind().equals("And") && !secondChild.getKind().equals("Not")) {
                 reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have boolean type"));
+            }
+            else {
+                if(classVars.containsKey(identifierSymbolF)) {
+                    symbolTable.changeInitClass(identifierSymbolF);
+                }
+                else if(methodVars.containsKey(identifierSymbolF)) {
+                    symbolTable.changeInitMethod(methodName, identifierSymbolF);
+                }
+            }
+        }
+        else if(identifierTypeF.equals("int[]")) {
+            if(!secondChild.getKind().equals("New")) {
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must start with new"));
+            }
+            else if(!secondChild.getChildren().get(0).getKind().equals("Array")) {
+                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have array type"));
             }
         }
 
@@ -175,10 +281,25 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
-        String identifierTypeF = checkIdentifiers(firstChild, methodName);
-        String identifierTypeS = checkIdentifiers(secondChild, methodName);
+        Symbol identifierSymbolF = checkIdentifiers(firstChild, methodName);
+        String identifierTypeF = null;
+        if(identifierSymbolF != null) {
+            identifierTypeF = identifierSymbolF.getType().getName();
+        }
 
-        if(!identifierTypeF.equals("boolean") && !firstChild.getKind().equals("boolean")) {
+        Symbol identifierSymbolS = checkIdentifiers(secondChild, methodName);
+        String identifierTypeS = null;
+        if(identifierSymbolS != null) {
+            identifierTypeS = identifierSymbolS.getType().getName();
+        }
+
+        if(firstChild.getKind().equals("Identifier") && identifierSymbolF == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Variable not declared"));
+        }
+        else if(secondChild.getKind().equals("Identifier") && identifierSymbolF == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("line")), "Variable not declared"));
+        }
+        else if(!identifierTypeF.equals("boolean") && !firstChild.getKind().equals("boolean")) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Boolean operator ('&&') can only be applied to boolean type variables"));
         }
         else if(!identifierTypeS.equals("boolean") && !secondChild.getKind().equals("boolean")) {
@@ -193,9 +314,17 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
 
         String methodName = getNodeMethod(node);
         JmmNode firstChild = node.getChildren().get(0);
-        String identifierTypeF = checkIdentifiers(firstChild, methodName);
 
-        if(!identifierTypeF.equals("boolean") && !firstChild.getKind().equals("boolean")) {
+        Symbol identifierSymbolF = checkIdentifiers(firstChild, methodName);
+        String identifierTypeF = null;
+        if(identifierSymbolF != null) {
+            identifierTypeF = identifierSymbolF.getType().getName();
+        }
+
+        if(firstChild.getKind().equals("Identifier") && identifierSymbolF == null) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Variable not declared"));
+        }
+        else if(!identifierTypeF.equals("boolean") && !firstChild.getKind().equals("boolean")) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Not operator ('!') can only be applied to boolean type variables"));
         }
 
@@ -216,7 +345,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         return methodName;
     }
 
-    public String checkIdentifiers(JmmNode node, String methodName) {
+    public Symbol checkIdentifiers(JmmNode node, String methodName) {
         List<Symbol> allVariables = new ArrayList<>();
         List<String> allNames = new ArrayList<>();
         if(symbolTable.getParameters(methodName) != null && !symbolTable.getParameters(methodName).isEmpty()) {
@@ -234,11 +363,11 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             allNames.add(allVariables.get(i).getName());
         }
 
-        String identifierType = null;
+        Symbol identifierType = null;
         if(node.getKind().equals("Identifier")) {
             if(allNames.contains(node.get("name"))) {
                 int idx = allNames.indexOf(node.get("name"));
-                identifierType = allVariables.get(idx).getType().getName();
+                identifierType = allVariables.get(idx);
             }
         }
         return identifierType;

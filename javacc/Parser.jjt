@@ -34,8 +34,6 @@ public class Parser {
         this.syntacticErrors.add(error);
 
         this.errors ++;
-        //System.out.prisntln("ParseException Error: Encountered \""+ e.currentToken.image+ "\" at line "+ e.currentToken.beginLine+", column " + e.currentToken.beginColumn + ".");
-
         Token t = getToken(0);
         // Advances while there are no 2 ")" in a row or if the following character is not a "{"
         while (true) {
@@ -359,16 +357,6 @@ void PrimarySuffix() #void : {}
     DotExpression()
 }
 
-/*void DotExpression() #void : {}
-{
-    <DOT>
-    (
-        (<LENGTH> #Length) #Dot(2)
-        |
-        (Identifier() <LPAREN> (Args())? <RPAREN>) #Dot(2)
-    )
-}*/
-
 void DotExpression() : {}
 {
     <DOT>
@@ -393,16 +381,6 @@ void BooleanLiteral() #Boolean : {Token t;}
     t=<TRUE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
     |
     t=<FALSE> {jjtThis.value = Boolean.valueOf(t.image); jjtThis.put("value", t.image);}
-}
-
-void Arguments() #void : {}
-{
-    <LPAREN> [ArgumentList()] <RPAREN>
-}
-
-void ArgumentList() #void : {}
-{
-    Expression() (<COMMA> Expression())*
 }
 
 void AllocationExpression() #void : {Token t;}
