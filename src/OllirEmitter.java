@@ -45,7 +45,7 @@ public class OllirEmitter implements JmmVisitor {
 
     @Override
     public Object visit(JmmNode node, Object data) {
-        System.out.println("NODE: \n\n");
+        System.out.println("\n\nNODE: ");
         System.out.println("String: "  +node.toString());
         System.out.println("Type: " + node.getClass().getComponentType());
         System.out.println("Kind: " + node.getKind());
@@ -91,7 +91,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateConstructor() {
-        stringCode.append("\n\t.construct "+symbolTable.getClassName()+ "().V {\n");
+        stringCode.append("\n\t.construct " + symbolTable.getClassName() + "().V {\n");
         stringCode.append("\t\tinvokespecial(this, '<init>').V; \n");
         stringCode.append("\t}\n");
     }
@@ -100,9 +100,9 @@ public class OllirEmitter implements JmmVisitor {
         for (int i = 0; i < node.getNumChildren(); i++) {
             JmmNode child =  node.getChildren().get(i);
            // stringCode.append(node.toString() + "\n");
-           // if (child instanceof ASTVarDeclaration) {
-             //   generateGlobalVar((ASTVarDeclaration) child);
-            //}
+            if (child.getKind().equals("VarDeclaration")) {
+                generateGlobalVar(child);
+            }
         }
     }
 
@@ -130,7 +130,7 @@ public class OllirEmitter implements JmmVisitor {
 
         for (int i = 0; i < methodNode.getNumChildren(); i++) {
             JmmNode child =  methodNode.getChildren().get(i);
-            if (child.getKind()=="Identifier" && child.toString()=="args") {
+            if (child.getKind().equals("Identifier") && child.toString().equals("args")) {
                 methodArgs.append("");
                 this.nParams++;
             }
@@ -182,13 +182,16 @@ public class OllirEmitter implements JmmVisitor {
     }
 
 
-   /* private void generateGlobalVar(ASTVarDeclaration var) {
-
-        if (var.jjtGetChild(0) instanceof ASTType) {
+    private void generateGlobalVar(JmmNode node) {
+        /*if (var.getChildren().get(0).) {
             ASTType nodeType = (ASTType) var.jjtGetChild(0);
             printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
+        }*/
+
+        if(node.getChildren().equals("Identifier")){
+
         }
-    }*/
+    }
 
     private String getType(Type nodeType) {
 

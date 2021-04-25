@@ -17,7 +17,9 @@ public class Tests {
     @Test
     public void testHelloWorld() {
         String jmmCode = SpecsIo.getResource("fixtures/public/HelloWorld.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
@@ -25,6 +27,7 @@ public class Tests {
         String jmmCode = SpecsIo.getResource("fixtures/public/FindMaximum.jmm");
         //TestUtils.parse(jmmCode);
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
@@ -32,42 +35,55 @@ public class Tests {
         String jmmCode = SpecsIo.getResource("fixtures/public/Lazysort.jmm");
         //TestUtils.parse(jmmCode);
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testLife() {
         String jmmCode = SpecsIo.getResource("fixtures/public/Life.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testMonteCarloPi() {
         String jmmCode = SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testQuickSort() {
         String jmmCode = SpecsIo.getResource("fixtures/public/QuickSort.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testSimple() {
         String jmmCode = SpecsIo.getResource("fixtures/public/Simple.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testTicTacToe() {
         String jmmCode = SpecsIo.getResource("fixtures/public/TicTacToe.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void testWhileAndIf() {
         String jmmCode = SpecsIo.getResource("fixtures/public/WhileAndIF.jmm");
-        TestUtils.parse(jmmCode);
+        //TestUtils.parse(jmmCode);
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
     }
 
     /*Fail semantic*/

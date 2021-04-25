@@ -143,7 +143,7 @@ public class SymbolTableImp implements SymbolTable {
             this.parameters.put(methodName, a);
         }
 
-        this.methodVarsInit.get(methodName).put(symbol, false);
+        this.methodVarsInit.get(methodName).put(symbol, true);
     }
 
     public void addLocalVariables(String methodName, String name, Type type) {

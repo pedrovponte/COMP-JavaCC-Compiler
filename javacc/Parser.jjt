@@ -431,7 +431,7 @@ void WhileCondition() #void : {}
     }
 }
 
-void IdentifierStatement() #Assign : {} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
+void IdentifierStatement() #Assign : {Token t;} // Identifier, "=", Expression, ";" | Identifier, "[", Expression, "]", "=", Expression, ";" | Expression, ";"
 {
-    (Identifier() ( InsideArray() ) ?) <ASSIGN> Expression()
+    (t = <IDENTIFIER> {jjtThis.value = t.image; jjtThis.put("name", t.image);} ( InsideArray() ) ?) #Identifier <ASSIGN> Expression()
 }
