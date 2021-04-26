@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -53,47 +54,42 @@ public class OllirEmitter implements JmmVisitor {
         System.out.println("Attributes: " + node.getAttributes());
         System.out.println("Children: " + node.getChildren());
 
-
         switch (node.getKind()) {
             case "Class":
                 this.generateClass(node);
-
         }
 
         return defaultVisit(node,"");
     }
 
-    private String defaultVisit(JmmNode node, String space) {
-        String content = space + node.getKind();
-        String attrs = node.getAttributes()
-                .stream()
-                .filter(a -> !a.equals("line"))
-                .map(a -> a + "=" + node.get(a))
-                .collect(Collectors.joining(", ", "[", "]"));
-
-        content += ((attrs.length() > 2) ? attrs : "") + "\n";
-        for (JmmNode child : node.getChildren()) {
-            content += visit(child, space + " ");
-        }
-        return content;
-    }
-
-
-
     private void generateClass(JmmNode classNode) {
         this.localVars = 0;
-        stringCode.append(symbolTable.getClassName() + " { \n");
+        stringCode.append(symbolTable.getClassName() + "{\n");
         //stringCode.append( ".construct public " + symbolTable.getClassName() + "().V \n");
 
         this.generateClassVariables(classNode);
         this.generateConstructor();
-        this.generateMethods(classNode);
+
+        List<JmmNode> children = classNode.getChildren();
+        for(int i = 0; i < children.size(); i++) {
+            JmmNode child = children.get(i);
+
+            switch (child.getKind()) {
+                case "Main":
+                    this.generateMain(child);
+                    break;
+                case "Method":
+                    this.generateMethod(child);
+                    break;
+            }
+        }
+        stringCode.append("}");
     }
 
     private void generateConstructor() {
         stringCode.append("\n\t.construct " + symbolTable.getClassName() + "().V {\n");
-        stringCode.append("\t\tinvokespecial(this, '<init>').V; \n");
-        stringCode.append("\t}\n");
+        stringCode.append("\t\tinvokespecial(this, \"<init>\").V;");
+        stringCode.append("\n\t}\n");
     }
 
     private void generateClassVariables(JmmNode node) {
@@ -106,41 +102,105 @@ public class OllirEmitter implements JmmVisitor {
         }
     }
 
-    private void generateMethods(JmmNode node ) {
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            JmmNode child =  node.getChildren().get(i);
-            if (child.getKind().equals("Identifier")) {
-                generateMethod(child, symbolTable.getActualMethods().get(i));
-            }
-        }
-
+    private void generateMain(JmmNode node) {
+        this.generateMainMethodHeader(node);
+        this.generateMainMethodBody(node);
+        stringCode.append("\t}\n");
     }
 
-
-    private void generateMethod(JmmNode no, Symbol method ) {
-        this.generateMethodHeader(no,method);
-        this.generateMethodBody(no, method);
-        stringCode.append("\t }");
-
-    }
-
-    private void generateMethodHeader(JmmNode methodNode, Symbol method) {
+    private void generateMainMethodHeader(JmmNode node) {
         StringBuilder methodArgs = new StringBuilder();
         StringBuilder methodType = new StringBuilder();
 
-        for (int i = 0; i < methodNode.getNumChildren(); i++) {
-            JmmNode child =  methodNode.getChildren().get(i);
-            if (child.getKind().equals("Identifier") && child.toString().equals("args")) {
-                methodArgs.append("");
+        List<Symbol> args = symbolTable.getParameters("main");
+
+        for(int i = 0; i < args.size(); i++) {
+            if(i > 0) {
+                methodArgs.append(", ");
+            }
+            String type = args.get(i).getType().getName();
+            if(args.get(i).getType().isArray()) {
+                type += "[]";
+            }
+            methodArgs.append(args.get(i).getName() + "." + getType(type));
+            this.nParams++;
+        }
+
+        methodType.append(".V");
+
+        stringCode.append("\n\t.method public static main (" + methodArgs + ")" + methodType + " {\n");
+    }
+
+    public void generateMainMethodBody(JmmNode node) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
+
+            JmmNode child = node.getChildren().get(i);
+
+            //Already processed
+            //retirar se for argumento ou declaração de variaveis e return
+
+            //If is not any of the others, it is a statement
+            generateStatement(node, false);
+
+        }
+    }
+
+    private void generateMethod(JmmNode node) {
+        this.generateMethodHeader(node);
+        this.generateMethodBody(node);
+        stringCode.append("\t}\n");
+
+    }
+
+    private void generateMethodHeader(JmmNode methodNode) {
+        StringBuilder methodArgs = new StringBuilder();
+        StringBuilder methodType = new StringBuilder();
+
+        System.out.println("NOOOOOOOOOOODE: " + methodNode);
+        String methodName = methodNode.getChildren().get(1).get("name");
+        List<Symbol> args = symbolTable.getParameters(methodName);
+
+        if(args != null) {
+            for (int i = 0; i < args.size(); i++) {
+                if (i > 0) {
+                    methodArgs.append(", ");
+                }
+                String type = args.get(i).getType().getName();
+                if (args.get(i).getType().isArray()) {
+                    type += "[]";
+                }
+                methodArgs.append(args.get(i).getName() + "." + getType(type));
                 this.nParams++;
             }
         }
 
-        stringCode.append("\t.method public " + method.getName() + "(" + methodArgs.toString() + ")." + this.getType(method.getType())+ " { \n");
+        Type type = symbolTable.getReturnType(methodName);
+        String typeS = type.getName();
+        if(type.isArray()) {
+            typeS += "[]";
+        }
+
+        methodType.append("." + getType(typeS));
+
+        stringCode.append("\n\t.method public " + methodName + "(" + methodArgs + ")" + methodType + " {\n");
+
+//        for (int i = 0; i < methodNode.getNumChildren(); i++) {
+//            JmmNode child =  methodNode.getChildren().get(i);
+//            if (child.getKind().equals("Identifier") && child.toString().equals("args")) {
+//                methodArgs.append("");
+//                this.nParams++;
+//            }
+//        }
+//
+//
+//
+//        stringCode.append("\n\t.method public " + method.getName() + "(" + methodArgs.toString() + ")." + this.getType(method.getType())+ " { \n");
+
     }
 
 
-    private void generateMethodBody(JmmNode method, Symbol symbolMethod) {
+
+    private void generateMethodBody(JmmNode method) {
         for (int i = 0; i < method.getNumChildren(); i++) {
 
             JmmNode node = method.getChildren().get(i);
@@ -149,12 +209,12 @@ public class OllirEmitter implements JmmVisitor {
             //retirar se for argumento ou declaração de variaveis e return
 
             //If is not any of the others, it is a statement
-            generateStatement(node,  symbolMethod, false);
+            generateStatement(node, false);
 
         }
     }
 
-    private void generateStatement(JmmNode node, Symbol symbolMethod, boolean insideIfOrWhile) {
+    private void generateStatement(JmmNode node, boolean insideIfOrWhile) {
         if (node.getKind().equals("TwoPartExpression")) {
 
 
@@ -169,15 +229,15 @@ public class OllirEmitter implements JmmVisitor {
         }
         else if (node.getKind().equals("StatementBlock")) {
             for (int i = 0; i < node.getNumChildren(); i++)
-                generateStatement((SimpleNode) node.getChildren().get(i), symbolMethod, insideIfOrWhile);
+                generateStatement((SimpleNode) node.getChildren().get(i), insideIfOrWhile);
         }
 
         //If it is not any of the others it is an expression
-        generateExpression(node,  symbolMethod);
+        generateExpression(node);
     }
 
 
-    private void generateExpression(JmmNode node, Symbol symbolMethod) {
+    private void generateExpression(JmmNode node) {
 
     }
 
@@ -188,9 +248,22 @@ public class OllirEmitter implements JmmVisitor {
             printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
         }*/
 
-        if(node.getChildren().equals("Identifier")){
+        JmmNode typeNode = node.getChildren().get(0);
+        JmmNode nameNode = node.getChildren().get(1);
+        String type = null;
+        String name = null;
 
+        if(typeNode.getKind().equals("Identifier")) {
+            type = typeNode.get("name");
         }
+        else {
+            type = typeNode.getKind();
+        }
+
+        name = nameNode.get("name");
+
+        stringCode.append("\n\t.field private " + name + "." + getType(type) + ";\n");
+
     }
 
     private String getType(Type nodeType) {
@@ -202,14 +275,33 @@ public class OllirEmitter implements JmmVisitor {
             case "int":
                 return "i32";
             case "String":
-                return "Ljava/lang/String";
+                return "String";
             case "boolean":
-                return "Z";
+                return "bool";
             case "void":
                 return "V";
         }
 
         return "L" + nodeType.getName() + ";";
+    }
+
+    private String getType(String type) {
+        switch(type) {
+            case "int":
+                return "i32";
+            case "boolean":
+                return "bool";
+            case "void":
+                return "V";
+            case "int[]":
+                return "array.i32";
+            case "String[]":
+                return "array.String";
+            case "String":
+                return "String";
+            default:
+                return type;
+        }
     }
 
    /* private String getSymbolType(Type symbolType) {
@@ -230,6 +322,20 @@ public class OllirEmitter implements JmmVisitor {
         return "";
     }*/
 
+    private String defaultVisit(JmmNode node, String space) {
+        String content = space + node.getKind();
+        String attrs = node.getAttributes()
+                .stream()
+                .filter(a -> !a.equals("line"))
+                .map(a -> a + "=" + node.get(a))
+                .collect(Collectors.joining(", ", "[", "]"));
+
+        content += ((attrs.length() > 2) ? attrs : "") + "\n";
+        for (JmmNode child : node.getChildren()) {
+            content += visit(child, space + " ");
+        }
+        return content;
+    }
 
     @Override
     public void setDefaultVisit(BiFunction method) {
@@ -240,4 +346,5 @@ public class OllirEmitter implements JmmVisitor {
     public void addVisit(String kind, BiFunction method) {
 
     }
+
 }
