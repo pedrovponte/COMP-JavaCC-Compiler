@@ -44,6 +44,10 @@ public class BackendStage implements JasminBackend {
                 {
                     jasmin.append("[I");
                 }
+                else if (elementType == ElementType.STRING)
+                {
+                    jasmin.append("[Ljava/lang/String");
+                }
                 break;
             case OBJECTREF:
                 //jasmin.append("[LMyClass;");
@@ -155,6 +159,7 @@ public class BackendStage implements JasminBackend {
             jasmin.append("\n\taload_0\n");
             jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
             jasmin.append("\treturn\n");
+            jasmin.append(".end method\n");
             return;
         }
 
@@ -164,9 +169,9 @@ public class BackendStage implements JasminBackend {
         addAccessModifier(method.getMethodAccessModifier());
 
         if (method.isStaticMethod())
-            jasmin.append("static");
+            jasmin.append("static ");
         else if (method.isFinalMethod())
-            jasmin.append("final");
+            jasmin.append("final ");
 
         jasmin.append(method.getMethodName());
 
@@ -240,7 +245,7 @@ public class BackendStage implements JasminBackend {
             System.out.println(jasmin.toString());
 
             // Convert the OLLIR to a String containing the equivalent Jasmin code
-            String jasminCode = ""; // Convert node ...
+            String jasminCode = jasmin.toString(); // Convert node ...
 
             // More reports from this stage
             List<Report> reports = new ArrayList<>();

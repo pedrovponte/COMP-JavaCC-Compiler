@@ -17,7 +17,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import pt.up.fe.comp.TestUtils;
+import pt.up.fe.comp.jmm.ollir.OllirResult;
+import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
+
+import java.util.ArrayList;
 
 public class BackendTest {
 
@@ -28,5 +32,15 @@ public class BackendTest {
 
         var output = result.run();
         assertEquals("Hello, World!", output.trim());
+    }
+
+    @Test
+    public void jasmin_test() {
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")),null,new ArrayList<>()));
+
+        /*String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
+        var res =
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());*/
     }
 }

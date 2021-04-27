@@ -215,15 +215,4 @@ public class Tests {
         System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
     }
-
-    @Test
-    public void jasmin_test() {
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")),null,new ArrayList<>()));
-
-        /*String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
-        var res =
-        System.out.println("Report: " + res.getReports());
-        TestUtils.mustFail(res.getReports());*/
-    }
-
 }
