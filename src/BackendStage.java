@@ -65,6 +65,68 @@ public class BackendStage implements JasminBackend {
         }
     }
 
+    public void MethodOperations(Method method){
+        for (var inst: method.getInstructions()) {
+            switch (inst.getInstType()) {
+                case ASSIGN:
+                    AssignInstruction assignInstruction = (AssignInstruction) inst;
+                    jasmin.append("\n");
+                    Operand dest = (Operand) assignInstruction.getDest();
+                    //jasmin.append("\taload_"+dest.getParamId()+"\n");
+
+                    Instruction rhs = assignInstruction.getRhs();
+                    //rhs.show();
+
+                    if (rhs instanceof SingleOpInstruction){
+                        jasmin.append("\taload_"+dest.getParamId()+"\n");
+                        jasmin.append("\tbipush ");
+                        SingleOpInstruction singleOperand = ((SingleOpInstruction) rhs);
+                        if (singleOperand.getSingleOperand().isLiteral()) {
+                            jasmin.append(((LiteralElement) singleOperand.getSingleOperand()).getLiteral());
+                        } else {
+                            Operand o1 = (Operand)singleOperand.getSingleOperand();
+                            System.out.println("\t" + singleOperand.getInstType() + " Operand: " + o1.getName() + " " + o1.getType());
+                        }
+                    }
+                    if (rhs instanceof BinaryOpInstruction){
+                        OperationType operation = ((UnaryOpInstruction) rhs).getUnaryOperation().getOpType();
+                        switch (operation){
+                            case ADD:
+                                break;
+                            case SUB:
+                                break;
+                            case DIV:
+                                break;
+                            case MUL:
+                                break;
+                        }
+                    }
+
+                    //System.out.println(dest.getParamId());
+
+                    break;
+                case CALL:
+                    break;
+                case GOTO:
+                    break;
+                case BRANCH:
+                    break;
+                case RETURN:
+                    break;
+                case PUTFIELD:
+                    break;
+                case GETFIELD:
+                    break;
+                case UNARYOPER:
+                    break;
+                case BINARYOPER:
+                    break;
+                case NOPER:
+                    break;
+            }
+        }
+    }
+
     public void addAccessModifier(AccessModifiers modifier){
         switch (modifier){
             case PUBLIC:
@@ -121,6 +183,9 @@ public class BackendStage implements JasminBackend {
         }
 
         addType(method.getReturnType());
+
+        MethodOperations(method);
+
         jasmin.append("\n.end method\n");
 
     }
@@ -169,34 +234,6 @@ public class BackendStage implements JasminBackend {
 
             for (var method: ollirClass.getMethods()){
                 methodLine(method);
-
-                for (var inst: method.getInstructions()) {
-                    //System.out.println("inst " + inst.getInstType());
-
-                    switch (inst.getInstType()) {
-                        case ASSIGN:
-                            //System.out.println(inst);
-                            break;
-                        case CALL:
-                            break;
-                        case GOTO:
-                            break;
-                        case BRANCH:
-                            break;
-                        case RETURN:
-                            break;
-                        case PUTFIELD:
-                            break;
-                        case GETFIELD:
-                            break;
-                        case UNARYOPER:
-                            break;
-                        case BINARYOPER:
-                            break;
-                        case NOPER:
-                            break;
-                    }
-                }
             }
 
             System.out.println("\nJASMIN");
