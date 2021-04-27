@@ -1,15 +1,11 @@
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Properties;
-import java.io.StringReader;
-
 import pt.up.fe.comp.TestUtils;
-import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.ollir.OllirResult;
+import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
+
+import java.util.ArrayList;
 
 
 public class Tests {
@@ -202,6 +198,16 @@ public class Tests {
         var res = TestUtils.parse(jmmCode);
         System.out.println("Report: " + res.getReports());
         TestUtils.mustFail(res.getReports());
+    }
+
+    @Test
+    public void jasmin_test() {
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")),null,new ArrayList<>()));
+
+        /*String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
+        var res =
+        System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());*/
     }
 
 }
