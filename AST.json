@@ -18,7 +18,7 @@
             "attributes": {
               "col": "8",
               "line": "1",
-              "name": "io"
+              "name": "ioPlus"
             },
             "children": []
           }
@@ -57,24 +57,50 @@
                 "children": []
               },
               {
-                "kind": "Statement",
+                "kind": "LocalVariableDeclaration",
                 "attributes": {
                   "col": "9",
                   "line": "4"
                 },
                 "children": [
                   {
+                    "kind": "int",
+                    "attributes": {
+                      "col": "9",
+                      "line": "4"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "col": "13",
+                      "line": "4",
+                      "name": "a"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "5"
+                },
+                "children": [
+                  {
                     "kind": "TwoPartExpression",
                     "attributes": {
                       "col": "15",
-                      "line": "4"
+                      "line": "5"
                     },
                     "children": [
                       {
                         "kind": "Identifier",
                         "attributes": {
                           "col": "9",
-                          "line": "4",
+                          "line": "5",
                           "name": "ioPlus"
                         },
                         "children": []
@@ -83,21 +109,21 @@
                         "kind": "DotExpression",
                         "attributes": {
                           "col": "15",
-                          "line": "4"
+                          "line": "5"
                         },
                         "children": [
                           {
                             "kind": "MethodCall",
                             "attributes": {
                               "col": "16",
-                              "line": "4"
+                              "line": "5"
                             },
                             "children": [
                               {
                                 "kind": "Identifier",
                                 "attributes": {
                                   "col": "16",
-                                  "line": "4",
+                                  "line": "5",
                                   "name": "printHelloWorld"
                                 },
                                 "children": []
