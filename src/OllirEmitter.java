@@ -46,13 +46,13 @@ public class OllirEmitter implements JmmVisitor {
 
     @Override
     public Object visit(JmmNode node, Object data) {
-        System.out.println("\n\nNODE: ");
+        /*System.out.println("\n\nNODE: ");
         System.out.println("String: "  +node.toString());
         System.out.println("Type: " + node.getClass().getComponentType());
         System.out.println("Kind: " + node.getKind());
         System.out.println("Class: " + node.getClass());
         System.out.println("Attributes: " + node.getAttributes());
-        System.out.println("Children: " + node.getChildren());
+        System.out.println("Children: " + node.getChildren());             */
 
         switch (node.getKind()) {
             case "Class":
@@ -198,56 +198,73 @@ public class OllirEmitter implements JmmVisitor {
 
     }
 
-
-
     private void generateMethodBody(JmmNode method) {
         for (int i = 0; i < method.getNumChildren(); i++) {
 
             JmmNode node = method.getChildren().get(i);
-
             //Already processed
             //retirar se for argumento ou declaração de variaveis e return
 
-            //If is not any of the others, it is a statement
-            generateStatement(node, false);
+           if(node.getKind().equals("Statement")){
+                 generateStatement(node, false);
+           }
+
 
         }
     }
 
-    private void generateStatement(JmmNode node, boolean insideIfOrWhile) {
-        if (node.getKind().equals("TwoPartExpression")) {
+    private void generateStatement(JmmNode n, boolean insideIfOrWhile) {
+       for (int i = 0; i < n.getNumChildren(); i++) {
+           JmmNode node = n.getChildren().get(i);
+          
+           if (node.getKind().equals("Assign")) {
+               JmmNode first = node.getChildren().get(0);
+             //  JmmNode second = node.getChildren().get(1);
 
+               if (first.getKind().equals("Identifier")) {
+                   stringCode.append(first.get("name") + " := ");
+               } else {
+                   generateExpression(first);
+                   stringCode.append(" := ");
+               }
+              /* if (second.getKind().equals("Identifier")) {
+                   stringCode.append(second.get("name") + ";\n" );
+               } else {
+                   generateExpression(second);
+               }         */
+           }
+       }
 
-        } else if (node.getKind().equals("TwoPartExpression")) {
-
-
-        } else if (node.getKind().equals("While")) {
-
-
-        } else if (node.getKind().equals("If")) {
-
-        }
-        else if (node.getKind().equals("StatementBlock")) {
-            for (int i = 0; i < node.getNumChildren(); i++)
-                generateStatement((SimpleNode) node.getChildren().get(i), insideIfOrWhile);
-        }
-
-        //If it is not any of the others it is an expression
-        generateExpression(node);
     }
 
 
     private void generateExpression(JmmNode node) {
+        if (node.getKind()=="AdditiveExpression"){
+            JmmNode first=node.getChildren().get(0);
+            JmmNode second= node.getChildren().get(1);
+            addExp(first,second,node.get("operator"));
+        }
+        else if(node.getKind()=="TwoPartExpression"){
+
+        }
+    }
+
+    private void addExp(JmmNode node1, JmmNode node2, String op){
+        if(node1.getKind()=="Identifier"){
+            stringCode.append(node1.get("name") + op )  ;
+        }
+        else{
+            generateExpression(node1);
+        }
+        if(node2.getKind().equals("Identifier")){
+             stringCode.append(node2.get("name") + ";\n" )  ;
+        }
+        else{ generateExpression(node2);}
+
 
     }
 
-
     private void generateGlobalVar(JmmNode node) {
-        /*if (var.getChildren().get(0).) {
-            ASTType nodeType = (ASTType) var.jjtGetChild(0);
-            printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
-        }*/
-
         JmmNode typeNode = node.getChildren().get(0);
         JmmNode nameNode = node.getChildren().get(1);
         String type = null;
