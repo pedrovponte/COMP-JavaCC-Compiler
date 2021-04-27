@@ -56,7 +56,7 @@ public class OllirEmitter implements JmmVisitor {
 
         switch (node.getKind()) {
             case "Class":
-                this.generateClass(node);
+                generateClass(node);
         }
 
         return defaultVisit(node,"");
@@ -67,8 +67,8 @@ public class OllirEmitter implements JmmVisitor {
         stringCode.append(symbolTable.getClassName() + "{\n");
         //stringCode.append( ".construct public " + symbolTable.getClassName() + "().V \n");
 
-        this.generateClassVariables(classNode);
-        this.generateConstructor();
+        generateClassVariables(classNode);
+        generateConstructor();
 
         List<JmmNode> children = classNode.getChildren();
         for(int i = 0; i < children.size(); i++) {
@@ -76,10 +76,10 @@ public class OllirEmitter implements JmmVisitor {
 
             switch (child.getKind()) {
                 case "Main":
-                    this.generateMain(child);
+                    generateMain(child);
                     break;
                 case "Method":
-                    this.generateMethod(child);
+                    generateMethod(child);
                     break;
             }
         }
@@ -102,9 +102,33 @@ public class OllirEmitter implements JmmVisitor {
         }
     }
 
+    private void generateGlobalVar(JmmNode node) {
+        /*if (var.getChildren().get(0).) {
+            ASTType nodeType = (ASTType) var.jjtGetChild(0);
+            printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
+        }*/
+
+        JmmNode typeNode = node.getChildren().get(0);
+        JmmNode nameNode = node.getChildren().get(1);
+        String type = null;
+        String name = null;
+
+        if(typeNode.getKind().equals("Identifier")) {
+            type = typeNode.get("name");
+        }
+        else {
+            type = typeNode.getKind();
+        }
+
+        name = nameNode.get("name");
+
+        stringCode.append("\n\t.field private " + name + "." + getType(type) + ";\n");
+
+    }
+
     private void generateMain(JmmNode node) {
-        this.generateMainMethodHeader(node);
-        this.generateMainMethodBody(node);
+        generateMainMethodHeader(node);
+        generateMainMethodBody(node);
         stringCode.append("\t}\n");
     }
 
@@ -132,31 +156,35 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     public void generateMainMethodBody(JmmNode node) {
-        for (int i = 0; i < node.getNumChildren(); i++) {
-
+        for (int i = 1; i < node.getNumChildren(); i++) {
             JmmNode child = node.getChildren().get(i);
+
+            switch (child.getKind()) {
+                case "Statement":
+                    generateStatement(child, false);
+                    break;
+            }
 
             //Already processed
             //retirar se for argumento ou declaração de variaveis e return
 
             //If is not any of the others, it is a statement
-            generateStatement(node, false);
+            //generateStatement(node, false);
 
         }
     }
 
     private void generateMethod(JmmNode node) {
-        this.generateMethodHeader(node);
-        this.generateMethodBody(node);
+        String methodName = generateMethodHeader(node);
+        generateMethodBody(node, methodName);
         stringCode.append("\t}\n");
 
     }
 
-    private void generateMethodHeader(JmmNode methodNode) {
+    private String generateMethodHeader(JmmNode methodNode) {
         StringBuilder methodArgs = new StringBuilder();
         StringBuilder methodType = new StringBuilder();
 
-        System.out.println("NOOOOOOOOOOODE: " + methodNode);
         String methodName = methodNode.getChildren().get(1).get("name");
         List<Symbol> args = symbolTable.getParameters(methodName);
 
@@ -184,35 +212,32 @@ public class OllirEmitter implements JmmVisitor {
 
         stringCode.append("\n\t.method public " + methodName + "(" + methodArgs + ")" + methodType + " {\n");
 
-//        for (int i = 0; i < methodNode.getNumChildren(); i++) {
-//            JmmNode child =  methodNode.getChildren().get(i);
-//            if (child.getKind().equals("Identifier") && child.toString().equals("args")) {
-//                methodArgs.append("");
-//                this.nParams++;
-//            }
-//        }
-//
-//
-//
-//        stringCode.append("\n\t.method public " + method.getName() + "(" + methodArgs.toString() + ")." + this.getType(method.getType())+ " { \n");
-
+        return methodName;
     }
 
+    private void generateMethodBody(JmmNode node, String methodName) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
 
-
-    private void generateMethodBody(JmmNode method) {
-        for (int i = 0; i < method.getNumChildren(); i++) {
-
-            JmmNode node = method.getChildren().get(i);
+            JmmNode child = node.getChildren().get(i);
 
             //Already processed
             //retirar se for argumento ou declaração de variaveis e return
 
             //If is not any of the others, it is a statement
+
+            switch (child.getKind()) {
+                case "Statement":
+                    generateStatement(child, false);
+                    break;
+                case "Return":
+                    generateReturn(child, methodName);
+                    break;
+            }
             generateStatement(node, false);
 
         }
     }
+
 
     private void generateStatement(JmmNode node, boolean insideIfOrWhile) {
         if (node.getKind().equals("TwoPartExpression")) {
@@ -229,7 +254,7 @@ public class OllirEmitter implements JmmVisitor {
         }
         else if (node.getKind().equals("StatementBlock")) {
             for (int i = 0; i < node.getNumChildren(); i++)
-                generateStatement((SimpleNode) node.getChildren().get(i), insideIfOrWhile);
+                generateStatement(node.getChildren().get(i), insideIfOrWhile);
         }
 
         //If it is not any of the others it is an expression
@@ -241,30 +266,71 @@ public class OllirEmitter implements JmmVisitor {
 
     }
 
+    private void generateReturn(JmmNode node, String methodName) {
+        String returnType = symbolTable.getReturnType(methodName).getName();
+        if(symbolTable.getReturnType(methodName).isArray()) {
+            returnType += "[]";
+        }
 
-    private void generateGlobalVar(JmmNode node) {
-        /*if (var.getChildren().get(0).) {
-            ASTType nodeType = (ASTType) var.jjtGetChild(0);
-            printWriterFile.println(".field private " + var.name + " " + getType(nodeType));
-        }*/
+        JmmNode returnVarNode = node.getChildren().get(0);
+        String varKind = returnVarNode.getKind();
+        String var = null;
 
-        JmmNode typeNode = node.getChildren().get(0);
-        JmmNode nameNode = node.getChildren().get(1);
-        String type = null;
-        String name = null;
+        if(varKind.equals("Identifier")) {
+            var = returnVarNode.get("name");
 
-        if(typeNode.getKind().equals("Identifier")) {
-            type = typeNode.get("name");
+            List<Symbol> vars = new ArrayList<>();
+
+            if(symbolTable.getLocalVariables(methodName) != null) {
+                for(int i = 0; i < symbolTable.getLocalVariables(methodName).size(); i++) {
+                    vars.add(symbolTable.getLocalVariables(methodName).get(i));
+                }
+            }
+
+            /*if(symbolTable.getFields() != null) {
+                for(int i = 0; i < symbolTable.getFields().size(); i++) {
+                    vars.add(symbolTable.getFields().get(i));
+                }
+            }*/
+
+            Boolean found = false;
+
+            for(int i = 0; i < vars.size(); i++) {
+                if(vars.get(i).getName().equals(var)) {
+                    varKind = vars.get(i).getType().getName();
+                    if(vars.get(i).getType().isArray()) {
+                        varKind += "[]";
+                    }
+                    found = true;
+                }
+            }
+
+            if(!found) {
+                vars = symbolTable.getFields();
+
+                for(int i = 0; i < vars.size(); i++) {
+                    if(vars.get(i).getName().equals(var)) {
+                        varKind = vars.get(i).getType().getName();
+                        if(vars.get(i).getType().isArray()) {
+                            varKind += "[]";
+                        }
+                    }
+                }
+
+                String type = getType(varKind);
+                String tempVar = "t1";
+                stringCode.append("\t\t" + tempVar + "." + type + " :=." + type + " getfield(o1, " + var + "." + type + ")." + type + ";\n");
+                var = tempVar;
+            }
+
         }
         else {
-            type = typeNode.getKind();
+            var = returnVarNode.get("value");
         }
 
-        name = nameNode.get("name");
-
-        stringCode.append("\n\t.field private " + name + "." + getType(type) + ";\n");
-
+        stringCode.append("\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
     }
+
 
     private String getType(Type nodeType) {
 
