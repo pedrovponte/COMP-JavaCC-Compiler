@@ -213,8 +213,14 @@ void Method() : {}
     <RPAREN>
     <LBRACE>
     MethodDeclarationBody()
-    <RETURN> #Return Expression() <SEMICOLON>
+    //<RETURN> #Return Expression() <SEMICOLON>
+    Return()
     <RBRACE>
+}
+
+void Return() #Return : {}
+{
+    <RETURN> Expression() <SEMICOLON>
 }
 
 void Args() : {}

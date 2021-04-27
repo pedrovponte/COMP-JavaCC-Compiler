@@ -32,7 +32,7 @@ public class OptimizeTest {
     }
 
     @Test
-    public void Simple() {
+    public void testSimple() {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Simple.jmm"));
         TestUtils.noErrors(result.getReports());
     }
