@@ -3,11 +3,15 @@ class Simple {
 
     public int add(int a, int b){
         int c;
-        c = a + this.constInstr();
+        int k;
+        k = 3;
+        bool j;
+        j= k<a;
+        c = a + b * k;
         return c;
     }
 
-    public static void main(String[] args){
+  /*  public static void main(String[] args){
         int a;
         int b;
         int c;
@@ -31,5 +35,5 @@ class Simple {
         c = 100474650;
 		c = 10;
         return c;
-    }
+    }*/
 }

@@ -105,6 +105,19 @@ public class SymbolTableImp implements SymbolTable {
         return null;
     }
 
+    public List<String> getMethodVarsInitStr(String methodName) {
+        List<String> ret = new ArrayList<>();
+        for(String key : this.methodVarsInit.keySet()) {
+            if(key.equals(methodName)) {
+                for(Symbol key2 :this.methodVarsInit.get(key).keySet())
+                    ret.add(key2.getName());
+            }
+
+        }
+        return ret;
+    }
+
+
     public void addImport(String importName) {
         this.imports.add(importName);
     }

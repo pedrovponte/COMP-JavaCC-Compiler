@@ -31,6 +31,8 @@ public class OllirEmitter implements JmmVisitor {
     private List<Symbol> methodParameters;
     private List<String> methodParametersNames;
     private String methodName;
+    public  List<Integer> registersAvailable;
+    private StringBuilder aux;
 
 
 
@@ -41,6 +43,7 @@ public class OllirEmitter implements JmmVisitor {
         this.nParams = 0;
         this.maxStack = 0;
         this.totalStack = 0;
+        this.aux= new StringBuilder();
         this.stringCode = new StringBuilder();
         this.bodyCode = new StringBuilder();
         this.localVariables = new ArrayList<>();
@@ -48,6 +51,10 @@ public class OllirEmitter implements JmmVisitor {
         this.methodParameters = new ArrayList<>();
         this.methodParametersNames = new ArrayList<>();
         this.methodName = null;
+        registersAvailable = new ArrayList<>();
+        for (int i = 1; i <= 100; i++)
+            registersAvailable.add(i);
+
     }
 
 
@@ -106,7 +113,7 @@ public class OllirEmitter implements JmmVisitor {
     private void generateClassVariables(JmmNode node) {
         for (int i = 0; i < node.getNumChildren(); i++) {
             JmmNode child =  node.getChildren().get(i);
-           // stringCode.append(node.toString() + "\n");
+            // stringCode.append(node.toString() + "\n");
             if (child.getKind().equals("VarDeclaration")) {
                 generateGlobalVar(child);
             }
@@ -319,30 +326,69 @@ public class OllirEmitter implements JmmVisitor {
         }
     }
 
-
     private void generateExpression(JmmNode node, String methodName) {
+
         if (node.getKind().equals("AdditiveExpression") || node.getKind().equals("SubtractiveExpression") || node.getKind().equals("MultiplicativeExpression") || node.getKind().equals("DivisionExpression")){
             JmmNode first = node.getChildren().get(0);
             JmmNode second = node.getChildren().get(1);
             addExp(first,second,node.get("operation"), methodName);
         }
+        else if(node.getKind().equals("Less")){
+            JmmNode first = node.getChildren().get(0);
+            JmmNode second = node.getChildren().get(1);
+            lessExp(first,second,methodName);
+        }
+        else if(node.getKind().equals("And")) {
+
+        }
+        else if(node.getKind().equals("Not")){
+
+        }
     }
 
     private void addExp(JmmNode node1, JmmNode node2, String op, String methodname){
+        int registerUsed = registersAvailable.remove(0);
+        if(!node2.getKind().equals("Identifier")){
+            aux.append("t"+registerUsed);
+            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+            generateExpression(node2, methodname);
+        }
+       else{
+            if(node1.getKind().equals("Identifier")){
+                String type = getNodeType(node1);
+                stringCode.append(node1.get("name") + "." + getType(type) + " " + op + ".i32 " );
+            }
+            else{
+                generateExpression(node1, methodname);
+            }
+            if(node2.getKind().equals("Identifier")){
+                String type = getNodeType(node2);
+                stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
+            }
+            else{
+                aux.append("t"+registerUsed);
+                stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+                generateExpression(node2, methodname);
+            }
+        }
+
+    }
+
+    private void lessExp(JmmNode node1, JmmNode node2,  String methodname){
+        int registerUsed = registersAvailable.remove(0);
         if(node1.getKind().equals("Identifier")){
             String type = getNodeType(node1);
-
-            stringCode.append(node1.get("name") + "." + getType(type) + " " + op + ".i32 ");
+            stringCode.append(node1.get("name") + "." + getType(type) + " < "+ ".i32 ");
         }
         else{
             generateExpression(node1, methodname);
         }
         if(node2.getKind().equals("Identifier")){
             String type = getNodeType(node2);
-
             stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
         }
         else{
+            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
             generateExpression(node2, methodname);
         }
     }
@@ -440,7 +486,6 @@ public class OllirEmitter implements JmmVisitor {
 
         stringCode.append("\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
     }
-
 
     private String getType(Type nodeType) {
 
