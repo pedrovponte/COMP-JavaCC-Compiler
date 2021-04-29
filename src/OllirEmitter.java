@@ -153,13 +153,17 @@ public class OllirEmitter implements JmmVisitor {
             this.methodParametersNames.add(this.methodParameters.get(i).getName());
         }
 
+
         if(symbolTable.getLocalVariables(this.methodName) != null) {
             this.localVariables = symbolTable.getLocalVariables(this.methodName);
         }
 
-        for(int i = 0; i < this.localVariables.size(); i++) {
-            this.localVariablesNames.add(this.localVariables.get(i).getName());
+        if(this.localVariables != null) {
+            for(int i = 0; i < this.localVariables.size(); i++) {
+                this.localVariablesNames.add(this.localVariables.get(i).getName());
+            }
         }
+
 
         for(int i = 0; i < this.methodParameters.size(); i++) {
             if(i > 0) {
@@ -215,14 +219,20 @@ public class OllirEmitter implements JmmVisitor {
 
         this.methodParameters = symbolTable.getParameters(this.methodName);
 
-        for(int i = 0; i < this.methodParameters.size(); i++) {
-            this.methodParametersNames.add(this.methodParameters.get(i).getName());
+        if(methodParameters != null) {
+            for(int i = 0; i < this.methodParameters.size(); i++) {
+                this.methodParametersNames.add(this.methodParameters.get(i).getName());
+            }
         }
 
         this.localVariables = symbolTable.getLocalVariables(this.methodName);
-        for(int i = 0; i < this.localVariables.size(); i++) {
-            this.localVariablesNames.add(this.localVariables.get(i).getName());
+
+        if(localVariables != null) {
+            for(int i = 0; i < this.localVariables.size(); i++) {
+                this.localVariablesNames.add(this.localVariables.get(i).getName());
+            }
         }
+
 
         if(this.methodParameters != null) {
             for (int i = 0; i < this.methodParameters.size(); i++) {
@@ -292,7 +302,12 @@ public class OllirEmitter implements JmmVisitor {
                 if (second.getKind().equals("Identifier")) {
                     type = getNodeType(second);
 
-                    stringCode.append(second.get("name") + "." + getType(type) + ";\n" );
+                    stringCode.append(second.get("name") + "." + getType(type) + ";\n");
+                }
+                else if(second.getKind().equals("int")) {
+                    type = "int";
+
+                    stringCode.append(second.get("value") + "." + getType(type) + ";\n");
                 }
                 else {
                     generateExpression(second, methodName);
@@ -306,7 +321,7 @@ public class OllirEmitter implements JmmVisitor {
 
 
     private void generateExpression(JmmNode node, String methodName) {
-        if (node.getKind().equals("AdditiveExpression")){
+        if (node.getKind().equals("AdditiveExpression") || node.getKind().equals("SubtractiveExpression") || node.getKind().equals("MultiplicativeExpression") || node.getKind().equals("DivisionExpression")){
             JmmNode first = node.getChildren().get(0);
             JmmNode second = node.getChildren().get(1);
             addExp(first,second,node.get("operation"), methodName);
