@@ -14,6 +14,7 @@ import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 import pt.up.fe.comp.jmm.ast.JmmVisitor;
+import pt.up.fe.comp.jmm.ast.PostorderJmmVisitor;
 
 public class OllirEmitter implements JmmVisitor {
 
@@ -32,6 +33,7 @@ public class OllirEmitter implements JmmVisitor {
     private List<String> methodParametersNames;
     private String methodName;
     public  List<Integer> registersAvailable;
+    public  List<Symbol> registersUsed;
     private StringBuilder aux;
 
 
@@ -329,6 +331,8 @@ public class OllirEmitter implements JmmVisitor {
     private void generateExpression(JmmNode node, String methodName) {
 
         if (node.getKind().equals("AdditiveExpression") || node.getKind().equals("SubtractiveExpression") || node.getKind().equals("MultiplicativeExpression") || node.getKind().equals("DivisionExpression")){
+            var visitor= new visitorExp(node.getKind());
+            String a= visitor.visit(node);
             JmmNode first = node.getChildren().get(0);
             JmmNode second = node.getChildren().get(1);
             addExp(first,second,node.get("operation"), methodName);
@@ -348,12 +352,7 @@ public class OllirEmitter implements JmmVisitor {
 
     private void addExp(JmmNode node1, JmmNode node2, String op, String methodname){
         int registerUsed = registersAvailable.remove(0);
-        if(!node2.getKind().equals("Identifier")){
-            aux.append("t"+registerUsed);
-            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
-            generateExpression(node2, methodname);
-        }
-       else{
+
             if(node1.getKind().equals("Identifier")){
                 String type = getNodeType(node1);
                 stringCode.append(node1.get("name") + "." + getType(type) + " " + op + ".i32 " );
@@ -370,7 +369,7 @@ public class OllirEmitter implements JmmVisitor {
                 stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
                 generateExpression(node2, methodname);
             }
-        }
+
 
     }
 
