@@ -31,9 +31,9 @@ public class OllirEmitter implements JmmVisitor {
     private List<Symbol> methodParameters;
     private List<String> methodParametersNames;
     private String methodName;
-    public  List<Integer> registersAvailable;
+    public  List<Symbol> registersAvailable;
     private StringBuilder aux;
-
+    private int tempVarsCount;
 
 
     public OllirEmitter(SymbolTable table) {
@@ -51,10 +51,8 @@ public class OllirEmitter implements JmmVisitor {
         this.methodParameters = new ArrayList<>();
         this.methodParametersNames = new ArrayList<>();
         this.methodName = null;
-        registersAvailable = new ArrayList<>();
-        for (int i = 1; i <= 100; i++)
-            registersAvailable.add(i);
-
+        this.registersAvailable = new ArrayList<>();
+        this.tempVarsCount = 1;
     }
 
 
@@ -347,10 +345,10 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void addExp(JmmNode node1, JmmNode node2, String op, String methodname){
-        int registerUsed = registersAvailable.remove(0);
+        Symbol tempVar = addTempVar("int", false);
         if(!node2.getKind().equals("Identifier")){
-            aux.append("t"+registerUsed);
-            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+            aux.append(tempVar.getName());
+            stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
             generateExpression(node2, methodname);
         }
        else{
@@ -366,8 +364,8 @@ public class OllirEmitter implements JmmVisitor {
                 stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
             }
             else{
-                aux.append("t"+registerUsed);
-                stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+                aux.append(tempVar.getName());
+                stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
                 generateExpression(node2, methodname);
             }
         }
@@ -375,7 +373,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void lessExp(JmmNode node1, JmmNode node2,  String methodname){
-        int registerUsed = registersAvailable.remove(0);
+        Symbol tempVar = addTempVar("int", false);
         if(node1.getKind().equals("Identifier")){
             String type = getNodeType(node1);
             stringCode.append(node1.get("name") + "." + getType(type) + " < "+ ".i32 ");
@@ -388,7 +386,7 @@ public class OllirEmitter implements JmmVisitor {
             stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
         }
         else{
-            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+            stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
             generateExpression(node2, methodname);
         }
     }
@@ -575,6 +573,13 @@ public class OllirEmitter implements JmmVisitor {
             content += visit(child, space + " ");
         }
         return content;
+    }
+
+    private Symbol addTempVar(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
+        this.registersAvailable.add(s);
+        this.tempVarsCount++;
+        return s;
     }
 
     @Override
