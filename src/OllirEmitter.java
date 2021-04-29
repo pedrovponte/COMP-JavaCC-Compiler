@@ -31,7 +31,7 @@ public class OllirEmitter implements JmmVisitor {
     private List<Symbol> methodParameters;
     private List<String> methodParametersNames;
     private String methodName;
-    public  List<Symbol> registersAvailable;
+    public  List<Symbol> tempRegisters;
     private StringBuilder aux;
     private int tempVarsCount;
 
@@ -51,7 +51,7 @@ public class OllirEmitter implements JmmVisitor {
         this.methodParameters = new ArrayList<>();
         this.methodParametersNames = new ArrayList<>();
         this.methodName = null;
-        this.registersAvailable = new ArrayList<>();
+        this.tempRegisters = new ArrayList<>();
         this.tempVarsCount = 1;
     }
 
@@ -577,7 +577,7 @@ public class OllirEmitter implements JmmVisitor {
 
     private Symbol addTempVar(String type, Boolean isArray) {
         Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
-        this.registersAvailable.add(s);
+        this.tempRegisters.add(s);
         this.tempVarsCount++;
         return s;
     }
