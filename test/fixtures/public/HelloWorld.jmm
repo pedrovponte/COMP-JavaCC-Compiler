@@ -1,6 +1,18 @@
 import ioPlus;
 class HelloWorld {
     public static void main(String[] args) {
+        //ioPlus.printHelloWorld(new HelloWorld().test(1));
         ioPlus.printHelloWorld();
+
     }
+
+    /*public int test(int a) {
+        int b;
+        b = a + 2;
+        return b;
+    }
+
+    public int test1(int a) {
+        return this.test(a);
+    }*/
 }

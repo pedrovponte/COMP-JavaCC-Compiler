@@ -14,11 +14,12 @@ import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 import pt.up.fe.comp.jmm.ast.JmmVisitor;
+import pt.up.fe.comp.jmm.ast.PostorderJmmVisitor;
 
 public class OllirEmitter implements JmmVisitor {
 
     private PrintWriter printWriterFile;
-    private  SymbolTableImp symbolTable;
+    private SymbolTableImp symbolTable;
     private int loopCounter;
     private int localVars;
     private int nParams;
@@ -37,7 +38,7 @@ public class OllirEmitter implements JmmVisitor {
 
 
     public OllirEmitter(SymbolTable table) {
-        symbolTable = (SymbolTableImp)table;
+        this.symbolTable = (SymbolTableImp) table;
         this.loopCounter = 0;
         this.localVars = 0;
         this.nParams = 0;
@@ -396,7 +397,11 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     public void generateTwoPartExpression(JmmNode node) { //InsideArray or DotExpression
-        JmmNode firstChild = node.getChildren().get(0);
+        System.out.println("METHODS: " + this.methods);
+        TwoPartExpressionVisitor twoPartExpressionVisitor = new TwoPartExpressionVisitor(this.methods, stringCode, this.symbolTable, this.methodName, this.methodParametersNames, this.globalVariables, this.globalVariablesNames, this.methodParameters, this.localVariables, this.localVariablesNames);
+        twoPartExpressionVisitor.visit(node, stringCode);
+
+        /*JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
         switch (secondChild.getKind()) {
@@ -405,7 +410,7 @@ public class OllirEmitter implements JmmVisitor {
                 break;
             case "InsideArray":
                 break;
-        }
+        }*/
     }
 
     private void generateDotExpression(JmmNode firstChild, JmmNode secondChild) { //Length or MethodCall
@@ -441,10 +446,20 @@ public class OllirEmitter implements JmmVisitor {
             stringCode.append(firstChild.get("name") + ", \"" + methodName + "\"");
         }
         else if(firstChild.getKind().equals("This")) {
-
+            stringCode.append("this, \"" + methodName + "\"");
         }
-        else if(firstChild.getKind().equals("New")) {
+        else if(firstChild.getKind().equals("New")) { // New -> ClassCall -> Identifier
+//            aux1.Fac :=.Fac new(Fac).Fac;
+//            invokespecial(aux1.Fac,"<init>").V;
+//            aux2.i32 :=.i32 invokevirtual(aux1.Fac,"compFac",10.i32).i32;
+//            invokestatic(io, "println", aux2.i3).V;
 
+            JmmNode child = firstChild.getChildren().get(0);
+            if(child.getKind().equals("ClassCall")) {
+                String className = child.getChildren().get(0).get("name");
+                stringCode.append("\t\tt1." + className + " :=." + className + " new(" + className + ")." + className + ";\n");
+                stringCode.append("\t\tinvokespecial(t1." + className + ", \"<init>\").V;\n");
+            }
         }
 
         if(methodNode.getNumChildren() == 1) {
@@ -458,7 +473,7 @@ public class OllirEmitter implements JmmVisitor {
                     String type = getNodeType(child);
 
                     if(this.methodParametersNames.contains(child.get("name"))) {
-                        int idx = methodParametersNames.indexOf(child.get("name"));
+                        int idx = this.methodParametersNames.indexOf(child.get("name"));
                         stringCode.append(", " + "$" + idx + "." + child.get("name") + "." + getType(type));
                     }
                     else {
@@ -539,6 +554,10 @@ public class OllirEmitter implements JmmVisitor {
                 var = "t1";
             }
 
+        }
+        else if(varKind.equals("TwoPartExpression")) { // como fazer return this.test(a); ??
+            generateTwoPartExpression(returnVarNode);
+            var = "twopart";
         }
         else {
             var = returnVarNode.get("value");
