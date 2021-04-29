@@ -14,7 +14,6 @@ import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 import pt.up.fe.comp.jmm.ast.JmmVisitor;
-import pt.up.fe.comp.jmm.ast.PostorderJmmVisitor;
 
 public class OllirEmitter implements JmmVisitor {
 
@@ -32,10 +31,9 @@ public class OllirEmitter implements JmmVisitor {
     private List<Symbol> methodParameters;
     private List<String> methodParametersNames;
     private String methodName;
-    public  List<Integer> registersAvailable;
-    public  List<Symbol> registersUsed;
+    public  List<Symbol> registersAvailable;
     private StringBuilder aux;
-
+    private int tempVarsCount;
 
 
     public OllirEmitter(SymbolTable table) {
@@ -53,10 +51,8 @@ public class OllirEmitter implements JmmVisitor {
         this.methodParameters = new ArrayList<>();
         this.methodParametersNames = new ArrayList<>();
         this.methodName = null;
-        registersAvailable = new ArrayList<>();
-        for (int i = 1; i <= 100; i++)
-            registersAvailable.add(i);
-
+        this.registersAvailable = new ArrayList<>();
+        this.tempVarsCount = 1;
     }
 
 
@@ -331,8 +327,6 @@ public class OllirEmitter implements JmmVisitor {
     private void generateExpression(JmmNode node, String methodName) {
 
         if (node.getKind().equals("AdditiveExpression") || node.getKind().equals("SubtractiveExpression") || node.getKind().equals("MultiplicativeExpression") || node.getKind().equals("DivisionExpression")){
-            var visitor= new visitorExp(node.getKind());
-            String a= visitor.visit(node);
             JmmNode first = node.getChildren().get(0);
             JmmNode second = node.getChildren().get(1);
             addExp(first,second,node.get("operation"), methodName);
@@ -351,8 +345,13 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void addExp(JmmNode node1, JmmNode node2, String op, String methodname){
-        int registerUsed = registersAvailable.remove(0);
-
+        Symbol tempVar = addTempVar("int", false);
+        if(!node2.getKind().equals("Identifier")){
+            aux.append(tempVar.getName());
+            stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
+            generateExpression(node2, methodname);
+        }
+        else{
             if(node1.getKind().equals("Identifier")){
                 String type = getNodeType(node1);
                 stringCode.append(node1.get("name") + "." + getType(type) + " " + op + ".i32 " );
@@ -365,16 +364,16 @@ public class OllirEmitter implements JmmVisitor {
                 stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
             }
             else{
-                aux.append("t"+registerUsed);
-                stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+                aux.append(tempVar.getName());
+                stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
                 generateExpression(node2, methodname);
             }
-
+        }
 
     }
 
     private void lessExp(JmmNode node1, JmmNode node2,  String methodname){
-        int registerUsed = registersAvailable.remove(0);
+        Symbol tempVar = addTempVar("int", false);
         if(node1.getKind().equals("Identifier")){
             String type = getNodeType(node1);
             stringCode.append(node1.get("name") + "." + getType(type) + " < "+ ".i32 ");
@@ -387,7 +386,7 @@ public class OllirEmitter implements JmmVisitor {
             stringCode.append(node2.get("name") + "." + getType(type) + ";\n" )  ;
         }
         else{
-            stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
+            stringCode.append("\n\t\t" + tempVar.getName() + ".i32" + " :=.i32 ");
             generateExpression(node2, methodname);
         }
     }
@@ -574,6 +573,13 @@ public class OllirEmitter implements JmmVisitor {
             content += visit(child, space + " ");
         }
         return content;
+    }
+
+    private Symbol addTempVar(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
+        this.registersAvailable.add(s);
+        this.tempVarsCount++;
+        return s;
     }
 
     @Override

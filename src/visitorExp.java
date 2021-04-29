@@ -29,7 +29,7 @@ public class visitorExp extends PostorderJmmVisitor<Boolean, String> {
     }
 
     private String printId(JmmNode node, Boolean dummy) {
-        int registerUsed = 1;
+        /*int registerUsed = 1;
         JmmNode node1 = node.getChildren().get(0);
         JmmNode node2 = node.getChildren().get(1);
 
@@ -48,7 +48,8 @@ public class visitorExp extends PostorderJmmVisitor<Boolean, String> {
             aux.append("t"+registerUsed);
             stringCode.append("\n\t\tt").append(registerUsed).append(".i32").append(" :=").append(".i32 ");
           //  generateExpression(node2, methodname);
-        }
+        }*/
+        return "";
 
 
     }
