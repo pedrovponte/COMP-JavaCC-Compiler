@@ -10,7 +10,6 @@ import java.util.Map;
 public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder, Boolean> {
 
     private List<String> methods;
-    private StringBuilder stringBuilder;
     private SymbolTableImp symbolTable;
     private String methodName;
     private List<String> methodParametersNames;
@@ -21,8 +20,11 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     private List<Symbol> localVariables;
     private List<String> localVariablesNames;
     private boolean firstMultLines;
+    private List<Symbol> tempRegisters;
+    private int tempVarsCount;
+    private Symbol lastSymbol;
 
-public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames) {
+    public TwoPartExpressionVisitor(List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount) {
         this.methods = methods;
         this.symbolTable = symbolTable;
         this.globalVariables = globalVariables;
@@ -34,7 +36,13 @@ public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, 
         this.localVariablesNames = localVariablesNames;
         this.methodType = "void";
         this.firstMultLines = false;
+        this.tempRegisters = tempRegisters;
+        this.tempVarsCount = tempVarsCount;
+        this.lastSymbol = null;
         addVisit("TwoPartExpression", this::visitTwoPartExpression);
+        System.out.println("TEMP VARS: " + this.tempVarsCount);
+        System.out.println("LOCAL: " + this.tempRegisters + "; " + this.tempVarsCount);
+        System.out.println("PASSED: " + tempRegisters + "; " + tempVarsCount);
     }
 
     public Boolean visitTwoPartExpression(JmmNode node, StringBuilder stringBuilder) {
@@ -86,13 +94,15 @@ public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, 
 //            aux1.Fac :=.Fac new(Fac).Fac;
 //            invokespecial(aux1.Fac,"<init>").V;
 //            aux2.i32 :=.i32 invokevirtual(aux1.Fac,"compFac",10.i32).i32;
-//            invokestatic(io, "println", aux2.i3).V;
+//            invokestatic(io, "println", aux2.i32).V;
 
         JmmNode child = node.getChildren().get(0);
         if(child.getKind().equals("ClassCall")) {
             String className = child.getChildren().get(0).get("name");
-            stringBuilder.append("\t\tt1." + className + " :=." + className + " new(" + className + ")." + className + ";\n");
-            stringBuilder.append("\t\tinvokespecial(t1." + className + ", \"<init>\").V;\n");
+            Symbol s = addTempVar(className, false);
+            stringBuilder.append("\t\t" + s.getName() + "." + className + " :=." + className + " new(" + className + ")." + className + ";\n");
+            stringBuilder.append("\t\tinvokespecial(" + s.getName() + "." + className + ", \"<init>\").V;\n");
+            this.lastSymbol = s;
         }
         this.firstMultLines = true;
     }
@@ -100,11 +110,24 @@ public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, 
     public void generateMethodCall(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
         JmmNode callMethodNameNode = node.getChildren().get(0);
         String callMethodName = callMethodNameNode.get("name");
+        Boolean isArray = false;
+        String callType = "void";
 
-        if(this.firstMultLines) { // problema aqui
+        if(symbolTable.getMethods().contains(callMethodName)) {
+            this.methodType = symbolTable.getReturnType(callMethodName).getName();
+            callType = symbolTable.getReturnType(callMethodName).getName();
+            if(symbolTable.getReturnType(callMethodName).isArray()) {
+                this.methodType += "[]";
+                isArray = true;
+            }
+        }
+
+        if(this.firstMultLines) {
             stringBuilder.append(firstChildBuilder);
-            stringBuilder.append("\t\tinvokevirtual(t1.class, \"" + callMethodName + "\"");
+            Symbol s = addTempVar(callType, isArray);
+            stringBuilder.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
             this.firstMultLines = false;
+            this.lastSymbol = s;
         }
         else {
             if(!this.methods.contains(callMethodName)) {
@@ -156,6 +179,13 @@ public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, 
                     }
                     stringBuilder.append(", " + value + "." + getType(type));
                 }
+                else if(child.getKind().equals("TwoPartExpression")) {
+                    String exprType = this.lastSymbol.getType().getName();
+                    if(this.lastSymbol.getType().isArray()) {
+                        exprType += "[]";
+                    }
+                    stringBuilder.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
+                }
             }
             stringBuilder.append(")." + getType(this.methodType) + ";\n");
         }
@@ -206,4 +236,10 @@ public TwoPartExpressionVisitor(List<String> methods, StringBuilder stringCode, 
         return type;
     }
 
+    private Symbol addTempVar(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
+        this.tempRegisters.add(s);
+        this.tempVarsCount++;
+        return s;
+    }
 }
