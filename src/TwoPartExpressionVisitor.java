@@ -23,8 +23,12 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     private List<Symbol> tempRegisters;
     private int tempVarsCount;
     private Symbol lastSymbol;
+    private Boolean isField;
+    private String fieldType;
+    private List<Symbol> objects;
+    private int objectsCount;
 
-    public TwoPartExpressionVisitor(List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount) {
+    public TwoPartExpressionVisitor(List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount, List<Symbol> objects, int objectsCount) {
         this.methods = methods;
         this.symbolTable = symbolTable;
         this.globalVariables = globalVariables;
@@ -39,10 +43,11 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         this.tempRegisters = tempRegisters;
         this.tempVarsCount = tempVarsCount;
         this.lastSymbol = null;
+        this.isField = false;
+        this.fieldType = null;
+        this.objects = objects;
+        this.objectsCount = objectsCount;
         addVisit("TwoPartExpression", this::visitTwoPartExpression);
-        System.out.println("TEMP VARS: " + this.tempVarsCount);
-        System.out.println("LOCAL: " + this.tempRegisters + "; " + this.tempVarsCount);
-        System.out.println("PASSED: " + tempRegisters + "; " + tempVarsCount);
     }
 
     public Boolean visitTwoPartExpression(JmmNode node, StringBuilder stringBuilder) {
@@ -108,6 +113,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     }
 
     public void generateMethodCall(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
+        StringBuilder temp = new StringBuilder();
         JmmNode callMethodNameNode = node.getChildren().get(0);
         String callMethodName = callMethodNameNode.get("name");
         Boolean isArray = false;
@@ -125,16 +131,16 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         if(this.firstMultLines) {
             stringBuilder.append(firstChildBuilder);
             Symbol s = addTempVar(callType, isArray);
-            stringBuilder.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
+            temp.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
             this.firstMultLines = false;
             this.lastSymbol = s;
         }
         else {
             if(!this.methods.contains(callMethodName)) {
-                stringBuilder.append("\t\tinvokestatic(");
+                temp.append("\t\tinvokestatic(");
             }
             else {
-                stringBuilder.append("\t\tinvokespecial(");
+                temp.append("\t\tinvokespecial(");
                 Type mType = symbolTable.getReturnType(callMethodName);
                 this.methodType = mType.getName();
                 if(mType.isArray()) {
@@ -142,11 +148,12 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 }
             }
 
-            stringBuilder.append(firstChildBuilder + ", \"" + callMethodName + "\"");
+            temp.append(firstChildBuilder + ", \"" + callMethodName + "\"");
         }
 
 
         if(node.getNumChildren() == 1) {
+            stringBuilder.append(temp);
             stringBuilder.append(")." + getType(this.methodType) + ";\n"); //sera sempre .V aqui?
         }
         else {
@@ -155,18 +162,34 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
                 if(child.getKind().equals("Identifier")) {
                     String type = getNodeType(child);
+                    Symbol s = null;
 
-                    if(this.methodParametersNames.contains(child.get("name"))) {
-                        int idx = this.methodParametersNames.indexOf(child.get("name"));
-                        stringBuilder.append(", " + "$" + idx + "." + child.get("name") + "." + getType(type));
+                    if(this.isField) {
+                        s = addTempVar(this.fieldType, type.contains("[]"));
+
+                        if(checkIfObject(type)) {
+                            Symbol o = addObject(this.fieldType, type.contains("[]"));
+                            stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(" + o.getName() + "." + getType(type) + ", " + child.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+                        }
+                        else {
+                            stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(this" + ", " + child.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+                        }
+                        this.isField = false;
+                        temp.append(", " + s.getName() + "." + getType(type));
                     }
                     else {
-                        stringBuilder.append(", " + child.get("name") + "." + getType(type));
+                        if(this.methodParametersNames.contains(child.get("name"))) {
+                            int idx = this.methodParametersNames.indexOf(child.get("name"));
+                            temp.append(", " + "$" + idx + "." + child.get("name") + "." + getType(type));
+                        }
+                        else {
+                            temp.append(", " + child.get("name") + "." + getType(type));
+                        }
                     }
                 }
                 else if(child.getKind().equals("int") || child.getKind().equals("int[]")) {
                     String type = child.getKind();
-                    stringBuilder.append(", " + child.get("value") + "." + getType(type));
+                    temp.append(", " + child.get("value") + "." + getType(type));
                 }
                 else if(child.getKind().equals("boolean")) {
                     String type = "boolean";
@@ -177,16 +200,17 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     else {
                         value = "0";
                     }
-                    stringBuilder.append(", " + value + "." + getType(type));
+                    temp.append(", " + value + "." + getType(type));
                 }
                 else if(child.getKind().equals("TwoPartExpression")) {
                     String exprType = this.lastSymbol.getType().getName();
                     if(this.lastSymbol.getType().isArray()) {
                         exprType += "[]";
                     }
-                    stringBuilder.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
+                    temp.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
                 }
             }
+            stringBuilder.append(temp);
             stringBuilder.append(")." + getType(this.methodType) + ";\n");
         }
     }
@@ -229,9 +253,11 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         else {
             int idx = this.globalVariablesNames.indexOf(node.get("name"));
             type = this.globalVariables.get(idx).getType().getName();
+            this.fieldType = type;
             if(this.globalVariables.get(idx).getType().isArray()) {
                 type += "[]";
             }
+            this.isField = true;
         }
         return type;
     }
@@ -241,5 +267,19 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         this.tempRegisters.add(s);
         this.tempVarsCount++;
         return s;
+    }
+
+    private Symbol addObject(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type(type, isArray), "o"+this.objectsCount);
+        this.objects.add(s);
+        this.objectsCount++;
+        return s;
+    }
+
+    private Boolean checkIfObject(String type) {
+        if(!(type.equals("int") && type.equals("int[]") && type.equals("boolean") && type.equals("String[]") && type.equals("String"))) {
+            return false;
+        }
+        return true;
     }
 }
