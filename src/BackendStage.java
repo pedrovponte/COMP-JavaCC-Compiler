@@ -83,7 +83,12 @@ public class BackendStage implements JasminBackend {
 
                 Descriptor descriptor = OllirAccesser.getVarTable(method).get(dest.getName());
 
-                jasmin.append("\tistore " + descriptor.getVirtualReg());
+                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF){
+                    jasmin.append("\tastore " + descriptor.getVirtualReg());
+                }
+                else{
+                    jasmin.append("\tistore " + descriptor.getVirtualReg());
+                }
 
                 break;
             case CALL:
