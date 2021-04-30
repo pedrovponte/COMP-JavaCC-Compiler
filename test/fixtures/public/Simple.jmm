@@ -4,10 +4,12 @@ class Simple {
     public int add(int a, int b){
         int c;
         int k;
+        int l;
+        bool f;
         k = 3;
-        bool j;
-        j= k<a;
-        c = a + b * k;
+        l = 4;
+        c = a - b * c;
+        f= c<a;
         return c;
     }
 

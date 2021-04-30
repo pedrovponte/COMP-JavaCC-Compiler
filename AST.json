@@ -178,38 +178,28 @@
                 ]
               },
               {
-                "kind": "Statement",
+                "kind": "LocalVariableDeclaration",
                 "attributes": {
                   "col": "9",
                   "line": "7"
                 },
                 "children": [
                   {
-                    "kind": "Assign",
+                    "kind": "int",
                     "attributes": {
                       "col": "9",
                       "line": "7"
                     },
-                    "children": [
-                      {
-                        "kind": "Identifier",
-                        "attributes": {
-                          "col": "9",
-                          "line": "7",
-                          "name": "k"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "int",
-                        "attributes": {
-                          "col": "14",
-                          "line": "7",
-                          "value": "3"
-                        },
-                        "children": []
-                      }
-                    ]
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "col": "13",
+                      "line": "7",
+                      "name": "l"
+                    },
+                    "children": []
                   }
                 ]
               },
@@ -234,7 +224,7 @@
                     "attributes": {
                       "col": "14",
                       "line": "8",
-                      "name": "j"
+                      "name": "f"
                     },
                     "children": []
                   }
@@ -259,36 +249,18 @@
                         "attributes": {
                           "col": "9",
                           "line": "9",
-                          "name": "j"
+                          "name": "k"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Less",
+                        "kind": "int",
                         "attributes": {
                           "col": "14",
-                          "line": "9"
+                          "line": "9",
+                          "value": "3"
                         },
-                        "children": [
-                          {
-                            "kind": "Identifier",
-                            "attributes": {
-                              "col": "12",
-                              "line": "9",
-                              "name": "k"
-                            },
-                            "children": []
-                          },
-                          {
-                            "kind": "Identifier",
-                            "attributes": {
-                              "col": "14",
-                              "line": "9",
-                              "name": "a"
-                            },
-                            "children": []
-                          }
-                        ]
+                        "children": []
                       }
                     ]
                   }
@@ -313,23 +285,59 @@
                         "attributes": {
                           "col": "9",
                           "line": "10",
+                          "name": "l"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "int",
+                        "attributes": {
+                          "col": "14",
+                          "line": "10",
+                          "value": "4"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "11"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "11"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "11",
                           "name": "c"
                         },
                         "children": []
                       },
                       {
-                        "kind": "AdditiveExpression",
+                        "kind": "SubtractiveExpression",
                         "attributes": {
                           "col": "22",
-                          "line": "10",
-                          "operation": "+"
+                          "line": "11",
+                          "operation": "-"
                         },
                         "children": [
                           {
                             "kind": "Identifier",
                             "attributes": {
                               "col": "13",
-                              "line": "10",
+                              "line": "11",
                               "name": "a"
                             },
                             "children": []
@@ -338,7 +346,7 @@
                             "kind": "MultiplicativeExpression",
                             "attributes": {
                               "col": "22",
-                              "line": "10",
+                              "line": "11",
                               "operation": "*"
                             },
                             "children": [
@@ -346,7 +354,7 @@
                                 "kind": "Identifier",
                                 "attributes": {
                                   "col": "17",
-                                  "line": "10",
+                                  "line": "11",
                                   "name": "b"
                                 },
                                 "children": []
@@ -355,8 +363,8 @@
                                 "kind": "Identifier",
                                 "attributes": {
                                   "col": "21",
-                                  "line": "10",
-                                  "name": "k"
+                                  "line": "11",
+                                  "name": "c"
                                 },
                                 "children": []
                               }
@@ -369,17 +377,71 @@
                 ]
               },
               {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "12"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "12"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "12",
+                          "name": "f"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Less",
+                        "attributes": {
+                          "col": "14",
+                          "line": "12"
+                        },
+                        "children": [
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "col": "12",
+                              "line": "12",
+                              "name": "c"
+                            },
+                            "children": []
+                          },
+                          {
+                            "kind": "Identifier",
+                            "attributes": {
+                              "col": "14",
+                              "line": "12",
+                              "name": "a"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "kind": "Return",
                 "attributes": {
                   "col": "9",
-                  "line": "11"
+                  "line": "13"
                 },
                 "children": [
                   {
                     "kind": "Identifier",
                     "attributes": {
                       "col": "16",
-                      "line": "11",
+                      "line": "13",
                       "name": "c"
                     },
                     "children": []
