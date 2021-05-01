@@ -27,6 +27,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     private String fieldType;
     private List<Symbol> objects;
     private int objectsCount;
+    private Boolean hasAssign;
 
     public TwoPartExpressionVisitor(List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount, List<Symbol> objects, int objectsCount) {
         this.methods = methods;
@@ -47,6 +48,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         this.fieldType = null;
         this.objects = objects;
         this.objectsCount = objectsCount;
+        this.hasAssign = false;
         addVisit("TwoPartExpression", this::visitTwoPartExpression);
     }
 
@@ -118,6 +120,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         String callMethodName = callMethodNameNode.get("name");
         Boolean isArray = false;
         String callType = "void";
+        this.methodType = "void";
 
         if(symbolTable.getMethods().contains(callMethodName)) {
             this.methodType = symbolTable.getReturnType(callMethodName).getName();
@@ -140,11 +143,17 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 temp.append("\t\tinvokestatic(");
             }
             else {
-                temp.append("\t\tinvokespecial(");
                 Type mType = symbolTable.getReturnType(callMethodName);
                 this.methodType = mType.getName();
                 if(mType.isArray()) {
                     this.methodType += "[]";
+                }
+                if(!mType.equals("void")) {
+                    Symbol s = addTempVar(mType.getName(), mType.isArray());
+                    temp.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " invokespecial(");
+                }
+                else {
+                    temp.append("\t\tinvokespecial(");
                 }
             }
 

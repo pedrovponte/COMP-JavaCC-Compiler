@@ -4,7 +4,6 @@ class HelloWorld {
     public static void main(String[] args) {
         //ioPlus.printHelloWorld(new HelloWorld().test(1));
         ioPlus.printHelloWorld();
-
     }
 
     /*public int test(int a) {
@@ -14,7 +13,7 @@ class HelloWorld {
     }
 
     public int test1(int a) {
-        return this.test(a);
+        return this.test(t);
     }
 
     public int test2() {
