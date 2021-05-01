@@ -340,17 +340,32 @@ public class OllirEmitter implements JmmVisitor {
 
                 if (first.getKind().equals("Identifier")) {
                     type = getNodeType(first);
-                    stringCode.append("\t\t").append(first.get("name")).append(".").append(getType(type)).append(" :=").append(getType(type)).append(" ");
-                    if (!second.getKind().equals("Identifier") && !second.getKind().equals("int")) {
-                        stringCode.append(generateExpression(second, methodName));
-                    }
-                    else if (second.getKind().equals("Identifier")){
+                    if (second.getKind().equals("Identifier")){
+                        stringCode.append("\t\t").append(first.get("name")).append(".").append(getType(type)).append(" :=.").append(getType(type)).append(" ");
                         type = getNodeType(second);
                         stringCode.append(second.get("name")).append(".").append(getType(type)).append(";\n");
                     }
                     else if (second.getKind().equals("int")) {
+                        stringCode.append("\t\t").append(first.get("name")).append(".").append(getType(type)).append(" :=.").append(getType(type)).append(" ");
                         type = "int";
                         stringCode.append(second.get("value")).append(".").append(getType(type)).append(";\n");
+                    }
+                    else if(second.getKind().equals("New")) {
+                        stringCode.append("\t\t").append(first.get("name")).append(".").append(getType(type)).append(" :=.").append(getType(type)).append(" ");
+                        stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
+                        stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V\n");
+                    }
+                    else if(second.getKind().equals("TwoPartExpression")) {
+                        generateTwoPartExpression(second);
+                        stringCode.append("\t\t").append(first.get("name")).append(".").append(getType(type)).append(" :=.").append(getType(type)).append(" ");
+                        String t = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+                        if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
+                            t += "[]";
+                        }
+                        stringCode.append(this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + "." + getType(t) + ";\n");
+                    }
+                    else {
+                        stringCode.append(generateExpression(second, methodName));
                     }
                 } else {
                     stringCode.append(generateExpression(first, methodName));

@@ -1,12 +1,12 @@
 import ioPlus;
 class HelloWorld {
-    //int t;
+    int t;
     public static void main(String[] args) {
         ioPlus.printHelloWorld(new HelloWorld().test(1));
-        //ioPlus.printHelloWorld();
+        ioPlus.printHelloWorld();
     }
 
-    /*public int test(int a) {
+    public int test(int a) {
         int b;
         b = a + 2;
         return b;
@@ -19,5 +19,5 @@ class HelloWorld {
     public int test2() {
         t = 0;
         return t;
-    }*/
+    }
 }

@@ -13,7 +13,7 @@ class Simple {
         return c;
     }
 
-  /*  public static void main(String[] args){
+    public static void main(String[] args){
         int a;
         int b;
         int c;
@@ -37,5 +37,5 @@ class Simple {
         c = 100474650;
 		c = 10;
         return c;
-    }*/
+    }
 }
