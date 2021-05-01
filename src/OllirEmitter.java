@@ -14,6 +14,7 @@ import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 import pt.up.fe.comp.jmm.ast.JmmVisitor;
+import pt.up.fe.comp.jmm.ast.PostorderJmmVisitor;
 
 public class OllirEmitter implements JmmVisitor {
 
@@ -31,15 +32,20 @@ public class OllirEmitter implements JmmVisitor {
     private List<Symbol> methodParameters;
     private List<String> methodParametersNames;
     private String methodName;
-    public List<Symbol> tempRegisters;
+    private List<String> methods;
+    private List<Symbol> globalVariables;
+    private List<String> globalVariablesNames;
+    private List<Symbol> tempRegisters;
+    private List<Symbol> objects;
+    private int tempVarsCount;
+    private int objectsCount;
     private StringBuilder aux1;
     private StringBuilder aux2;
     private StringBuilder auxGeral;
-    private int tempVarsCount;
 
 
     public OllirEmitter(SymbolTable table) {
-        symbolTable = (SymbolTableImp) table;
+        this.symbolTable = (SymbolTableImp) table;
         this.loopCounter = 0;
         this.localVars = 0;
         this.nParams = 0;
@@ -55,8 +61,13 @@ public class OllirEmitter implements JmmVisitor {
         this.methodParameters = new ArrayList<>();
         this.methodParametersNames = new ArrayList<>();
         this.methodName = null;
+        this.methods = new ArrayList<>();
+        this.globalVariables = new ArrayList<>();
+        this.globalVariablesNames = new ArrayList<>();
         this.tempRegisters = new ArrayList<>();
         this.tempVarsCount = 1;
+        this.objects = new ArrayList<>();
+        this.objectsCount = 1;
     }
 
 
@@ -84,6 +95,15 @@ public class OllirEmitter implements JmmVisitor {
 
     private void generateClass(JmmNode classNode) {
         this.localVars = 0;
+        this.methods = symbolTable.getMethods();
+        this.globalVariables = symbolTable.getFields();
+
+        if(this.globalVariables != null) {
+            for(int i = 0; i < this.globalVariables.size(); i++) {
+                this.globalVariablesNames.add(this.globalVariables.get(i).getName());
+            }
+        }
+
         stringCode.append(symbolTable.getClassName() + "{\n");
         //stringCode.append( ".construct public " + symbolTable.getClassName() + "().V \n");
 
@@ -141,11 +161,21 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateMain(JmmNode node) {
-        this.localVariables.clear();
-        this.localVariablesNames.clear();
-        this.methodParameters.clear();
-        this.methodParametersNames.clear();
+        if(this.localVariables != null) {
+            this.localVariables.clear();
+            this.localVariablesNames.clear();
+        }
+
+        if(this.methodParameters != null) {
+            this.methodParameters.clear();
+            this.methodParametersNames.clear();
+        }
+
         this.methodName = "main";
+        this.tempVarsCount = 1;
+        this.tempRegisters.clear();
+        this.objects.clear();
+        this.objectsCount = 1;
         generateMainMethodHeader(node);
         generateMainMethodBody(node);
         stringCode.append("\t}\n");
@@ -210,10 +240,20 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateMethod(JmmNode node) {
-        this.localVariablesNames.clear();
-        this.localVariables.clear();
-        this.methodParameters.clear();
-        this.methodParametersNames.clear();
+        if(localVariablesNames != null) {
+            this.localVariablesNames.clear();
+            this.localVariables.clear();
+        }
+
+        if(methodParameters != null) {
+            this.methodParameters.clear();
+            this.methodParametersNames.clear();
+        }
+
+        this.tempVarsCount = 1;
+        this.tempRegisters.clear();
+        this.objects.clear();
+        this.objectsCount = 1;
         generateMethodHeader(node);
         generateMethodBody(node, this.methodName);
         stringCode.append("\t}\n");
@@ -233,7 +273,9 @@ public class OllirEmitter implements JmmVisitor {
             }
         }
 
-        this.localVariables = symbolTable.getLocalVariables(this.methodName);
+        if(symbolTable.getLocalVariables(this.methodName) != null) {
+            this.localVariables = symbolTable.getLocalVariables(this.methodName);
+        }
 
         if (localVariables != null) {
             for (int i = 0; i < this.localVariables.size(); i++) {
@@ -325,9 +367,8 @@ public class OllirEmitter implements JmmVisitor {
                         stringCode.append(second.get("value")).append(".").append(getType(type)).append(";\n");
                     }
                 }
-
-
-            } else if (child.getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
+            } 
+            else if (child.getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
                 generateTwoPartExpression(child);
             }
         }
@@ -337,7 +378,7 @@ public class OllirEmitter implements JmmVisitor {
         String value;
         value= generateExpression(node, methodName);
         tempVarsCount++;
-        return "\t\tt" + tempVarsCount + type + " :=" + type + " " + value + ";\n";
+        return "\t\tt" + tempVarsCount + "." + type + " :=." + type + " " + value + "." + type + ";\n";
     }
 
     private String generateExpression(JmmNode node, String methodName) {
@@ -462,38 +503,8 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     public void generateTwoPartExpression(JmmNode node) { //InsideArray or DotExpression
-        JmmNode firstChild = node.getChildren().get(0);
-        JmmNode secondChild = node.getChildren().get(1);
-
-        switch (secondChild.getKind()) {
-            case "DotExpression":
-                generateDotExpression(firstChild, secondChild);
-        }
-    }
-
-    private void generateDotExpression(JmmNode firstChild, JmmNode secondChild) { //Length or MethodCall
-        JmmNode child = secondChild.getChildren().get(0);
-
-        switch (child.getKind()) {
-            case "MethodCall":
-                generateMethodCall(firstChild, child);
-        }
-    }
-
-    private void generateMethodCall(JmmNode firstChild, JmmNode methodNode) {
-        JmmNode methodNameNode = methodNode.getChildren().get(0);
-        String methodName = methodNameNode.get("name");
-
-        List<String> methods = symbolTable.getMethods();
-
-        if(!methods.contains(methodName)) {
-            if(firstChild.getKind().equals("Identifier")) {
-                if(methodNameNode.getNumChildren() == 0) {
-                    stringCode.append("\t\tinvokestatic(" + firstChild.get("name") + ", \"" + methodName + "\").V;\n"); //sera sempre .V aqui?
-                }
-            }
-        }
-
+        TwoPartExpressionVisitor twoPartExpressionVisitor = new TwoPartExpressionVisitor(this.methods, this.symbolTable, this.methodName, this.methodParametersNames, this.globalVariables, this.globalVariablesNames, this.methodParameters, this.localVariables, this.localVariablesNames, this.tempRegisters, this.tempVarsCount, this.objects, this.objectsCount);
+        twoPartExpressionVisitor.visit(node, stringCode);
     }
 
     private void generateReturn(JmmNode node, String methodName) {
@@ -531,47 +542,47 @@ public class OllirEmitter implements JmmVisitor {
 
             if(!found) {
                 vars = symbolTable.getFields();
+                Boolean isArray = false;
+                String t = null;
 
                 for(int i = 0; i < vars.size(); i++) {
                     if(vars.get(i).getName().equals(var)) {
                         varKind = vars.get(i).getType().getName();
+                        t = varKind;
                         if(vars.get(i).getType().isArray()) {
                             varKind += "[]";
+                            isArray = true;
                         }
                     }
                 }
 
                 String type = getType(varKind);
-                //String tempVar = "t1";
-                stringCode.append("\n\t\tt1" + "." + type + " :=." + type + " getfield(o1, " + var + "." + type + ")." + type + ";\n");
-                var = "t1";
-            }
+                Symbol s = addTempVar(t, isArray);
 
+                if(checkIfObject(varKind)) {
+                    Symbol o = addObject(t, isArray);
+                    stringCode.append("\t\t" + s.getName() + "." + type + " :=." + type + " getfield(" + o.getName() + "." + type + ", " + var + "." + type + ")." + type + ";\n");
+                    var = s.getName();
+                }
+                else {
+                    stringCode.append("\t\t" + s.getName() + "." + type + " :=." + type + " getfield(this" + ", " + var + "." + type + ")." + type + ";\n");
+                    var = s.getName();
+                }
+            }
+        }
+        else if(varKind.equals("TwoPartExpression")) { // como fazer return this.test(a); ??
+            generateTwoPartExpression(returnVarNode);
+            varKind = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+            if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
+                varKind += "[]";
+            }
+            var = this.tempRegisters.get(this.tempRegisters.size() - 1).getName();
         }
         else {
             var = returnVarNode.get("value");
         }
 
         stringCode.append("\n\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
-    }
-
-    private String getType(Type nodeType) {
-
-        /*if (nodeType.isArray)
-            return "[I";*/
-
-        switch (nodeType.getName()) {
-            case "int":
-                return "i32";
-            case "String":
-                return "String";
-            case "boolean":
-                return "bool";
-            case "void":
-                return "V";
-        }
-
-        return "L" + nodeType.getName() + ";";
     }
 
     private String getType(String type) {
@@ -602,33 +613,23 @@ public class OllirEmitter implements JmmVisitor {
                 type += "[]";
             }
         }
-        else {
+        else if(this.localVariablesNames.contains(node.get("name"))) {
             int idx = this.localVariablesNames.indexOf(node.get("name"));
             type = this.localVariables.get(idx).getType().getName();
             if(this.localVariables.get(idx).getType().isArray()) {
                 type += "[]";
             }
         }
+        else {
+            int idx = this.globalVariablesNames.indexOf(node.get("name"));
+            type = this.globalVariables.get(idx).getType().getName();
+            if(this.globalVariables.get(idx).getType().isArray()) {
+                type += "[]";
+            }
+        }
         return type;
     }
 
-   /* private String getSymbolType(Type symbolType) {
-
-        if (symbolType == Type.INT_ARRAY)
-            return "[I";
-
-        switch (symbolType) {
-            case INT:
-                return "I";
-            case STRING:
-                return "Ljava/lang/String";
-            case BOOLEAN:
-                return "Z";
-            case VOID:
-                return "V";
-        }
-        return "";
-    }*/
 
     private String defaultVisit(JmmNode node, String space) {
         String content = space + node.getKind();
@@ -646,19 +647,32 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private Symbol addTempVar(String type, Boolean isArray) {
-        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
+        Symbol s = new Symbol(new Type(type, isArray), "t" + this.tempVarsCount);
         this.tempRegisters.add(s);
         this.tempVarsCount++;
         return s;
     }
-
+    
     private Symbol addTempVarAux(String type, Boolean isArray, String content){
-        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount+content);
+        Symbol s = new Symbol(new Type(type, isArray), "t" + this.tempVarsCount + content);
         this.tempRegisters.add(s);
         this.tempVarsCount++;
         return s;
     }
-
+    
+    
+    private Symbol addObject(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type(type, isArray), "o"+this.objectsCount);
+        this.objects.add(s);
+        this.objectsCount++;
+        return s;
+    }
+    private Boolean checkIfObject(String type) {
+        if(!(type.equals("int") && type.equals("int[]") && type.equals("boolean") && type.equals("String[]") && type.equals("String"))) {
+            return false;
+        }
+        return true;
+    }
     @Override
     public void setDefaultVisit(BiFunction method) {
 
