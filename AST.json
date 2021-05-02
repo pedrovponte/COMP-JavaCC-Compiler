@@ -18,7 +18,7 @@
             "attributes": {
               "col": "8",
               "line": "1",
-              "name": "io"
+              "name": "ioPlus"
             },
             "children": []
           }
@@ -36,22 +36,282 @@
             "attributes": {
               "col": "7",
               "line": "2",
-              "name": "Simple"
+              "name": "HelloWorld"
             },
             "children": []
           },
           {
-            "kind": "Method",
+            "kind": "VarDeclaration",
+            "attributes": {
+              "col": "5",
+              "line": "3"
+            },
+            "children": [
+              {
+                "kind": "int",
+                "attributes": {
+                  "col": "5",
+                  "line": "3"
+                },
+                "children": []
+              },
+              {
+                "kind": "Identifier",
+                "attributes": {
+                  "col": "9",
+                  "line": "3",
+                  "name": "t"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "Main",
             "attributes": {
               "col": "12",
               "line": "4"
             },
             "children": [
               {
+                "kind": "Identifier",
+                "attributes": {
+                  "col": "38",
+                  "line": "4",
+                  "name": "args"
+                },
+                "children": []
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "5"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "5"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "5",
+                          "name": "t"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "int",
+                        "attributes": {
+                          "col": "14",
+                          "line": "5",
+                          "value": "5"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "6"
+                },
+                "children": [
+                  {
+                    "kind": "TwoPartExpression",
+                    "attributes": {
+                      "col": "15",
+                      "line": "6"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "6",
+                          "name": "ioPlus"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "DotExpression",
+                        "attributes": {
+                          "col": "15",
+                          "line": "6"
+                        },
+                        "children": [
+                          {
+                            "kind": "MethodCall",
+                            "attributes": {
+                              "col": "16",
+                              "line": "6"
+                            },
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "col": "16",
+                                  "line": "6",
+                                  "name": "printHelloWorld"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "TwoPartExpression",
+                                "attributes": {
+                                  "col": "48",
+                                  "line": "6"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "New",
+                                    "attributes": {
+                                      "col": "32",
+                                      "line": "6"
+                                    },
+                                    "children": [
+                                      {
+                                        "kind": "ClassCall",
+                                        "attributes": {
+                                          "col": "36",
+                                          "line": "6"
+                                        },
+                                        "children": [
+                                          {
+                                            "kind": "Identifier",
+                                            "attributes": {
+                                              "col": "36",
+                                              "line": "6",
+                                              "name": "HelloWorld"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "DotExpression",
+                                    "attributes": {
+                                      "col": "48",
+                                      "line": "6"
+                                    },
+                                    "children": [
+                                      {
+                                        "kind": "MethodCall",
+                                        "attributes": {
+                                          "col": "49",
+                                          "line": "6"
+                                        },
+                                        "children": [
+                                          {
+                                            "kind": "Identifier",
+                                            "attributes": {
+                                              "col": "49",
+                                              "line": "6",
+                                              "name": "test"
+                                            },
+                                            "children": []
+                                          },
+                                          {
+                                            "kind": "int",
+                                            "attributes": {
+                                              "col": "55",
+                                              "line": "6",
+                                              "value": "1"
+                                            },
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "7"
+                },
+                "children": [
+                  {
+                    "kind": "TwoPartExpression",
+                    "attributes": {
+                      "col": "15",
+                      "line": "7"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "7",
+                          "name": "ioPlus"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "DotExpression",
+                        "attributes": {
+                          "col": "15",
+                          "line": "7"
+                        },
+                        "children": [
+                          {
+                            "kind": "MethodCall",
+                            "attributes": {
+                              "col": "16",
+                              "line": "7"
+                            },
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "col": "16",
+                                  "line": "7",
+                                  "name": "printHelloWorld"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {
+              "col": "12",
+              "line": "10"
+            },
+            "children": [
+              {
                 "kind": "int",
                 "attributes": {
                   "col": "12",
-                  "line": "4"
+                  "line": "10"
                 },
                 "children": []
               },
@@ -59,303 +319,336 @@
                 "kind": "Identifier",
                 "attributes": {
                   "col": "16",
-                  "line": "4",
-                  "name": "add"
+                  "line": "10",
+                  "name": "test"
                 },
                 "children": []
               },
               {
                 "kind": "Args",
                 "attributes": {
-                  "col": "20",
-                  "line": "4"
+                  "col": "21",
+                  "line": "10"
                 },
                 "children": [
                   {
                     "kind": "VarDeclaration",
                     "attributes": {
-                      "col": "20",
-                      "line": "4"
+                      "col": "21",
+                      "line": "10"
                     },
                     "children": [
                       {
                         "kind": "int",
                         "attributes": {
-                          "col": "20",
-                          "line": "4"
+                          "col": "21",
+                          "line": "10"
                         },
                         "children": []
                       },
                       {
                         "kind": "Identifier",
                         "attributes": {
-                          "col": "24",
-                          "line": "4",
+                          "col": "25",
+                          "line": "10",
                           "name": "a"
                         },
                         "children": []
                       }
                     ]
-                  },
-                  {
-                    "kind": "VarDeclaration",
-                    "attributes": {
-                      "col": "27",
-                      "line": "4"
-                    },
-                    "children": [
-                      {
-                        "kind": "int",
-                        "attributes": {
-                          "col": "27",
-                          "line": "4"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "Identifier",
-                        "attributes": {
-                          "col": "31",
-                          "line": "4",
-                          "name": "b"
-                        },
-                        "children": []
-                      }
-                    ]
                   }
                 ]
               },
               {
                 "kind": "LocalVariableDeclaration",
-                "attributes": {
-                  "col": "9",
-                  "line": "5"
-                },
-                "children": [
-                  {
-                    "kind": "int",
-                    "attributes": {
-                      "col": "9",
-                      "line": "5"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "col": "13",
-                      "line": "5",
-                      "name": "c"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "LocalVariableDeclaration",
-                "attributes": {
-                  "col": "9",
-                  "line": "6"
-                },
-                "children": [
-                  {
-                    "kind": "int",
-                    "attributes": {
-                      "col": "9",
-                      "line": "6"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "col": "13",
-                      "line": "6",
-                      "name": "k"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "LocalVariableDeclaration",
-                "attributes": {
-                  "col": "9",
-                  "line": "7"
-                },
-                "children": [
-                  {
-                    "kind": "int",
-                    "attributes": {
-                      "col": "9",
-                      "line": "7"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "col": "13",
-                      "line": "7",
-                      "name": "l"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "LocalVariableDeclaration",
-                "attributes": {
-                  "col": "9",
-                  "line": "8"
-                },
-                "children": [
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "col": "9",
-                      "line": "8",
-                      "name": "bool"
-                    },
-                    "children": []
-                  },
-                  {
-                    "kind": "Identifier",
-                    "attributes": {
-                      "col": "14",
-                      "line": "8",
-                      "name": "f"
-                    },
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "kind": "Statement",
-                "attributes": {
-                  "col": "9",
-                  "line": "9"
-                },
-                "children": [
-                  {
-                    "kind": "Assign",
-                    "attributes": {
-                      "col": "9",
-                      "line": "9"
-                    },
-                    "children": [
-                      {
-                        "kind": "Identifier",
-                        "attributes": {
-                          "col": "9",
-                          "line": "9",
-                          "name": "k"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "int",
-                        "attributes": {
-                          "col": "14",
-                          "line": "9",
-                          "value": "3"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "Statement",
-                "attributes": {
-                  "col": "9",
-                  "line": "10"
-                },
-                "children": [
-                  {
-                    "kind": "Assign",
-                    "attributes": {
-                      "col": "9",
-                      "line": "10"
-                    },
-                    "children": [
-                      {
-                        "kind": "Identifier",
-                        "attributes": {
-                          "col": "9",
-                          "line": "10",
-                          "name": "l"
-                        },
-                        "children": []
-                      },
-                      {
-                        "kind": "int",
-                        "attributes": {
-                          "col": "14",
-                          "line": "10",
-                          "value": "4"
-                        },
-                        "children": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "kind": "Statement",
                 "attributes": {
                   "col": "9",
                   "line": "11"
                 },
                 "children": [
                   {
-                    "kind": "Assign",
+                    "kind": "int",
                     "attributes": {
                       "col": "9",
                       "line": "11"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "col": "13",
+                      "line": "11",
+                      "name": "b"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "LocalVariableDeclaration",
+                "attributes": {
+                  "col": "9",
+                  "line": "12"
+                },
+                "children": [
+                  {
+                    "kind": "boolean",
+                    "attributes": {
+                      "col": "9",
+                      "line": "12"
+                    },
+                    "children": []
+                  },
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "col": "17",
+                      "line": "12",
+                      "name": "tes"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "13"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "13"
                     },
                     "children": [
                       {
                         "kind": "Identifier",
                         "attributes": {
                           "col": "9",
-                          "line": "11",
-                          "name": "c"
+                          "line": "13",
+                          "name": "b"
                         },
                         "children": []
                       },
                       {
-                        "kind": "SubtractiveExpression",
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "13",
+                          "line": "13",
+                          "name": "a"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "14"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "14"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "14",
+                          "name": "b"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "13",
+                          "line": "14",
+                          "name": "t"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Statement",
+                "attributes": {
+                  "col": "9",
+                  "line": "15"
+                },
+                "children": [
+                  {
+                    "kind": "Assign",
+                    "attributes": {
+                      "col": "9",
+                      "line": "15"
+                    },
+                    "children": [
+                      {
+                        "kind": "Identifier",
+                        "attributes": {
+                          "col": "9",
+                          "line": "15",
+                          "name": "tes"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "boolean",
+                        "attributes": {
+                          "col": "15",
+                          "line": "15",
+                          "value": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Return",
+                "attributes": {
+                  "col": "9",
+                  "line": "18"
+                },
+                "children": [
+                  {
+                    "kind": "Identifier",
+                    "attributes": {
+                      "col": "16",
+                      "line": "18",
+                      "name": "b"
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {
+              "col": "12",
+              "line": "22"
+            },
+            "children": [
+              {
+                "kind": "int",
+                "attributes": {
+                  "col": "12",
+                  "line": "22"
+                },
+                "children": []
+              },
+              {
+                "kind": "Identifier",
+                "attributes": {
+                  "col": "16",
+                  "line": "22",
+                  "name": "test1"
+                },
+                "children": []
+              },
+              {
+                "kind": "Args",
+                "attributes": {
+                  "col": "22",
+                  "line": "22"
+                },
+                "children": [
+                  {
+                    "kind": "VarDeclaration",
+                    "attributes": {
+                      "col": "22",
+                      "line": "22"
+                    },
+                    "children": [
+                      {
+                        "kind": "int",
+                        "attributes": {
+                          "col": "22",
+                          "line": "22"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "Identifier",
                         "attributes": {
                           "col": "26",
-                          "line": "11",
-                          "operation": "-"
+                          "line": "22",
+                          "name": "a"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "Return",
+                "attributes": {
+                  "col": "9",
+                  "line": "23"
+                },
+                "children": [
+                  {
+                    "kind": "TwoPartExpression",
+                    "attributes": {
+                      "col": "20",
+                      "line": "23"
+                    },
+                    "children": [
+                      {
+                        "kind": "This",
+                        "attributes": {
+                          "col": "16",
+                          "line": "23"
+                        },
+                        "children": []
+                      },
+                      {
+                        "kind": "DotExpression",
+                        "attributes": {
+                          "col": "20",
+                          "line": "23"
                         },
                         "children": [
                           {
-                            "kind": "SubtractiveExpression",
+                            "kind": "MethodCall",
                             "attributes": {
-                              "col": "23",
-                              "line": "11",
-                              "operation": "-"
+                              "col": "21",
+                              "line": "23"
                             },
                             "children": [
                               {
                                 "kind": "Identifier",
                                 "attributes": {
-                                  "col": "13",
-                                  "line": "11",
-                                  "name": "a"
+                                  "col": "21",
+                                  "line": "23",
+                                  "name": "test"
                                 },
                                 "children": []
                               },
                               {
                                 "kind": "MultiplicativeExpression",
                                 "attributes": {
-                                  "col": "23",
-                                  "line": "11",
-                                  "operation": "*"
+                                  "col": "26",
+                                  "line": "23",
+                                  "name": "t"
                                 },
                                 "children": [
                                   {
@@ -394,56 +687,64 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "kind": "Method",
+            "attributes": {
+              "col": "12",
+              "line": "26"
+            },
+            "children": [
+              {
+                "kind": "int",
+                "attributes": {
+                  "col": "12",
+                  "line": "26"
+                },
+                "children": []
+              },
+              {
+                "kind": "Identifier",
+                "attributes": {
+                  "col": "16",
+                  "line": "26",
+                  "name": "test2"
+                },
+                "children": []
               },
               {
                 "kind": "Statement",
                 "attributes": {
                   "col": "9",
-                  "line": "12"
+                  "line": "27"
                 },
                 "children": [
                   {
                     "kind": "Assign",
                     "attributes": {
                       "col": "9",
-                      "line": "12"
+                      "line": "27"
                     },
                     "children": [
                       {
                         "kind": "Identifier",
                         "attributes": {
                           "col": "9",
-                          "line": "12",
-                          "name": "f"
+                          "line": "27",
+                          "name": "t"
                         },
                         "children": []
                       },
                       {
-                        "kind": "Less",
+                        "kind": "int",
                         "attributes": {
-                          "col": "16",
-                          "line": "12"
+                          "col": "14",
+                          "line": "27",
+                          "value": "0"
                         },
-                        "children": [
-                          {
-                            "kind": "Identifier",
-                            "attributes": {
-                              "col": "12",
-                              "line": "12",
-                              "name": "c"
-                            },
-                            "children": []
-                          },
-                          {
-                            "kind": "Identifier",
-                            "attributes": {
-                              "col": "16",
-                              "line": "12",
-                              "name": "a"
-                            },
-                            "children": []
-                          }
-                        ]
+                        "children": []
                       }
                     ]
                   }
@@ -453,15 +754,15 @@
                 "kind": "Return",
                 "attributes": {
                   "col": "9",
-                  "line": "13"
+                  "line": "28"
                 },
                 "children": [
                   {
                     "kind": "Identifier",
                     "attributes": {
                       "col": "16",
-                      "line": "13",
-                      "name": "c"
+                      "line": "28",
+                      "name": "t"
                     },
                     "children": []
                   }

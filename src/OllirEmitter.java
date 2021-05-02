@@ -374,10 +374,20 @@ public class OllirEmitter implements JmmVisitor {
                             }
                         }
                     }
-                    else if (second.getKind().equals("int")) {
+                    else if (second.getKind().equals("int") || second.getKind().equals("int[]")) {
                         stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                        type = "int";
                         stringCode.append(second.get("value") + "." + getType(type) + ";\n");
+                    }
+                    else if(second.getKind().equals("boolean")) {
+                        stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                        String boolT;
+                        if(second.get("value").equals("true")) {
+                            boolT = "1";
+                        }
+                        else {
+                            boolT = "0";
+                        }
+                        stringCode.append(boolT + "." + getType(type) + ";\n");
                     }
                     else if(second.getKind().equals("New")) {
                         stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
@@ -419,9 +429,21 @@ public class OllirEmitter implements JmmVisitor {
         String rightValue ="";
         switch (node.getKind()) {
             case "int":
+            case "int[]":
                 StringBuilder sb = new StringBuilder();
-                sb.append(node.get("value") + ".i32");
+                sb.append(node.get("value") + "." + getType(node.getKind()));
                 return sb.toString();
+            case "boolean":
+                StringBuilder stb = new StringBuilder();
+                String boolT;
+                if(node.get("value").equals("true")) {
+                    boolT = "1";
+                }
+                else {
+                    boolT = "0";
+                }
+                stb.append(boolT + "." + getType(node.getKind()));
+                return stb.toString();
             case "Identifier": {
                 String t = getNodeType(node);
                 Symbol s = null;
@@ -630,11 +652,11 @@ public class OllirEmitter implements JmmVisitor {
         }
         else if(varKind.equals("TwoPartExpression")) {
             generateTwoPartExpression(returnVarNode);
-            varKind = this.tempRegisters.get(this.tempRegisters.size() - 2).getType().getName(); // estará sempre certo ao por aqui 2???
-            if(this.tempRegisters.get(this.tempRegisters.size() - 2).getType().isArray()) {
+            varKind = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName(); // estará sempre certo ao por aqui 2???
+            if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
                 varKind += "[]";
             }
-            var = this.tempRegisters.get(this.tempRegisters.size() - 2).getName();
+            var = this.tempRegisters.get(this.tempRegisters.size() - 1).getName();
         }
         else if(varKind.equals("AdditiveExpression") || varKind.equals("SubtractiveExpression") || varKind.equals("MultiplicativeExpression") || varKind.equals("DivisionExpression")) {
             // falta a variavel antes e acrescentar as outras possibilidades de nos

@@ -135,7 +135,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             stringBuilder.append(firstChildBuilder);
             Symbol s = addTempVar(callType, isArray);
             temp.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
-            this.firstMultLines = false;
             this.lastSymbol = s;
         }
         else {
@@ -148,13 +147,14 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 if(mType.isArray()) {
                     this.methodType += "[]";
                 }
-                if(!mType.equals("void")) {
+                temp.append(("invokespecial("));
+                /*if(!mType.equals("void")) {
                     Symbol s = addTempVar(mType.getName(), mType.isArray());
                     temp.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " invokespecial(");
                 }
                 else {
                     temp.append("\t\tinvokespecial(");
-                }
+                }*/
             }
 
             temp.append(firstChildBuilder + ", \"" + callMethodName + "\"");
@@ -219,8 +219,23 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     temp.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
                 }
             }
-            stringBuilder.append(temp);
+
+            if(!this.firstMultLines && this.methods.contains(callMethodName)) {
+                if (!this.methodType.equals("void")) {
+                    Symbol s = addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
+                    stringBuilder.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
+                    stringBuilder.append(temp);
+                } else {
+                    temp.append("\t\t");
+                    stringBuilder.append(temp);
+                }
+            }
+            else {
+                stringBuilder.append(temp);
+            }
+
             stringBuilder.append(")." + getType(this.methodType) + ";\n");
+            this.firstMultLines = false;
         }
     }
 

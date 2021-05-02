@@ -12,7 +12,8 @@ class HelloWorld {
         boolean tes;
         b = a;
         b = t;
-        b = a * t + 2 * 4;
+        tes = true;
+        //b = a * t + 2 * 4;
         //tes = a < t + 2;
         return b;
         //return 1+2;
