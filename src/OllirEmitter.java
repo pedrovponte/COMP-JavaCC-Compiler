@@ -755,6 +755,8 @@ public class OllirEmitter implements JmmVisitor {
         else if(varKind.equals("AdditiveExpression") || varKind.equals("SubtractiveExpression") || varKind.equals("MultiplicativeExpression") || varKind.equals("DivisionExpression")) {
             // falta a variavel antes e acrescentar as outras possibilidades de nos
             stringCode.append(generateExpression(returnVarNode));
+            var = "t" + this.tempVarsCount;
+            varKind = "int";
         }
         else {
             var = returnVarNode.get("value");

@@ -137,7 +137,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         }
 
         if(this.firstMultLines) {
-            System.out.println("HAS LINES");
             stringBuilder.append(firstChildBuilder);
             Symbol s = addTempVar(callType, isArray);
             temp.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
