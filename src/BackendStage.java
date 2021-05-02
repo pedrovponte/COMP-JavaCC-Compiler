@@ -157,16 +157,17 @@ public class BackendStage implements JasminBackend {
                             }
                         }
                         LiteralElement callField2 = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append("\tinvokevirtual." + callField2.getLiteral().substring( 1, callField2.getLiteral().length() - 1 ) + "(");
+                        ClassType classTypeVirtual = (ClassType) callInstruction.getFirstArg().getType();
+                        jasmin.append("\tinvokevirtual " + classTypeVirtual.getName() + "." + callField2.getLiteral().substring( 1, callField2.getLiteral().length() - 1 ) + "(");
 
-                        Boolean first = false;
+                        //Boolean first = false;
                         for (Element element : elements){
-                            if (first == true)
+                            /*if (first == true)
                             {
                                 jasmin.append(" ");
-                            }
+                            }*/
                             addType(element.getType());
-                            first = true;
+                            //first = true;
                         }
                         jasmin.append(")");
 
@@ -174,16 +175,82 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\n");
 
                         break;
-                    case invokeinterface:
-                        break;
+                    //case invokeinterface:
+                        //break;
                     case invokespecial:
+                        Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
+
+                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
+
+                        ArrayList<Element> elementsSpecial = callInstruction.getListOfOperands();
+
+                        for (Element element : elementsSpecial){
+                            if (element.isLiteral()){
+                                LiteralElement literalElement = (LiteralElement) element;
+                                LiteralValues(literalElement);
+                            }
+                            else {
+                                Operand returnOperand = (Operand) element;
+
+                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                    jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
+                            }
+                        }
+                        jasmin.append("\tinvokespecial java/lang/Object.");
+                        LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
+                        jasmin.append(callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()\n");
+
                         break;
                     case invokestatic:
+                        Operand callField1Static = (Operand) callInstruction.getFirstArg();
+
+                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1Static.getName()).getVirtualReg() + "\n");
+
+                        ArrayList<Element> elementsStatic = callInstruction.getListOfOperands();
+
+                        for (Element element : elementsStatic){
+                            if (element.isLiteral()){
+                                LiteralElement literalElement = (LiteralElement) element;
+                                LiteralValues(literalElement);
+                            }
+                            else {
+                                Operand returnOperand = (Operand) element;
+
+                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                    jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
+                            }
+                        }
+                        LiteralElement callField2Static = (LiteralElement) callInstruction.getSecondArg();
+                        jasmin.append("\tinvokestatic " + callField2Static.getLiteral().substring( 1, callField2Static.getLiteral().length() - 1 ) + "(");
+
+                        //Boolean first = false;
+                        for (Element element : elementsStatic){
+                            /*if (first == true)
+                            {
+                                jasmin.append(" ");
+                            }*/
+                            addType(element.getType());
+                            //first = true;
+                        }
+                        jasmin.append(")");
+
+                        addType(method.getReturnType());
+                        jasmin.append("\n");
                         break;
-                    case NEW:
-                        break;
-                    case arraylength:
-                        break;
+                    //case NEW:
+                        //break;
+                    //case arraylength:
+                        //break;
                     case ldc:
                         break;
                 }
