@@ -326,11 +326,11 @@
                         "children": []
                       },
                       {
-                        "kind": "SubtractiveExpression",
+                        "kind": "AdditiveExpression",
                         "attributes": {
                           "col": "26",
                           "line": "11",
-                          "operation": "-"
+                          "operation": "+"
                         },
                         "children": [
                           {
@@ -359,11 +359,11 @@
                                 },
                                 "children": [
                                   {
-                                    "kind": "Identifier",
+                                    "kind": "int",
                                     "attributes": {
-                                      "col": "17",
+                                      "col": "19",
                                       "line": "11",
-                                      "name": "b"
+                                      "value": "2"
                                     },
                                     "children": []
                                   },
@@ -385,7 +385,7 @@
                             "attributes": {
                               "col": "25",
                               "line": "11",
-                              "name": "k"
+                              "name": "l"
                             },
                             "children": []
                           }
@@ -419,27 +419,83 @@
                         "children": []
                       },
                       {
-                        "kind": "Less",
+                        "kind": "And",
                         "attributes": {
-                          "col": "16",
+                          "col": "30",
                           "line": "12"
                         },
                         "children": [
                           {
-                            "kind": "Identifier",
+                            "kind": "Less",
                             "attributes": {
-                              "col": "12",
-                              "line": "12",
-                              "name": "c"
+                              "col": "17",
+                              "line": "12"
                             },
-                            "children": []
+                            "children": [
+                              {
+                                "kind": "Identifier",
+                                "attributes": {
+                                  "col": "13",
+                                  "line": "12",
+                                  "name": "c"
+                                },
+                                "children": []
+                              },
+                              {
+                                "kind": "SubtractiveExpression",
+                                "attributes": {
+                                  "col": "27",
+                                  "line": "12",
+                                  "operation": "-"
+                                },
+                                "children": [
+                                  {
+                                    "kind": "Identifier",
+                                    "attributes": {
+                                      "col": "17",
+                                      "line": "12",
+                                      "name": "a"
+                                    },
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "MultiplicativeExpression",
+                                    "attributes": {
+                                      "col": "27",
+                                      "line": "12",
+                                      "operation": "*"
+                                    },
+                                    "children": [
+                                      {
+                                        "kind": "int",
+                                        "attributes": {
+                                          "col": "23",
+                                          "line": "12",
+                                          "value": "2"
+                                        },
+                                        "children": []
+                                      },
+                                      {
+                                        "kind": "Identifier",
+                                        "attributes": {
+                                          "col": "25",
+                                          "line": "12",
+                                          "name": "l"
+                                        },
+                                        "children": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
                           },
                           {
-                            "kind": "Identifier",
+                            "kind": "boolean",
                             "attributes": {
-                              "col": "16",
+                              "col": "30",
                               "line": "12",
-                              "name": "a"
+                              "value": "false"
                             },
                             "children": []
                           }
