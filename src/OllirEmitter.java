@@ -395,6 +395,7 @@ public class OllirEmitter implements JmmVisitor {
                     }
                     else {
                         stringCode.append("\t\t"+ generateExpression(second));
+                        stringCode.append(first.get("name") + "." + getType(type) + " :=." + getType(type) + " t" +tempVarsCount  + ";\n");
                     }
                 }
             } 
@@ -412,6 +413,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private String generateExpression(JmmNode node) {
+        auxGeral=new StringBuilder();
         StringBuilder st = new StringBuilder();
         String leftValue ="";
         String rightValue ="";
@@ -453,7 +455,6 @@ public class OllirEmitter implements JmmVisitor {
             case "SubtractiveExpression":
             case "MultiplicativeExpression":
             case "DivisionExpression": {
-
                 JmmNode left = node.getChildren().get(0);
                 if(left.getNumChildren()>0 ){
                     st.append(newAuxiliarVar("i32", left));
@@ -470,13 +471,30 @@ public class OllirEmitter implements JmmVisitor {
                 else{
                     rightValue = generateExpression(right);
                 }
-                return st + leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n";
+                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                stringCode.append("\t\tt" +tempVarsCount + ":=.i32 " + leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                 //return st.toString() ;
             }
             case "Less": {
-                JmmNode first = node.getChildren().get(0);
-                JmmNode second = node.getChildren().get(1);
-                lessExp(first, second);
-                break;
+             /*   JmmNode left = node.getChildren().get(0);
+                if(left.getNumChildren()>0 ){
+                    st.append(newAuxiliarVar("i32", left));
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                }
+                else{
+                    leftValue = generateExpression(left);
+                }
+                JmmNode right = node.getChildren().get(1);
+                if(right.getNumChildren()>0 ){
+                    st.append(newAuxiliarVar("i32", right));
+                    rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                }
+                else{
+                    rightValue = generateExpression(right);
+                }
+                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                stringCode.append("\t\tt" +tempVarsCount + ":=.i32 " + leftValue + " <" + ".i32 " + rightValue + ";\n");
+                //return st.toString() ;*/
             }
             case "And":
 

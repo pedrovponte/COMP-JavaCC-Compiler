@@ -8,8 +8,8 @@ class Simple {
         bool f;
         k = 3;
         l = 4;
-        c = a - b * c;
-        f= c<a;
+        c = a - b * c - k;
+        f= c < a;
         return c;
     }
 
