@@ -91,6 +91,10 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
     public void generateIdentifier(JmmNode node, StringBuilder stringBuilder) {
         stringBuilder.append(node.get("name"));
+        String type = getNodeType(node);
+        if(type != null) {
+            stringBuilder.append("." + getType(type));
+        }
     }
 
     public void generateThis(StringBuilder stringBuilder) {
@@ -121,6 +125,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         Boolean isArray = false;
         String callType = "void";
         this.methodType = "void";
+        Boolean hasLines = false;
 
         if(symbolTable.getMethods().contains(callMethodName)) {
             this.methodType = symbolTable.getReturnType(callMethodName).getName();
@@ -132,10 +137,13 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         }
 
         if(this.firstMultLines) {
+            System.out.println("HAS LINES");
             stringBuilder.append(firstChildBuilder);
             Symbol s = addTempVar(callType, isArray);
             temp.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
             this.lastSymbol = s;
+            this.firstMultLines = false;
+            hasLines = true;
         }
         else {
             if(!this.methods.contains(callMethodName)) {
@@ -147,7 +155,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 if(mType.isArray()) {
                     this.methodType += "[]";
                 }
-                temp.append(("invokespecial("));
+                temp.append(("invokevirtual("));
                 /*if(!mType.equals("void")) {
                     Symbol s = addTempVar(mType.getName(), mType.isArray());
                     temp.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " invokespecial(");
@@ -156,14 +164,13 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     temp.append("\t\tinvokespecial(");
                 }*/
             }
-
             temp.append(firstChildBuilder + ", \"" + callMethodName + "\"");
         }
 
 
         if(node.getNumChildren() == 1) {
             stringBuilder.append(temp);
-            stringBuilder.append(")." + getType(this.methodType) + ";\n"); //sera sempre .V aqui?
+            stringBuilder.append(")." + getType(this.methodType) + ";\n");
         }
         else {
             for(int i = 1; i < node.getNumChildren(); i++) {
@@ -220,7 +227,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 }
             }
 
-            if(!this.firstMultLines && this.methods.contains(callMethodName)) {
+            if(!hasLines && this.methods.contains(callMethodName)) {
                 if (!this.methodType.equals("void")) {
                     Symbol s = addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
                     stringBuilder.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
@@ -235,7 +242,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             }
 
             stringBuilder.append(")." + getType(this.methodType) + ";\n");
-            this.firstMultLines = false;
         }
     }
 
@@ -274,7 +280,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 type += "[]";
             }
         }
-        else {
+        else if(this.globalVariablesNames.contains(node.get("name"))) {
             int idx = this.globalVariablesNames.indexOf(node.get("name"));
             type = this.globalVariables.get(idx).getType().getName();
             this.fieldType = type;
@@ -282,6 +288,9 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 type += "[]";
             }
             this.isField = true;
+        }
+        else {
+            return null;
         }
         return type;
     }
