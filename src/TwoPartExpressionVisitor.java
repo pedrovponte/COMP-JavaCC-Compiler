@@ -188,7 +188,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     }
                     else {
                         if(this.methodParametersNames.contains(child.get("name"))) {
-                            int idx = this.methodParametersNames.indexOf(child.get("name"));
+                            int idx = this.methodParametersNames.indexOf(child.get("name")) + 1;
                             temp.append(", " + "$" + idx + "." + child.get("name") + "." + getType(type));
                         }
                         else {
