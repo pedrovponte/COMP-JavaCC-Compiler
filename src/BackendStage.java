@@ -132,6 +132,47 @@ public class BackendStage implements JasminBackend {
 
                 switch (callType){
                     case invokevirtual:
+
+                        Operand callField1 = (Operand) callInstruction.getFirstArg();
+
+                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() + "\n");
+
+                        ArrayList<Element> elements = callInstruction.getListOfOperands();
+
+                        for (Element element : elements){
+                            if (element.isLiteral()){
+                                LiteralElement literalElement = (LiteralElement) element;
+                                LiteralValues(literalElement);
+                            }
+                            else {
+                                Operand returnOperand = (Operand) element;
+
+                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                    jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
+                            }
+                        }
+                        LiteralElement callField2 = (LiteralElement) callInstruction.getSecondArg();
+                        jasmin.append("\tinvokevirtual." + callField2.getLiteral().substring( 1, callField2.getLiteral().length() - 1 ) + "(");
+
+                        Boolean first = false;
+                        for (Element element : elements){
+                            if (first == true)
+                            {
+                                jasmin.append(" ");
+                            }
+                            addType(element.getType());
+                            first = true;
+                        }
+                        jasmin.append(")");
+
+                        addType(method.getReturnType());
+                        jasmin.append("\n");
+
                         break;
                     case invokeinterface:
                         break;
