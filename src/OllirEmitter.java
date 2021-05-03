@@ -457,12 +457,12 @@ public class OllirEmitter implements JmmVisitor {
                             stringCode.append(stringBuilder);
                             stringCode.append(sNew.getName() + "." + getType(type));
                             stringCode.append(").V;\n");
-                            stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
                         }
                         else {
                             stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
                             stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
-                            stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
                         }
 
                     }
