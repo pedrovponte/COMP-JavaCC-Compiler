@@ -35,6 +35,14 @@ public class BackendTest {
     }
 
     @Test
+    public void testSimple() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Simple.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+    }
+
+    @Test
     public void jasmin_test() {
         TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")),null,new ArrayList<>()));
 
