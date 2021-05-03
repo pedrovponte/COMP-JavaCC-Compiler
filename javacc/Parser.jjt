@@ -185,10 +185,7 @@ void ClassDeclaration() : {}
 
 void VarDeclaration() : {}
 {
-    LOOKAHEAD(2)
     Type() Identifier()
-    |
-    Expression()
 }
 
 void MethodDeclaration() #void : {}
@@ -260,7 +257,7 @@ void BlockStatement() #void: {}
 
 void LocalVariableDeclaration() : {}
 {
-    Type() VariableDeclarator() (<COMMA> VariableDeclarator())* <SEMICOLON>
+    Type() Identifier() <SEMICOLON>
 }
 
 void Type() #void : {}
@@ -274,28 +271,6 @@ void Type() #void : {}
     |
     <INT> #Integer
 
-}
-
-void VariableDeclarator() #void : {}
-{
-    VariableDeclaratorId() [<ASSIGN> VariableInitializer()]
-}
-
-void VariableDeclaratorId() #void : {Token t;}
-{
-    Identifier() (<LBRACKET> <RBRACKET>)*
-}
-
-void VariableInitializer() : {}
-{
-    ArrayInitializer()
-    |
-    Expression()
-}
-
-void ArrayInitializer() : {}
-{
-    <LBRACE> [VariableInitializer() (LOOKAHEAD(2) <COMMA> VariableInitializer())*][<COMMA>] <RBRACE>
 }
 
 void Expression() #void : {}

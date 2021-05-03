@@ -6,7 +6,8 @@ class Simple {
         int k;
         int l;
         boolean f;
-        boolean i = false;
+        boolean i;
+        i = false;
         k = 3;
         l = 4;
         c = a - 2 * c + l;
