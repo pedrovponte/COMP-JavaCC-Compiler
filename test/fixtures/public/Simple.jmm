@@ -3,16 +3,7 @@ class Simple {
 
     public int add(int a, int b){
         int c;
-        int k;
-        int l;
-        boolean f;
-        boolean i;
-        i = false;
-        k = 3;
-        l = 4;
-        c = a - 2 * c + l;
-        f = c < a - 2 * l && false;
-        i =!(f && i);
+        c = a+constInstr();
         return c;
     }
 
