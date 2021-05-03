@@ -498,17 +498,15 @@ public class OllirEmitter implements JmmVisitor {
     private String newAuxiliarVar(String type, JmmNode node){
         String value;
         value = generateExpression(node);
-        Symbol s = addTempVar("int", false);
-        return s.getName() + "." + type + " :=." + type + " " + value + "." + type + ";\n";
+        Symbol s = addTempVar(type, false);
+        return s.getName() + "." + getType(type) + " :=." + getType(type) + " " + value + "." + getType(type) + ";\n";
     }
 
     private String generateExpression(JmmNode node) {
-        //this.auxGeral = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         StringBuilder st = new StringBuilder();
         String leftValue ="";
         String rightValue ="";
-        System.out.println("NODE: " + node.getKind());
         switch (node.getKind()) {
             case "int":
             case "int[]":
@@ -589,56 +587,76 @@ public class OllirEmitter implements JmmVisitor {
             case "Less": {
                 JmmNode left = node.getChildren().get(0);
                 if(left.getNumChildren()>0 ){
-                    st.append(newAuxiliarVar("i32", left));
-                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                    st.append(newAuxiliarVar("boolean", left));
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool" ;
                 }
                 else{
                     leftValue = generateExpression(left);
                 }
                 JmmNode right = node.getChildren().get(1);
                 if(right.getNumChildren()>0 ){
-                    st.append(newAuxiliarVar("i32", right));
-                    rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                    st.append(newAuxiliarVar("boolean", right));
+                    rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool" ;
                 }
                 else{
                     rightValue = generateExpression(right);
                 }
-                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                stringCode.append("\t\tt" +tempVarsCount + ".bool" + " :=.bool " + leftValue + " <" + ".bool " + rightValue + ";\n");
+
+                if(node.getParent().getKind().equals("Assign")) {
+                    stringCode.append(this.auxGeral + leftValue + " " + " <" + ".bool " + rightValue);
+                }
+                else {
+                    //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                    stringCode.append("\t\tt" +tempVarsCount + ".bool" + " :=.bool " + leftValue + " <" + ".bool " + rightValue + ";\n");
+                }
+
                 //return st.toString() ;
                 break;
             }
             case "And": {
                 JmmNode left = node.getChildren().get(0);
                 if (left.getNumChildren() > 0) {
-                    st.append(newAuxiliarVar("i32", left));
-                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                    st.append(newAuxiliarVar("boolean", left));
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool";
                 } else {
                     leftValue = generateExpression(left);
                 }
                 JmmNode right = node.getChildren().get(1);
                 if (right.getNumChildren() > 0) {
-                    st.append(newAuxiliarVar("i32", right));
-                    rightValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                    st.append(newAuxiliarVar("boolean", right));
+                    rightValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool";
                 } else {
                     rightValue = generateExpression(right);
                 }
-                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " &&" + ".bool " + rightValue + ";\n");
+
+                if(node.getParent().getKind().equals("Assign")) {
+                    stringCode.append(this.auxGeral + leftValue + " " + " &&" + ".bool " + rightValue);
+                }
+                else {
+                    //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                    stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " &&" + ".bool " + rightValue + ";\n");
+                }
+
                 //return st.toString() ;
                 break;
             }
             case "Not": {
                 JmmNode left = node.getChildren().get(0);
                 if (left.getNumChildren() > 0) {
-                    st.append(newAuxiliarVar("i32", left));
-                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                    st.append(newAuxiliarVar("boolean", left));
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool";
                 } else {
                     leftValue = generateExpression(left);
                 }
 
-                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " !" + ".bool " + leftValue + ";\n");
+                if(node.getParent().getKind().equals("Assign")) {
+                    stringCode.append(this.auxGeral + leftValue + " !" + ".bool " + leftValue);
+                }
+                else {
+                    //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                    stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " !" + ".bool " + leftValue + ";\n");
+                }
+
                 //return st.toString() ;
                 break;
             }
