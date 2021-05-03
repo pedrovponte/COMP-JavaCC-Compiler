@@ -611,7 +611,7 @@ public class BackendStage implements JasminBackend {
                 methodLine(method);
             }
 
-            System.out.println("\nJASMIN");
+            System.out.println("\nJASMIN\n\n");
             System.out.println(jasmin.toString());
 
             // Convert the OLLIR to a String containing the equivalent Jasmin code

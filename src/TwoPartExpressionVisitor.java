@@ -166,12 +166,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             temp.append(firstChildBuilder + ", \"" + callMethodName + "\"");
         }
 
-
-        if(node.getNumChildren() == 1) {
-            stringBuilder.append(temp);
-            stringBuilder.append(")." + getType(this.methodType) + ";\n");
-        }
-        else {
+        if(node.getNumChildren() != 1) {
             for(int i = 1; i < node.getNumChildren(); i++) {
                 JmmNode child = node.getChildren().get(i);
 
@@ -226,22 +221,28 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 }
             }
 
-            if(!hasLines && this.methods.contains(callMethodName)) {
-                if (!this.methodType.equals("void")) {
-                    Symbol s = addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
-                    stringBuilder.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
-                    stringBuilder.append(temp);
-                } else {
-                    temp.append("\t\t");
-                    stringBuilder.append(temp);
-                }
-            }
-            else {
+
+        }
+
+        if(!hasLines && this.methods.contains(callMethodName)) {
+            if (!this.methodType.equals("void")) {
+                Symbol s = addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
+                StringBuilder sbFirst = new StringBuilder();
+                sbFirst.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
+                stringBuilder.append(sbFirst);
+                stringBuilder.append(temp);
+            } else {
+                temp.append("\t\t");
                 stringBuilder.append(temp);
             }
-
-            stringBuilder.append(")." + getType(this.methodType) + ";\n");
         }
+        else {
+            stringBuilder.append(temp);
+        }
+
+        stringBuilder.append(")." + getType(this.methodType) + ";\n");
+
+        System.out.println("\n\n");
     }
 
     private String getType(String type) {

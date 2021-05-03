@@ -629,6 +629,8 @@ public class OllirEmitter implements JmmVisitor {
                 //return st.toString() ;
                 break;
             }
+            case "TwoPartExpression":
+                generateTwoPartExpression(node);
         }
         return "";
     }
