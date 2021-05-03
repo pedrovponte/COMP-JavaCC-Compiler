@@ -47,7 +47,7 @@ public class BackendStage implements JasminBackend {
                 }
                 else if (elementType == ElementType.STRING)
                 {
-                    jasmin.append("[Ljava/lang/String");
+                    jasmin.append("[Ljava/lang/String;");
                 }
                 break;
             case OBJECTREF:
