@@ -250,9 +250,15 @@ public class BackendStage implements JasminBackend {
                         addType(method.getReturnType());
                         //jasmin.append(";");
                         break;
-                    //case NEW:
-                        //break;
-                    //case arraylength:
+                    case NEW:
+                        CallInstruction operandNew = (CallInstruction) inst;
+
+                        ClassType classTypeNew = (ClassType) operandNew.getFirstArg().getType();
+
+                        jasmin.append("\tnew " + classTypeNew.getName() + "\n");
+                        jasmin.append("\tdup\n");
+                        jasmin.append("\tinvokespecial <init>()V\n");
+                    //case arraylength:0
                         //break;
                     case ldc:
                         break;
@@ -412,6 +418,7 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
                 }
 
+                //if (binaryOpInstruction.getRightOperand().getType() instanceof )
                 if (binaryOpInstruction.getRightOperand().isLiteral()){
                     LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getRightOperand();
                     LiteralValues(literalElement);
@@ -550,7 +557,7 @@ public class BackendStage implements JasminBackend {
         MethodOperations(method);
 
         if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
-            jasmin.append("\n\treturn\n");
+            jasmin.append("\treturn\n");
 
         jasmin.append("\n.end method\n");
 
