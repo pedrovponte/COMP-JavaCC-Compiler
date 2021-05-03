@@ -30,6 +30,22 @@ public class AnalysisStage implements JmmAnalysis {
 
         JmmNode node = parserResult.getRootNode();
 
+        SymbolTableImp symbolTable = new SymbolTableImp();
+
+        System.out.println("\n\nImport Visitor\n");
+        ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
+        System.out.println(visitorImport.visit(node, ""));
+
+        System.out.println("\n\nClass Visitor\n");
+        ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
+        System.out.println(visitorClass.visit(node, ""));
+
+        List<Report> reports = new ArrayList<>();
+        SemanticVisitor lengthVisitor = new SemanticVisitor(symbolTable);
+        lengthVisitor.visit(node, reports);
+
+        return new JmmSemanticsResult(parserResult, symbolTable, reports);
+
         /*System.out.println("Dump tree with Visitor where you control tree traversal");
         ExampleVisitor visitor = new ExampleVisitor("Identifier", "name");
         System.out.println(visitor.visit(node, ""));
@@ -51,21 +67,5 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // System.out.println("NODE: " + node.getClass());
-
-        SymbolTableImp symbolTable = new SymbolTableImp();
-
-        System.out.println("\n\nImport Visitor\n");
-        ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
-        System.out.println(visitorImport.visit(node, ""));
-
-        System.out.println("\n\nClass Visitor\n");
-        ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
-        System.out.println(visitorClass.visit(node, ""));
-
-        List<Report> reports = new ArrayList<>();
-        SemanticVisitor lengthVisitor = new SemanticVisitor(symbolTable);
-        lengthVisitor.visit(node, reports);
-
-        return new JmmSemanticsResult(parserResult, symbolTable, reports);
     }
 }

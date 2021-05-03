@@ -64,39 +64,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 String methodCallName = methodNode.getChildren().get(0).get("name");
                 int argsSize = methodNode.getNumChildren() - 1;
                 List<Symbol> methodArgs = symbolTable.getParameters(methodCallName);
-                /*System.out.println("METHODDDDDDDDDDDDDDDDSSSSSSSSSSSSSSSSSSSSS: " + symbolTable.getMethods());
-
-                List<Symbol> equalMethods = new ArrayList<>();
-                for(int i = 0; i < symbolTable.getActualMethods().size(); i++) {
-                    if(symbolTable.getActualMethods().get(i).getName().equals(methodCallName)) {
-                        equalMethods.add(symbolTable.getActualMethods().get(i));
-                    }
-                }
-
-                HashMap<Integer, List<Symbol>> parametersList = new HashMap<>();
-                for(int i = 0; i < equalMethods.size(); i++) {
-                    List<Symbol> parameters = symbolTable.getParameters(equalMethods.get(i).getName());
-                    parametersList.put(i, parameters);
-                }
-
-                for(int i = 0; i < symbolTable.getActualMethods().size(); i++) {
-
-                }
-
-                System.out.println("PARAMETERRRRRRRRRRRRRRSSSSSSSSSSSSSSSSSSSSS: " + parametersList);
-
-                for(Integer key : parametersList.keySet()) {
-                    System.out.println("PARAMETERS: " + parametersList.get(key));
-                    int paramSize = 0;
-                    if(parametersList.get(key) != null) {
-                        paramSize = parametersList.get(key).size();
-                    }
-                    if(paramSize == argsSize) {
-                        methodArgs = parametersList.get(key);
-                        break;
-                    }
-                }*/
-
 
                 Boolean importMethod = false;
                 Boolean superMethod = false;
@@ -343,12 +310,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                     symbolTable.changeInitMethod(methodName, identifierSymbolF);
                 }
             }
-            /*else if(!secondChild.getChildren().get(0).getKind().equals("Array")) {
-                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assignee must have array type"));
-            }
-            else if(!secondChild.getKind().equals("int") && !(secondChild.getKind().equals("Identifier") && identifierTypeS.equals("int"))){
-                reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have int type"));
-            }*/
         }
 
         return true;
@@ -557,8 +518,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 }
             }
         }
-
-        // node.getChildren().get(0).getKind().equals("Identifier") && (checkIdentifiers(node.getChildren().get(0), methodName) == null && !(symbolTable.getImports() != null && symbolTable.getImports().contains(node.getChildren().get(0).get("name"))))
 
         else if(firstChild.getKind().equals("Identifier")) {
             String identifierName = firstChild.get("name");
