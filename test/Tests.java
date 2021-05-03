@@ -1,5 +1,6 @@
 import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
+import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.ollir.OllirUtils;
@@ -29,9 +30,10 @@ public class Tests {
     @Test
     public void testLazysort() {
         String jmmCode = SpecsIo.getResource("fixtures/public/Lazysort.jmm");
-        //TestUtils.parse(jmmCode);
-        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        JmmParserResult res = TestUtils.parse(jmmCode);
         TestUtils.noErrors(res.getReports());
+        /*JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());*/
     }
 
     @Test
@@ -53,9 +55,10 @@ public class Tests {
     @Test
     public void testQuickSort() {
         String jmmCode = SpecsIo.getResource("fixtures/public/QuickSort.jmm");
-        //TestUtils.parse(jmmCode);
-        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        JmmParserResult res = TestUtils.parse(jmmCode);
         TestUtils.noErrors(res.getReports());
+        /*JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());*/
     }
 
     @Test
