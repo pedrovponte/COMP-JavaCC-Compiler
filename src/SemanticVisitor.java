@@ -159,7 +159,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         else if(identifierTypeF != null && varInitializedF == false) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Variable not initialized"));
         }
-        else if(!(firstChild.getKind().equals("Identifier") && identifierTypeF.equals("int")) && !firstChild.getKind().equals("int") && !firstChild.getKind().equals("AdditiveExpression") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression") && !(firstChild.getKind().equals("TwoPartExpression") && (getTwoPartExpressionType(firstChild).equals("int") || getTwoPartExpressionType(firstChild).equals(" ")))) {
+        else if(checkNotInt(identifierTypeF, firstChild)) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(node.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Array indices must be integer"));
         }
         return true;
@@ -214,10 +214,10 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         else if(identifierTypeS != null && varInitializedS == false) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Variable not initialized"));
         }
-        else if(!(identifierTypeF != null && identifierTypeF.equals("int")) && !firstChild.getKind().equals("int") && !firstChild.getKind().equals("AdditiveExpression") && !firstChild.getKind().equals("SubtractiveExpression") && !firstChild.getKind().equals("MultiplicativeExpression") && !firstChild.getKind().equals("DivisionExpression") && !(firstChild.getKind().equals("TwoPartExpression") && (getTwoPartExpressionType(firstChild).equals("int") || getTwoPartExpressionType(firstChild).equals(" ")) /*&& firstChild.getChildren().get(1).getKind().equals("DotExpression") && firstChild.getChildren().get(1).getChildren().get(0).getKind().equals("Length")*/)){
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("line")), "Binary operations can only be applied to Integer type variables"));
+        else if(checkNotInt(identifierTypeF, firstChild)){
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(firstChild.get("line")), Integer.parseInt(firstChild.get("col")), "Binary operations can only be applied to Integer type variables"));
         }
-        else if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression") && !(secondChild.getKind().equals("TwoPartExpression") && (getTwoPartExpressionType(secondChild).equals("int") || getTwoPartExpressionType(secondChild).equals(" "))/*secondChild.getChildren().get(1).getKind().equals("DotExpression") && secondChild.getChildren().get(1).getChildren().get(0).getKind().equals("Length")*/)) {
+        else if(checkNotInt(identifierTypeS, secondChild)) {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Binary operations can only be applied to Integer type variables"));
         }
 
@@ -273,7 +273,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Variable not initialized"));
         }
         else if(identifierTypeF.equals("int")) {
-            if(!(identifierTypeS != null && identifierTypeS.equals("int")) && !secondChild.getKind().equals("int") && !secondChild.getKind().equals("AdditiveExpression") && !secondChild.getKind().equals("SubtractiveExpression") && !secondChild.getKind().equals("MultiplicativeExpression") && !secondChild.getKind().equals("DivisionExpression") && !(secondChild.getKind().equals("TwoPartExpression") && (getTwoPartExpressionType(secondChild).equals("int") || getTwoPartExpressionType(secondChild).equals(" ")))) {
+            if(checkNotInt(identifierTypeS, secondChild)) {
                 reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(secondChild.get("line")), Integer.parseInt(secondChild.get("col")), "Assigned must have int type"));
             }
             else {
@@ -554,5 +554,9 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
             }
         }
         return type;
+    }
+
+    public Boolean checkNotInt(String identifierType, JmmNode node) {
+        return !(identifierType != null && identifierType.equals("int")) && !node.getKind().equals("int") && !node.getKind().equals("AdditiveExpression") && !node.getKind().equals("SubtractiveExpression") && !node.getKind().equals("MultiplicativeExpression") && !node.getKind().equals("DivisionExpression") && !(node.getKind().equals("TwoPartExpression") && (getTwoPartExpressionType(node).equals("int") || getTwoPartExpressionType(node).equals(" ")));
     }
 }
