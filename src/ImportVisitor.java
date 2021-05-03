@@ -17,7 +17,7 @@ public class ImportVisitor extends AJmmVisitor<String, String> {
         for(int i = 0; i < children.size(); i++) {
             if(children.get(i).getKind().equals("Identifier")) {
                 symbolTable.addImport(children.get(i).get("name"));
-                return space + "IMPORTNAME: " + children.get(i).get("name") + "\n";
+                return space + children.get(i).get("name") + "\n";
             }
         }
         return defaultVisit(node, space);

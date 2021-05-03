@@ -30,8 +30,6 @@ public class OptimizationStage implements JmmOptimization {
         SymbolTable table = semanticsResult.getSymbolTable();
         JmmNode node= semanticsResult.getRootNode();
 
-        System.out.println("SYMBOL TABLE: " + table + "\n\n");
-
         var emitter = new OllirEmitter(table);
         emitter.visit(node);
         // Convert the AST to a String containing the equivalent OLLIR code

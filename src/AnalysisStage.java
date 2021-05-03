@@ -54,34 +54,18 @@ public class AnalysisStage implements JmmAnalysis {
 
         SymbolTableImp symbolTable = new SymbolTableImp();
 
-        System.out.println("Import Visitor");
+        System.out.println("\n\nImport Visitor\n");
         ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
         System.out.println(visitorImport.visit(node, ""));
 
-        System.out.println("Class Visitor");
+        System.out.println("\n\nClass Visitor\n");
         ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
         System.out.println(visitorClass.visit(node, ""));
-
-//        System.out.println("SYMBOL TABLE IMPORTS: " + symbolTable.getImports());
-//        System.out.println("SYMBOL TABLE CLASS: " + symbolTable.getClassName());
-//        System.out.println("SYMBOL TABLE SUPER: " + symbolTable.getSuper());
-//        System.out.println("SYMBOL TABLE FIELDS: " + symbolTable.getFields());
-//        System.out.println("SYMBOL TABLE METHODS: " + symbolTable.getMethods());
-
-//        System.out.println("SYMBOL TABLE PARAMETERS MAIN: " + symbolTable.getParameters("main"));
-//        System.out.println("SYMBOL TABLE LOCAL VARS MAIN: " + symbolTable.getLocalVariables("main"));
-//        System.out.println("SYMBOL TABLE PARAMETERS QUICKSORT: " + symbolTable.getParameters("quicksort"));
-//        System.out.println("SYMBOL TABLE LOCAL VARS QUICKSORT: " + symbolTable.getLocalVariables("quicksort"));
-//        System.out.println("SYMBOL TABLE PARAMETERS BELAZY: " + symbolTable.getParameters("beLazy"));
-//        System.out.println("SYMBOL TABLE LOCAL VARS BELAZY: " + symbolTable.getLocalVariables("beLazy"));
 
         List<Report> reports = new ArrayList<>();
         SemanticVisitor lengthVisitor = new SemanticVisitor(symbolTable);
         lengthVisitor.visit(node, reports);
 
-        // No Symbol Table being calculated yet
         return new JmmSemanticsResult(parserResult, symbolTable, reports);
-
     }
-
 }

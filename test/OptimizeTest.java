@@ -26,12 +26,6 @@ public class OptimizeTest {
     }
 
     @Test
-    public void testFindMaximum() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/FindMaximum.jmm"));
-        TestUtils.noErrors(result.getReports());
-    }
-
-    @Test
     public void testSimple() {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Simple.jmm"));
         TestUtils.noErrors(result.getReports());

@@ -8,14 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassVisitor extends AJmmVisitor<String, String> {
-    //private final String childrenKind;
     private SymbolTableImp symbolTable;
 
-    public ClassVisitor(String identifierType, SymbolTableImp symbolTable/*, String childrenKind*/) {
-        //this.childrenKind = childrenKind;
+    public ClassVisitor(String identifierType, SymbolTableImp symbolTable) {
         this.symbolTable = symbolTable;
         addVisit(identifierType, this::dealWithClass); // Method reference
-        //addVisit(identifierType, this::dealWithExtends);
         setDefaultVisit(this::defaultVisit); // Method reference
     }
 
@@ -26,17 +23,14 @@ public class ClassVisitor extends AJmmVisitor<String, String> {
             JmmNode child = children.get(i);
             if(child.getKind().equals("Identifier")) {
                 symbolTable.addClassName(child.get("name"));
-                //return space + "CLASSNAME: " + children.get(i).get("name") + "\n";
             }
             if(child.getKind().equals("Extends")) {
                 symbolTable.addSuper(child.getChildren().get(0).get("name"));
-                //return space + "SUPERNAME: " + children.get(i).getChildren().get(j).get("name") + "\n";
 
             }
             if(child.getKind().equals("Main")) {
                 symbolTable.addMethod(new Type("void", false), "main");
                 symbolTable.addParameters("main", child.getChildren().get(0).get("name"), new Type("String", true));
-                //return space + "MAINNAME: " + children.get(i).getChildren().get(0).get("name") + "\n";
 
                 for(int j = 1; j < child.getNumChildren(); j++) {
                     if(child.getChildren().get(j).getKind().equals("LocalVariableDeclaration")) {
@@ -127,22 +121,6 @@ public class ClassVisitor extends AJmmVisitor<String, String> {
         }
         return defaultVisit(node, space);
     }
-
-    /*public String dealWithExtends(JmmNode node, String space) {
-        List<JmmNode> children = node.getChildren();
-        for(int i = 0; i < children.size(); i++) {
-
-        }
-        return defaultVisit(node, space);
-    }
-
-    public String dealWithMain(JmmNode node, String space) {
-        List<JmmNode> children = node.getChildren();
-        for(int i = 0; i < children.size(); i++) {
-
-        }
-        return defaultVisit(node, space);
-    }*/
 
     private String defaultVisit(JmmNode node, String space) {
         String content = space + node.getKind();

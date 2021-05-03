@@ -1,6 +1,8 @@
 
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
+import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
@@ -26,6 +28,12 @@ public class Main implements JmmParser {
 			jsonFile.write(parserResult.toJson().getBytes());
 
 			jsonFile.close();
+
+			AnalysisStage analysisStage = new AnalysisStage();
+			JmmSemanticsResult semanticsResult = analysisStage.semanticAnalysis(parserResult);
+
+			OptimizationStage optimizationStage = new OptimizationStage();
+			OllirResult ollirResult = optimizationStage.toOllir(semanticsResult);
 
 
 			/*for(int i = 0; i < root.jjtGetNumChildren(); i++) { // Import, Class

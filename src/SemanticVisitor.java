@@ -25,9 +25,6 @@ import java.util.List;
 //	verificar se o número de argumentos na invocação é igual ao número de parâmetros da declaração (done)
 //	verificar se o tipo dos parâmetros coincide com o tipo dos argumentos (done)
 
-// ver a parte dos . fora do length
-// arr_size_not_int (como distinguir o a do int[] do a do string[])
-// import methods used (io.println) deve-se verificar se o import e feito?
 
 public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     private SymbolTableImp symbolTable;
@@ -266,8 +263,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         // left -> identifier (kind int); right -> additive, subtractive, multiplicative, division, identifier -> int, int
         // left -> identifier (kind boolean); right -> boolean, identifier (kind boolean), less, and, not
 
-        System.out.println("Assign: " + node);
-
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
 
@@ -393,10 +388,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
         return true;
     }
 
-    // less, and, not serao aqui?
     private Boolean visitBoolean(JmmNode node, List<Report> reports) {
-        System.out.println("Boolean: " + node.getKind());
-
         String methodName = getNodeMethod(node);
         JmmNode firstChild = node.getChildren().get(0);
         JmmNode secondChild = node.getChildren().get(1);
@@ -430,8 +422,6 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     }
 
     private Boolean visitNot(JmmNode node, List<Report> reports) {
-        System.out.println("Not: " + node.getKind());
-
         String methodName = getNodeMethod(node);
         JmmNode firstChild = node.getChildren().get(0);
 

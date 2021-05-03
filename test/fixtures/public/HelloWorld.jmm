@@ -1,6 +1,7 @@
 import ioPlus;
 class HelloWorld {
     int t;
+    HelloWorld hw;
     public static void main(String[] args) {
         t = 5;
         ioPlus.printHelloWorld(new HelloWorld().test(1));
@@ -10,13 +11,17 @@ class HelloWorld {
     public int test(int a) {
         int b;
         boolean tes;
+        a = 0;
+        t = 2*3*5;
+        hw = new HelloWorld();
         b = a;
         b = t;
         tes = true;
-        //b = a * t + 2 * 4;
-        //tes = a < t + 2;
-        return b;
-        //return 1+2;
+        b = a * t + 2 * 4;
+        tes = a < t + 2;
+        //return b;
+        return 1+2;
+
     }
 
     public int test1(int a) {
@@ -26,5 +31,18 @@ class HelloWorld {
     public int test2() {
         t = 0;
         return t;
+    }
+
+    public boolean test3(int a) {
+        boolean f;
+        boolean i;
+        int c;
+        int l;
+        c = 2;
+        l = 4;
+        c = a - 2 * c + l;
+        f = c < a - 2 * l && false;
+        i = !f;
+        return i;
     }
 }
