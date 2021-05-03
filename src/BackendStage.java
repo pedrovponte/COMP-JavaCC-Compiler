@@ -664,9 +664,9 @@ public class BackendStage implements JasminBackend {
         MethodOperations(method);
 
         if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
-            jasmin.append("\treturn");
+            jasmin.append("\treturn\n");
 
-        jasmin.append("\n.end method\n");
+        jasmin.append(".end method\n");
 
     }
 
