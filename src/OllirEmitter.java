@@ -334,6 +334,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateStatement(JmmNode node) {
+        this.auxGeral = new StringBuilder();
         Boolean needPar = false;
         for (int i = 0; i < node.getNumChildren(); i++) {
             JmmNode child = node.getChildren().get(i);
@@ -351,9 +352,11 @@ public class OllirEmitter implements JmmVisitor {
                         if(checkIfObject(type)) {
                             Symbol o = addObject(this.fieldType, type.contains("[]"));
                             stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
+                            this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
                         }
                         else {
                             stringBuilder.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
+                            this.auxGeral.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
                         }
                         this.isField = false;
                         needPar = true;
@@ -362,9 +365,11 @@ public class OllirEmitter implements JmmVisitor {
                         if(this.methodParametersNames.contains(first.get("name"))) {
                             int idx = this.methodParametersNames.indexOf(first.get("name")) + 1;
                             stringBuilder.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            this.auxGeral.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
                         }
                         else {
                             stringBuilder.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            this.auxGeral.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
                         }
                     }
 
@@ -473,8 +478,8 @@ public class OllirEmitter implements JmmVisitor {
                     }
                     else {
                         stringCode.append(generateExpression(second));
-                        Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
-                        stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));
+                        /*Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
+                        stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));*/
                         if(needPar) {
                             stringCode.append(").V;\n");
                         }
@@ -498,11 +503,12 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private String generateExpression(JmmNode node) {
-        auxGeral=new StringBuilder();
+        //this.auxGeral = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         StringBuilder st = new StringBuilder();
         String leftValue ="";
         String rightValue ="";
+        System.out.println("NODE: " + node.getKind());
         switch (node.getKind()) {
             case "int":
             case "int[]":
@@ -568,9 +574,16 @@ public class OllirEmitter implements JmmVisitor {
                 else{
                     rightValue = generateExpression(right);
                 }
-                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                stringCode.append("\t\tt" + tempVarsCount + ".i32" + " :=.i32 " + leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                 //return st.toString() ;
+
+                if(node.getParent().getKind().equals("Assign")) {
+                    stringCode.append(this.auxGeral + leftValue + " " + node.get("operation") + ".i32 " + rightValue);
+                }
+                else {
+                    //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                    stringCode.append("\t\tt" + tempVarsCount + ".i32" + " :=.i32 " + leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                }
+
+                //return st.toString() ;
                 break;
             }
             case "Less": {

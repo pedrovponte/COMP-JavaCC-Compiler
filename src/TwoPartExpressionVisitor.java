@@ -241,8 +241,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         }
 
         stringBuilder.append(")." + getType(this.methodType) + ";\n");
-
-        System.out.println("\n\n");
     }
 
     private String getType(String type) {
