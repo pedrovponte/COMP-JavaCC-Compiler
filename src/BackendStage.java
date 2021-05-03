@@ -193,7 +193,7 @@ public class BackendStage implements JasminBackend {
                         }
                         jasmin.append(")");
 
-                        addType(method.getReturnType());
+                        addType(((CallInstruction) inst).getReturnType());
                         jasmin.append("\n");
 
                         break;
@@ -235,10 +235,11 @@ public class BackendStage implements JasminBackend {
                                 }
                             }
                         }
+                        //ClassType classTypeVirtual = (ClassType) callInstruction.getFirstArg().getType();
                         jasmin.append("\tinvokespecial java/lang/Object.");
                         LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append(callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
-                        addType(method.getReturnType());
+                        jasmin.append( callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
+                        addType(((CallInstruction) inst).getReturnType());
                         jasmin.append("\n");
                         break;
                     case invokestatic:
@@ -289,7 +290,7 @@ public class BackendStage implements JasminBackend {
                         }
                         jasmin.append(")");
 
-                        addType(method.getReturnType());
+                        addType(((CallInstruction) inst).getReturnType());
                         jasmin.append("\n");
                         break;
                     case NEW:
@@ -299,7 +300,7 @@ public class BackendStage implements JasminBackend {
 
                         jasmin.append("\tnew " + classTypeNew.getName() + "\n");
                         jasmin.append("\tdup\n");
-                        jasmin.append("\tinvokespecial <init>()V\n");
+                        jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
                     //case arraylength:0
                         //break;
                     case ldc:
