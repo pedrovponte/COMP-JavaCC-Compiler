@@ -51,11 +51,12 @@ public class BackendStage implements JasminBackend {
                 }
                 break;
             case OBJECTREF:
-                //jasmin.append("[LMyClass;");
-                break;
-            case CLASS:
                 ClassType classType = (ClassType) type;
                 jasmin.append("[" + classType.getName() + ";");
+                break;
+            case CLASS:
+                ClassType classType1 = (ClassType) type;
+                jasmin.append("[" + classType1.getName() + ";");
                 //jasmin.append("");
                 break;
             case THIS:
@@ -233,7 +234,7 @@ public class BackendStage implements JasminBackend {
                             }
                         }
                         LiteralElement callField2Static = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append("\tinvokestatic " + callField2Static.getLiteral().substring( 1, callField2Static.getLiteral().length() - 1 ) + "(");
+                        jasmin.append("\tinvokestatic " + callField1Static.getName() + "." + callField2Static.getLiteral().substring( 1, callField2Static.getLiteral().length() - 1 ) + "(");
 
                         //Boolean first = false;
                         for (Element element : elementsStatic){
@@ -247,7 +248,7 @@ public class BackendStage implements JasminBackend {
                         jasmin.append(")");
 
                         addType(method.getReturnType());
-                        jasmin.append("\n");
+                        //jasmin.append(";");
                         break;
                     //case NEW:
                         //break;
@@ -445,11 +446,11 @@ public class BackendStage implements JasminBackend {
                         break;
                     case LTH:
                         jasmin.append("\tif_icmplt LT_True_" + lthOperation + "\n");
-                        jasmin.append("\ticonst_0");
+                        jasmin.append("\ticonst_0\n");
                         jasmin.append("\tgoto LT_END_" + lthOperation + "\n" );
                         jasmin.append("\tLT_True_" + lthOperation + ":\n");
-                        jasmin.append("\ticonst_1");
-                        jasmin.append("\tLT_End_" + lthOperation);
+                        jasmin.append("\ticonst_1\n");
+                        jasmin.append("\tLT_End_" + lthOperation + "\n");
                         lthOperation++;
                         break;
                 }
@@ -505,8 +506,8 @@ public class BackendStage implements JasminBackend {
         // Deals with Construct
         if (method.isConstructMethod()){
             jasmin.append(".method ");
-            addAccessModifier(method.getMethodAccessModifier());
-            jasmin.append(method.getMethodName() + "()");
+            //addAccessModifier(method.getMethodAccessModifier());
+            jasmin.append("public <init>()");
             addType(method.getReturnType());
             jasmin.append("\n");
             jasmin.append("\t.limit stack 99\n" + "\t.limit locals 99\n");
@@ -518,7 +519,7 @@ public class BackendStage implements JasminBackend {
             return;
         }
 
-        jasmin.append(".method\n");
+        jasmin.append(".method");
         //System.out.println(method.getMethodAccessModifier());
 
         addAccessModifier(method.getMethodAccessModifier());
@@ -547,6 +548,9 @@ public class BackendStage implements JasminBackend {
         jasmin.append("\n\t.limit stack 99\n" + "\t.limit locals 99\n");
 
         MethodOperations(method);
+
+        if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
+            jasmin.append("\n\treturn\n");
 
         jasmin.append("\n.end method\n");
 
@@ -578,7 +582,7 @@ public class BackendStage implements JasminBackend {
 
     public void GetImports(ArrayList<String> imports){
         for (String oneImport : imports){
-            jasmin.append(".source "+ oneImport.replace('.', '/') + "\n");
+            jasmin.append("[ "+ oneImport.replace('.', '/') + ";\n");
         }
     }
 
