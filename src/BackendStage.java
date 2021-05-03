@@ -509,6 +509,7 @@ public class BackendStage implements JasminBackend {
             jasmin.append(method.getMethodName() + "()");
             addType(method.getReturnType());
             jasmin.append("\n");
+            jasmin.append("\t.limit stack 99\n" + "\t.limit locals 99\n");
             //jasmin.append("\n\taload_0\n");
             GetInstructions(method.getInstr(0), method);
             //jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
@@ -517,7 +518,7 @@ public class BackendStage implements JasminBackend {
             return;
         }
 
-        jasmin.append(".method");
+        jasmin.append(".method\n");
         //System.out.println(method.getMethodAccessModifier());
 
         addAccessModifier(method.getMethodAccessModifier());
@@ -543,7 +544,7 @@ public class BackendStage implements JasminBackend {
 
         addType(method.getReturnType());
 
-        jasmin.append("\n");
+        jasmin.append("\n\t.limit stack 99\n" + "\t.limit locals 99\n");
 
         MethodOperations(method);
 
