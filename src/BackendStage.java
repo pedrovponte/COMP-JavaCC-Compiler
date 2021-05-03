@@ -518,7 +518,7 @@ public class BackendStage implements JasminBackend {
             return;
         }
 
-        jasmin.append(".method\n");
+        jasmin.append(".method");
         //System.out.println(method.getMethodAccessModifier());
 
         addAccessModifier(method.getMethodAccessModifier());
