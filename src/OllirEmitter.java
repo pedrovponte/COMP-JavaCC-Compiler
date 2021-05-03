@@ -44,6 +44,7 @@ public class OllirEmitter implements JmmVisitor {
     private StringBuilder auxGeral;
     private String fieldType;
     private Boolean isField;
+    private Boolean needPar;
 
     public OllirEmitter(SymbolTable table) {
         this.symbolTable = (SymbolTableImp) table;
@@ -71,6 +72,7 @@ public class OllirEmitter implements JmmVisitor {
         this.objectsCount = 1;
         this.fieldType = null;
         this.isField = false;
+        this.needPar = false;
     }
 
 
@@ -335,7 +337,7 @@ public class OllirEmitter implements JmmVisitor {
 
     private void generateStatement(JmmNode node) {
         this.auxGeral = new StringBuilder();
-        Boolean needPar = false;
+        this.needPar = false;
         for (int i = 0; i < node.getNumChildren(); i++) {
             JmmNode child = node.getChildren().get(i);
             StringBuilder stringBuilder = new StringBuilder();
@@ -481,6 +483,8 @@ public class OllirEmitter implements JmmVisitor {
                         /*Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
                         stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));*/
                         if(needPar) {
+                            Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
+                            stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));
                             stringCode.append(").V;\n");
                         }
                         else {
@@ -573,7 +577,7 @@ public class OllirEmitter implements JmmVisitor {
                     rightValue = generateExpression(right);
                 }
 
-                if(node.getParent().getKind().equals("Assign")) {
+                if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " " + node.get("operation") + ".i32 " + rightValue);
                 }
                 else {
@@ -602,7 +606,7 @@ public class OllirEmitter implements JmmVisitor {
                     rightValue = generateExpression(right);
                 }
 
-                if(node.getParent().getKind().equals("Assign")) {
+                if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " " + " <" + ".bool " + rightValue);
                 }
                 else {
@@ -629,7 +633,7 @@ public class OllirEmitter implements JmmVisitor {
                     rightValue = generateExpression(right);
                 }
 
-                if(node.getParent().getKind().equals("Assign")) {
+                if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " " + " &&" + ".bool " + rightValue);
                 }
                 else {
@@ -649,7 +653,7 @@ public class OllirEmitter implements JmmVisitor {
                     leftValue = generateExpression(left);
                 }
 
-                if(node.getParent().getKind().equals("Assign")) {
+                if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " !" + ".bool " + leftValue);
                 }
                 else {
