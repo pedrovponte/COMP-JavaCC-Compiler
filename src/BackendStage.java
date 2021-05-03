@@ -211,7 +211,7 @@ public class BackendStage implements JasminBackend {
                     case invokestatic:
                         Operand callField1Static = (Operand) callInstruction.getFirstArg();
 
-                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1Static.getName()).getVirtualReg() + "\n");
+                        //jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1Static.getName()).getVirtualReg() + "\n");
 
                         ArrayList<Element> elementsStatic = callInstruction.getListOfOperands();
 
@@ -569,18 +569,27 @@ public class BackendStage implements JasminBackend {
         }
     }
 
-    public void addClass(ClassUnit ollirClass){
+    public void AddClass(ClassUnit ollirClass){
         jasmin.append(".class ");
         addAccessModifier(ollirClass.getClassAccessModifier());
         jasmin.append(ollirClass.getClassName() + "\n");
         jasmin.append(".super java/lang/Object\n\n");
     }
 
+    public void GetImports(ArrayList<String> imports){
+        for (String oneImport : imports){
+            jasmin.append(".source "+ oneImport.replace('.', '/') + "\n");
+        }
+    }
+
     @Override
     public JasminResult toJasmin(OllirResult ollirResult) {
         ClassUnit ollirClass = ollirResult.getOllirClass();
 
-        addClass(ollirClass);
+        ArrayList<String> imports = ollirClass.getImports();
+        GetImports(imports);
+
+        AddClass(ollirClass);
 
         if (ollirClass.getNumFields()>0)
             AddClassFields(ollirClass);
