@@ -1,14 +1,14 @@
 import ioPlus;
 class HelloWorld {
-    int t;
-    HelloWorld hw;
+    //int t;
+    //HelloWorld hw;
     public static void main(String[] args) {
-        t = 5;
-        ioPlus.printHelloWorld(new HelloWorld().test(1));
+        //t = 5;
+        //ioPlus.printHelloWorld(new HelloWorld().test(1));
         ioPlus.printHelloWorld();
     }
 
-    public int test(int a) {
+    /*public int test(int a) {
         int b;
         boolean tes;
         a = 0;
@@ -44,5 +44,5 @@ class HelloWorld {
         f = c < a - 2 * l && false;
         i = !f;
         return i;
-    }
+    }*/
 }
