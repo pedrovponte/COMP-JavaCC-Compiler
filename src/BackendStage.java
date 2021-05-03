@@ -24,6 +24,7 @@ import java.util.List;
 
 public class BackendStage implements JasminBackend {
     StringBuilder jasmin = new StringBuilder();
+    Integer lthOperation = 1;
 
     public void addType(Type type){
         switch (type.getTypeOfElement()){
@@ -203,8 +204,9 @@ public class BackendStage implements JasminBackend {
                         }
                         jasmin.append("\tinvokespecial java/lang/Object.");
                         LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append(callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()\n");
-
+                        jasmin.append(callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
+                        addType(method.getReturnType());
+                        jasmin.append("\n");
                         break;
                     case invokestatic:
                         Operand callField1Static = (Operand) callInstruction.getFirstArg();
@@ -442,7 +444,13 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\tiand\n");
                         break;
                     case LTH:
-                        jasmin.append("\tif_icmplt\n");
+                        jasmin.append("\tif_icmplt LT_True_" + lthOperation + "\n");
+                        jasmin.append("\ticonst_0");
+                        jasmin.append("\tgoto LT_END_" + lthOperation + "\n" );
+                        jasmin.append("\tLT_True_" + lthOperation + ":\n");
+                        jasmin.append("\ticonst_1");
+                        jasmin.append("\tLT_End_" + lthOperation);
+                        lthOperation++;
                         break;
                 }
                 break;
@@ -500,8 +508,10 @@ public class BackendStage implements JasminBackend {
             addAccessModifier(method.getMethodAccessModifier());
             jasmin.append(method.getMethodName() + "()");
             addType(method.getReturnType());
-            jasmin.append("\n\taload_0\n");
-            jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
+            jasmin.append("\n");
+            //jasmin.append("\n\taload_0\n");
+            GetInstructions(method.getInstr(0), method);
+            //jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
             jasmin.append("\treturn\n");
             jasmin.append(".end method\n");
             return;
