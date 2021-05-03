@@ -595,30 +595,40 @@ public class OllirEmitter implements JmmVisitor {
                 //return st.toString() ;
                 break;
             }
-            case "And":
+            case "And": {
                 JmmNode left = node.getChildren().get(0);
-                if(left.getNumChildren()>0 ){
+                if (left.getNumChildren() > 0) {
                     st.append(newAuxiliarVar("i32", left));
-                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
-                }
-                else{
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                } else {
                     leftValue = generateExpression(left);
                 }
                 JmmNode right = node.getChildren().get(1);
-                if(right.getNumChildren()>0 ){
+                if (right.getNumChildren() > 0) {
                     st.append(newAuxiliarVar("i32", right));
-                    rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
-                }
-                else{
+                    rightValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                } else {
                     rightValue = generateExpression(right);
                 }
                 //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
                 stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " &&" + ".bool " + rightValue + ";\n");
                 //return st.toString() ;
                 break;
-            case "Not":
+            }
+            case "Not": {
+                JmmNode left = node.getChildren().get(0);
+                if (left.getNumChildren() > 0) {
+                    st.append(newAuxiliarVar("i32", left));
+                    leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+                } else {
+                    leftValue = generateExpression(left);
+                }
 
+                //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
+                stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " !" + ".bool " + leftValue + ";\n");
+                //return st.toString() ;
                 break;
+            }
         }
         return "";
     }

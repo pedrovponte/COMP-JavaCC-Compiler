@@ -5,11 +5,13 @@ class Simple {
         int c;
         int k;
         int l;
-        bool f;
+        boolean f;
+        boolean i = false;
         k = 3;
         l = 4;
         c = a - 2 * c + l;
         f = c < a - 2 * l && false;
+        i =!(f && i);
         return c;
     }
 
