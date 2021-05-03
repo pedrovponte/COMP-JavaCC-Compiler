@@ -2,6 +2,7 @@
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
@@ -29,12 +30,6 @@ public class Main implements JmmParser {
 
 			jsonFile.close();
 
-			/*AnalysisStage analysisStage = new AnalysisStage();
-			JmmSemanticsResult semanticsResult = analysisStage.semanticAnalysis(parserResult);
-
-			OptimizationStage optimizationStage = new OptimizationStage();
-			OllirResult ollirResult = optimizationStage.toOllir(semanticsResult);*/
-
 			return parserResult;
 		} catch(Exception e) {
 			ArrayList<Report> reports = new ArrayList<Report>();
@@ -57,6 +52,15 @@ public class Main implements JmmParser {
 	// .\comp2021-5e.bat Main test/fixtures/public/WhileAndIF.jmm
     public static void main(String[] args) {
 		Main main = new Main();
-		main.parse(SpecsIo.read(args[0]));
+		JmmParserResult parserResult = main.parse(SpecsIo.read(args[0]));
+
+		AnalysisStage analysisStage = new AnalysisStage();
+		JmmSemanticsResult semanticsResult = analysisStage.semanticAnalysis(parserResult);
+
+		OptimizationStage optimizationStage = new OptimizationStage();
+		OllirResult ollirResult = optimizationStage.toOllir(semanticsResult);
+
+		BackendStage backendStage = new BackendStage();
+		JasminResult jasminResult = backendStage.toJasmin(ollirResult);
 	}
 }
