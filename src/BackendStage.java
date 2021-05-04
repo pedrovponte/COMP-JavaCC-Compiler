@@ -110,7 +110,6 @@ public class BackendStage implements JasminBackend {
         switch (inst.getInstType()) {
             case ASSIGN:
                 AssignInstruction assignInstruction = (AssignInstruction) inst;
-
                 Instruction rhs = assignInstruction.getRhs();
 
                 GetInstructions(rhs,method);
@@ -720,7 +719,7 @@ public class BackendStage implements JasminBackend {
             ollirClass.buildCFGs(); // build the CFG of each method
             ollirClass.outputCFGs(); // output to .dot files the CFGs, one per method
             ollirClass.buildVarTables(); // build the table of variables for each method
-            //ollirClass.show(); // print to console main information about the input OLLIR
+            ollirClass.show(); // print to console main information about the input OLLIR
 
             for (var method: ollirClass.getMethods()){
                 methodLine(method);
