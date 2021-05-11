@@ -426,6 +426,9 @@ public class OllirEmitter implements JmmVisitor {
                         }
                     }
                     else if (second.getKind().equals("int") || second.getKind().equals("int[]")) {
+                        if(this.insideWhile) {
+                            stringCode.append("\t");
+                        }
                         stringCode.append(stringBuilder);
                         stringCode.append(second.get("value") + "." + getType(type));
                         if(needPar) {
@@ -436,6 +439,9 @@ public class OllirEmitter implements JmmVisitor {
                         }
                     }
                     else if(second.getKind().equals("boolean")) {
+                        if(this.insideWhile) {
+                            stringCode.append("\t");
+                        }
                         stringCode.append(stringBuilder);
                         String boolT;
                         if(second.get("value").equals("true")) {
@@ -504,6 +510,23 @@ public class OllirEmitter implements JmmVisitor {
             else if (child.getKind().equals("While")) {
                 generateWhileStatement(child);
             }
+            else if (child.getKind().equals("If")) {
+                generateIf(child);
+            }
+            else if(child.getKind().equals("IfBody")) {
+                this.insideWhile = true;
+                generateIfBody(child);
+                this.insideWhile = false;
+            }
+            else if(child.getKind().equals("ElseBody")) {
+                this.insideWhile = true;
+                generateElseBody(child);
+                this.insideWhile = false;
+            }
+            else if(child.getKind().equals("Statement")) {
+                System.out.println("Inside Statement");
+                generateStatement(child);
+            }
         }
     }
 
@@ -520,6 +543,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private String generateExpression(JmmNode node) {
+        System.out.println("KIND EXPRESSION");
         StringBuilder sb = new StringBuilder();
         StringBuilder st = new StringBuilder();
         String leftValue ="";
@@ -626,8 +650,11 @@ public class OllirEmitter implements JmmVisitor {
                 if(insideWhile){
                     stringCode.append("\t");
                 }
-                if(node.getParent().getKind().equals("Assign") && !needPar) {
-                    stringCode.append(this.auxGeral + leftValue + " " + " <" + ".bool " + rightValue);
+                if((node.getParent().getKind().equals("Assign") && !needPar)) {
+                    stringCode.append(this.auxGeral + leftValue + " <" + ".bool " + rightValue);
+                }
+                else if(node.getParent().getKind().equals("If")) {
+                    stringCode.append(this.auxGeral + leftValue + " >=" + ".bool " + rightValue);
                 }
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
@@ -692,6 +719,7 @@ public class OllirEmitter implements JmmVisitor {
             }
             case "TwoPartExpression":
                 generateTwoPartExpression(node);
+                break;
         }
         return "";
     }
@@ -699,6 +727,32 @@ public class OllirEmitter implements JmmVisitor {
     public void generateTwoPartExpression(JmmNode node) { //InsideArray or DotExpression
         TwoPartExpressionVisitor twoPartExpressionVisitor = new TwoPartExpressionVisitor(this.methods, this.symbolTable, this.methodName, this.methodParametersNames, this.globalVariables, this.globalVariablesNames, this.methodParameters, this.localVariables, this.localVariablesNames, this.tempRegisters, this.tempVarsCount, this.objects, this.objectsCount);
         twoPartExpressionVisitor.visit(node, stringCode);
+    }
+
+    public void generateIf(JmmNode node) {
+        JmmNode child = node.getChildren().get(0);
+
+        stringCode.append("\t\tif (");
+        if(child.getKind().equals("Less") || child.getKind().equals("And")) {
+            stringCode.append(generateExpression(child));
+        }
+        stringCode.append(") goto else;\n");
+    }
+
+    public void generateIfBody(JmmNode node) {
+        for(int i = 0; i < node.getNumChildren(); i++) {
+            System.out.println("KIND IF: " + node.getChildren().get(i));
+            generateStatement(node.getChildren().get(i));
+        }
+        stringCode.append("\t\t\tgoto endif;\n");
+    }
+
+    public void generateElseBody(JmmNode node) {
+        stringCode.append("\t\telse:\n");
+        for(int i = 0; i < node.getNumChildren(); i++) {
+            System.out.println("KIND ELSE: " + node.getChildren().get(i));
+            generateStatement(node.getChildren().get(i));
+        }
     }
 
     public void generateWhileStatement(JmmNode node){
@@ -710,9 +764,9 @@ public class OllirEmitter implements JmmVisitor {
         stringCode.append("\t\tLoop: \n");
         stringCode.append(generateExpression(condition));
         stringCode.append("\t\t\tif(");
-        int i = tempRegisters.size()+1;
+        int i = this.tempVarsCount;
         stringCode.append("t" + i);
-        stringCode.append(") gotoBody; \n");
+        stringCode.append(") goto Body; \n");
         stringCode.append("\t\t\tgoto EndLoop;\n");
         stringCode.append("\t\tBody: \n");
         for(int j = 0; j<body.getChildren().size(); j++){
@@ -720,9 +774,9 @@ public class OllirEmitter implements JmmVisitor {
         }
         stringCode.append("\t\t\tgoto Loop;\n");
         stringCode.append("\t\tEndLoop: \n");
-        stringCode.append("\t\t\tgotoThen; \n");
+        stringCode.append("\t\t\tgoto Then; \n");
         stringCode.append("\t\tThen: \n");
-        stringCode.append("\t\t\tgotoEnd; \n");
+        stringCode.append("\t\t\tgoto End; \n");
         stringCode.append("\t\tEnd:");
 
         this.insideWhile=false;
