@@ -3,11 +3,18 @@ class Simple {
 
     public int add(int a, int b){
         int c;
-        c = a+this.constInstr();
+        Boolean k;
+        c=10;
+        int i;
+        i=5;
+        while(i<c && a+c<b){
+            k = c<b;
+            c = c-1;
+        }
         return c;
     }
 
-    public static void main(String[] args){
+   /* public static void main(String[] args){
         int a;
         int b;
         int c;
@@ -31,5 +38,5 @@ class Simple {
         c = 100474650;
 		c = 10;
         return c;
-    }
+    }*/
 }
