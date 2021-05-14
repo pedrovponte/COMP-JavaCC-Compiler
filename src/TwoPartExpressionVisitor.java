@@ -28,8 +28,9 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     private List<Symbol> objects;
     private int objectsCount;
     private Boolean hasAssign;
+    private OllirEmitter ollirEmitter;
 
-    public TwoPartExpressionVisitor(List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount, List<Symbol> objects, int objectsCount) {
+    public TwoPartExpressionVisitor(OllirEmitter ollirEmitter, List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount, List<Symbol> objects, int objectsCount) {
         this.methods = methods;
         this.symbolTable = symbolTable;
         this.globalVariables = globalVariables;
@@ -49,6 +50,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         this.objects = objects;
         this.objectsCount = objectsCount;
         this.hasAssign = false;
+        this.ollirEmitter = ollirEmitter;
         addVisit("TwoPartExpression", this::visitTwoPartExpression);
     }
 
@@ -220,8 +222,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     temp.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
                 }
             }
-
-
         }
 
         if(!hasLines && this.methods.contains(callMethodName)) {

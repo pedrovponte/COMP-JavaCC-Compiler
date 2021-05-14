@@ -15,19 +15,62 @@
 import org.junit.Test;
 
 import pt.up.fe.comp.TestUtils;
+import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class OptimizeTest {
 
     @Test
     public void testHelloWorld() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testFindMaximum() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/FindMaximum.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testLazysort() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testLife() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testMonteCarloPi() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testQuickSort() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testSimple() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Simple.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Simple.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testTicTacToe() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testWhileAndIf() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 }
