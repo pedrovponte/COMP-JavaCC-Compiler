@@ -223,39 +223,25 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     temp.append(", " + value + "." + getType(type));
                 }
                 else if(child.getKind().equals("TwoPartExpression")) {
-                    String exprType = this.lastSymbol.getType().getName();
-                    if(this.lastSymbol.getType().isArray()) {
+                    StringBuilder tttt = new StringBuilder();
+                    tttt.append(visitTwoPartExpression(child, stringBuilder));
+                    String exprType = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+                    if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
                         exprType += "[]";
                     }
-                    temp.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
+                    temp.append(", " + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + "." + getType(exprType));
                 }
                 else if(child.getKind().equals("AdditiveExpression") || child.getKind().equals("SubtractiveExpression") || child.getKind().equals("MultiplicativeExpression") || child.getKind().equals("DivisionExpression")) {
-                    //System.out.println("TEMP: " + temp);
                     StringBuilder tttt = new StringBuilder();
-                    //System.out.println("TEMP VARS BEFORE: " + this.tempVarsCount);
                     tttt.append(this.ollirEmitter.generateExpression(child));
-                    //System.out.println("TEMP REGISTERS: " + this.ollirEmitter.getTempRegisters());
                     this.ollirEmitter.addTempVar("int", false);
-                    //this.tempVarsCount = this.ollirEmitter.getTempVarsCount() + 1;
-                    //System.out.println("TEMP VARS: " + this.tempRegisters);
-                    //System.out.println("TEMP VARS AFTER: " + this.tempVarsCount);
-                    // System.out.println("TTTT: " + tttt);
-                    temp.append(", " + "t" + this.ollirEmitter.getTempVarsCount() + ".i32");
-                    //System.out.println("TEMP: " + temp);
+                    temp.append(", " + this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 1).getName() + ".i32");
                 }
                 else if(child.getKind().equals("Less") || child.getKind().equals("And") || child.getKind().equals("Not")) {
-                    //System.out.println("TEMP: " + temp);
                     StringBuilder tttt = new StringBuilder();
-                    //System.out.println("TEMP VARS BEFORE: " + this.tempVarsCount);
                     tttt.append(this.ollirEmitter.generateExpression(child));
-                    //System.out.println("TEMP REGISTERS: " + this.ollirEmitter.getTempRegisters());
                     this.ollirEmitter.addTempVar("boolean", false);
-                    //this.tempVarsCount = this.ollirEmitter.getTempVarsCount() + 1;
-                    //System.out.println("TEMP VARS: " + this.tempRegisters);
-                    //System.out.println("TEMP VARS AFTER: " + this.tempVarsCount);
-                    // System.out.println("TTTT: " + tttt);
                     temp.append(", " + "t" + this.ollirEmitter.getTempVarsCount() + ".bool");
-                    //System.out.println("TEMP: " + temp);
                 }
             }
         }
@@ -265,11 +251,8 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 Symbol s = this.ollirEmitter.addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
                 StringBuilder sbFirst = new StringBuilder();
                 sbFirst.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
-                //System.out.println("SBFIRST: " + sbFirst);
                 stringBuilder.append(sbFirst);
-                //System.out.println("STRINGBUILDER: " + stringBuilder);
                 stringBuilder.append(temp);
-                //System.out.println("STRINGBUILDER: " + stringBuilder);
             } else {
                 temp.append("\t\t");
                 stringBuilder.append(temp);
