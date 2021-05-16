@@ -40,36 +40,14 @@ class Simple {
 import io;
 class Simple {
 
-    public int add(int a, int b){
-        int c;
-        boolean k;
-        c=10;
-        int i;
-        i=5;
-        int j;
-        k = true;
-
-        if(c < i) {
-            j = c + i;
-            c = 5;
-        }
-        else {
-            j = 2;
-        }
-
-        /*if(k) {
-            j = c + 5;
-        }
-        else {
-
-        }
-
-        while(i<c && a+c<b){
-            k = c<b;
-            c = c-1;
-        }*/
-        return c;
-    }
+   public int[] sum(int[] A, int[] B){
+          int[] C;
+          C = new int[A.length];
+          int i;
+          i=0;
+          C[i] = A[i] + B[i];
+          return C;
+      }
 
 
 }

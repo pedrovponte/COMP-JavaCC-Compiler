@@ -465,19 +465,27 @@ public class OllirEmitter implements JmmVisitor {
                         }
                     }
                     else if(second.getKind().equals("New")) {
-                        if(needPar) {
-                            Symbol sNew = addTempVar(getType(type), false);
-                            stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
-                            stringCode.append(stringBuilder);
-                            stringCode.append(sNew.getName() + "." + getType(type));
-                            stringCode.append(").V;\n");
-                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                        if(second.getChildren().get(0).getKind().equals("Array") ){
+                            generateArray(second);
                         }
-                        else {
-                            stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                            stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
-                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
-                        }
+                            if (needPar) {
+                                Symbol sNew = addTempVar(getType(type), false);
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
+                                stringCode.append(stringBuilder);
+                                stringCode.append(sNew.getName() + "." + getType(type));
+                                stringCode.append(").V;\n");
+                                //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            } else {
+                                stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                                if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
+                                    stringCode.append("new(" + getType(type) + "," + tempRegisters.get(tempRegisters.size()-1).getName() +".i32"+")." + getType(type) + ";\n");
+                                }
+                                else {
+                                    stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
+                                }
+                                //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            }
+
 
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
@@ -535,6 +543,18 @@ public class OllirEmitter implements JmmVisitor {
                 generateStatement(child);
             }
         }
+    }
+
+    private void generateArray(JmmNode n){
+        JmmNode node= n.getChildren().get(0);
+        if(node.getChildren().get(0).getKind().equals("InsideArray")){
+            JmmNode insideArr=node.getChildren().get(0);
+           if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
+                    generateTwoPartExpression(insideArr.getChildren().get(0));
+           }
+        }
+
+
     }
 
     private String newAuxiliarVar(String type, JmmNode node){
@@ -729,7 +749,8 @@ public class OllirEmitter implements JmmVisitor {
             case "TwoPartExpression":
                 generateTwoPartExpression(node);
                 break;
-        }
+
+            }
         return "";
     }
 

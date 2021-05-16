@@ -57,9 +57,9 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     public Boolean visitTwoPartExpression(JmmNode node, StringBuilder stringBuilder) {
         JmmNode firstChild = node.getChildren().get(0); // Identifier, This, New
         JmmNode secondChild = node.getChildren().get(1); // InsideArray, DotExpression
-//        stringBuilder.append("\t\tTwo Part Expression: line = " + node.get("line") + ", col = " + node.get("col") + ";\n");
-//        stringBuilder.append("\t\t\t First Child: " + firstChild + ";\n");
-//        stringBuilder.append("\t\t\t Second Child: " + secondChild + ";\n");
+       // stringBuilder.append("\t\tTwo Part Expression: line = " + node.get("line") + ", col = " + node.get("col") + ";\n");
+       // stringBuilder.append("\t\t\t First Child: " + firstChild + ";\n");
+        //stringBuilder.append("\t\t\t Second Child: " + secondChild + ";\n");
         StringBuilder firstChildString = new StringBuilder();
 
         switch (firstChild.getKind()) {
@@ -78,11 +78,25 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
         switch (secondChild.getKind()) {
             case "InsideArray":
+                Boolean arr = true;
+                String t = "i32";
+                Symbol sim = addTempVar(t, arr);
+                stringBuilder.append("\t\t" + sim.getName() + "."+ t+ ":=." + t );
+                JmmNode no = secondChild.getChildren().get(0);
+               // TwoPartExpressionVisitor twoPartExpressionVisitor = new TwoPartExpressionVisitor(this, this.methods, this.symbolTable, this.methodName, this.methodParametersNames, this.globalVariables, this.globalVariablesNames, this.methodParameters, this.localVariables, this.localVariablesNames, this.tempRegisters, this.tempVarsCount, this.objects, this.objectsCount);
+                StringBuilder sb=new StringBuilder();
+                visit(no, sb);
                 break;
-
             case "DotExpression": // MethodCall or Length
                 if(secondChild.getChildren().get(0).getKind().equals("MethodCall")) {
                     generateMethodCall(secondChild.getChildren().get(0), stringBuilder, firstChildString);
+                }
+                if(secondChild.getChildren().get(0).getKind().equals("Length")) {
+                //    stringBuilder.append(firstChildString);
+                    Boolean isArray = true;
+                    String type = "i32";
+                    Symbol s = addTempVar(type, isArray);
+                    stringBuilder.append("\t\t" + s.getName() + "."+ type+ " := arraylength(" + ")."+ type + ";\n");
                 }
 
                 break;
@@ -108,7 +122,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 //            invokespecial(aux1.Fac,"<init>").V;
 //            aux2.i32 :=.i32 invokevirtual(aux1.Fac,"compFac",10.i32).i32;
 //            invokestatic(io, "println", aux2.i32).V;
-
         JmmNode child = node.getChildren().get(0);
         if(child.getKind().equals("ClassCall")) {
             String className = child.getChildren().get(0).get("name");
