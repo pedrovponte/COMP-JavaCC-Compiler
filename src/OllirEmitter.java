@@ -46,6 +46,8 @@ public class OllirEmitter implements JmmVisitor {
     private Boolean isField;
     private Boolean needPar;
     private Boolean insideWhile;
+    private Boolean insiteNotConditional;
+    private String assignType;
 
     public OllirEmitter(SymbolTable table) {
         this.symbolTable = (SymbolTableImp) table;
@@ -74,7 +76,9 @@ public class OllirEmitter implements JmmVisitor {
         this.fieldType = null;
         this.isField = false;
         this.needPar = false;
-        this.insideWhile=false;
+        this.insideWhile = false;
+        this.insiteNotConditional = false;
+        this.assignType = "void";
     }
 
 
@@ -350,6 +354,7 @@ public class OllirEmitter implements JmmVisitor {
 
                 if (first.getKind().equals("Identifier")) {
                     type = getNodeType(first);
+                    this.assignType = type;
                     Symbol sf = null;
 
                     if(this.isField) {
@@ -482,8 +487,12 @@ public class OllirEmitter implements JmmVisitor {
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
                         generateTwoPartExpression(second);
+                        //System.out.println("STRInGGG: " + stringBuilder);
                         stringCode.append(stringBuilder);
-                        System.out.println("TEMP REGISTERS: " + this.tempRegisters);
+                        //System.out.println("TEMP REGISTERS: " + this.tempRegisters);
+                        //System.out.println("COUNTER: " + this.tempVarsCount);
+                        this.tempVarsCount = this.tempRegisters.size() + 1;
+                        //System.out.println("TEMP COUNT: " + this.tempVarsCount);
                         String t = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
                         if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
                             t += "[]";
@@ -495,6 +504,7 @@ public class OllirEmitter implements JmmVisitor {
                         else {
                             stringCode.append(";\n");
                         }
+                        this.assignType = "void";
                     }
                     else {
                         stringCode.append(generateExpression(second));
@@ -531,7 +541,7 @@ public class OllirEmitter implements JmmVisitor {
                 this.insideWhile = false;
             }
             else if(child.getKind().equals("Statement")) {
-                System.out.println("Inside Statement");
+                //System.out.println("Inside Statement");
                 generateStatement(child);
             }
         }
@@ -549,7 +559,10 @@ public class OllirEmitter implements JmmVisitor {
 
     }
 
-    private String generateExpression(JmmNode node) {
+    public String generateExpression(JmmNode node) {
+        //System.out.println("TEMP REGISTERS EXPRESSION: " + this.tempRegisters);
+        //System.out.println("TEMP COUNT EXPRESSION: " + this.tempVarsCount);
+        //this.tempVarsCount = this.tempRegisters.size() + 1;
         StringBuilder sb = new StringBuilder();
         StringBuilder st = new StringBuilder();
         String leftValue ="";
@@ -603,6 +616,7 @@ public class OllirEmitter implements JmmVisitor {
             case "SubtractiveExpression":
             case "MultiplicativeExpression":
             case "DivisionExpression": {
+                System.out.println("TEMP BEFORE LEFT: " + this.tempVarsCount);
                 JmmNode left = node.getChildren().get(0);
                 if(left.getNumChildren()>0 ){
                     st.append(newAuxiliarVar("i32", left));
@@ -611,14 +625,22 @@ public class OllirEmitter implements JmmVisitor {
                 else{
                     leftValue = generateExpression(left);
                 }
+                System.out.println("TEMP AFTER LEFT: " + this.tempVarsCount);
+                System.out.println("TEMP BEFORE RIGTH: " + this.tempVarsCount);
                 JmmNode right = node.getChildren().get(1);
                 if(right.getNumChildren()>0 ){
+                    System.out.println("HEREE");
+                    System.out.println("TEMP BEFORE RIGTH CHILD: " + this.tempVarsCount);
                     st.append(newAuxiliarVar("i32", right));
                     rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                    System.out.println("TEMP AFTER RIGTH CHILD: " + this.tempVarsCount);
+                    System.out.println("TEMP VARS AFTER: " + this.tempRegisters);
                 }
                 else{
                     rightValue = generateExpression(right);
                 }
+                System.out.println("TEMP AFTER RIGHT: " + this.tempVarsCount);
+                System.out.println("TEMP INIT 1: " + this.tempVarsCount);
 
                 if(insideWhile){
                     stringCode.append("\t");
@@ -627,6 +649,7 @@ public class OllirEmitter implements JmmVisitor {
                     stringCode.append(this.auxGeral + leftValue + " " + node.get("operation") + ".i32 " + rightValue);
                 }
                 else {
+                    System.out.println("TEMP OPERATIONS: " + this.tempVarsCount);
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
                     stringCode.append("\t\tt" + tempVarsCount + ".i32" + " :=.i32 " + leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
                 }
@@ -653,18 +676,21 @@ public class OllirEmitter implements JmmVisitor {
                     rightValue = generateExpression(right);
                 }
 
-                if(insideWhile){
+                if(this.insideWhile){
                     stringCode.append("\t");
                 }
                 if((node.getParent().getKind().equals("Assign") && !needPar)) {
                     stringCode.append(this.auxGeral + leftValue + " <" + ".bool " + rightValue);
                 }
                 else if(node.getParent().getKind().equals("If") || node.getParent().getKind().equals("While")) {
-                    stringCode.append("\t\tif (" + this.auxGeral + leftValue + " >=" + ".bool " + rightValue);
+                    stringCode.append("\t\tif (" + leftValue + " >=" + ".bool " + rightValue);
+                }
+                else if(this.insiteNotConditional) {
+                    stringCode.append("\t\tif (" + leftValue + " <" + ".bool " + rightValue);
                 }
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
-                    stringCode.append("\t\tt" +tempVarsCount + ".bool" + " :=.bool " + leftValue + " <" + ".bool " + rightValue + ";\n");
+                    stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " <" + ".bool " + rightValue + ";\n");
                 }
 
                 //return st.toString() ;
@@ -686,14 +712,24 @@ public class OllirEmitter implements JmmVisitor {
                     rightValue = generateExpression(right);
                 }
 
-                if(insideWhile){
+                if(this.insideWhile){
                     stringCode.append("\t");
                 }
                 if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " " + " &&" + ".bool " + rightValue);
                 }
                 else if(node.getParent().getKind().equals("If") || node.getParent().getKind().equals("While")) {
-                    stringCode.append("\t\tif (" + this.auxGeral + leftValue + " &&" + ".bool " + rightValue);
+                    addTempVar("boolean", false);
+                    stringCode.append("\t\t" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool" + " :=.bool " + leftValue + " &&" + ".bool " + rightValue + ";\n");
+                    addTempVar("boolean", false);
+                    String lastName = this.tempRegisters.get(this.tempRegisters.size() - 2).getName();
+                    stringCode.append("\t\t" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool" + ":=.bool " + lastName + ".bool" + " !.bool " + lastName + ".bool;\n");
+                    stringCode.append("\t\tif (" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool &&.bool 1.bool");
+
+                    //stringCode.append("\t\tif (" + leftValue + " &&" + ".bool " + rightValue);
+                }
+                else if(this.insiteNotConditional) {
+                    stringCode.append("\t\tif (" + leftValue + " &&" + ".bool " + rightValue);
                 }
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
@@ -728,6 +764,10 @@ public class OllirEmitter implements JmmVisitor {
             }
             case "TwoPartExpression":
                 generateTwoPartExpression(node);
+                System.out.println("TEMP VARS: " + this.tempRegisters);
+                System.out.println("TEMP COUNT BEFORE: " + this.tempVarsCount);
+                this.tempVarsCount = this.tempRegisters.size() + 1;
+                System.out.println("TEMP COUNT AFTER: " + this.tempVarsCount);
                 break;
         }
         return "";
@@ -788,7 +828,7 @@ public class OllirEmitter implements JmmVisitor {
         stringCode.append("\t\t\tgoto Then; \n");
         stringCode.append("\t\tThen: \n");
         stringCode.append("\t\t\tgoto End; \n");
-        stringCode.append("\t\tEnd:");
+        stringCode.append("\t\tEnd:\n");
 
         this.insideWhile=false;
 
@@ -825,7 +865,7 @@ public class OllirEmitter implements JmmVisitor {
                     a.append(node.get("name") + "." + getType(t));
                 }
             }
-            stringCode.append("\t\tif (" + a + " &&.bool 0.bool");
+            stringCode.append("\t\tif (" + a + " &&.bool 1.bool");
         }
         else if(node.getKind().equals("boolean")) {
             stringCode.append("\t\tif (");
@@ -837,11 +877,13 @@ public class OllirEmitter implements JmmVisitor {
             }
         }
         else if(node.getKind().equals("Not")) {
-
+            this.insiteNotConditional = true;
+            insideConditionExpression(node.getChildren().get(0));
+            this.insiteNotConditional = false;
         }
         else if(node.getKind().equals("TwoPartExpression")) {
             generateTwoPartExpression(node);
-            stringCode.append("\t\tif (" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool &&.bool 0.bool");
+            stringCode.append("\t\tif (" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool &&.bool 1.bool");
         }
     }
 
@@ -917,7 +959,7 @@ public class OllirEmitter implements JmmVisitor {
         if(var.equals("true")) {
             var = "1";
         }
-        else {
+        else if(var.equals("false")) {
             var = "0";
         }
         stringCode.append("\n\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
@@ -940,6 +982,26 @@ public class OllirEmitter implements JmmVisitor {
             default:
                 return type;
         }
+    }
+
+    public List<Symbol> getTempRegisters() {
+        return tempRegisters;
+    }
+
+    public int getTempVarsCount() {
+        return tempVarsCount;
+    }
+
+    public int getObjectsCount() {
+        return objectsCount;
+    }
+
+    public List<Symbol> getObjects() {
+        return objects;
+    }
+
+    public String getAssignType() {
+        return assignType;
     }
 
     public String getNodeType(JmmNode node) {
