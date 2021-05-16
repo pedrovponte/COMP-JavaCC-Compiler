@@ -31,6 +31,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     private OllirEmitter ollirEmitter;
 
     public TwoPartExpressionVisitor(OllirEmitter ollirEmitter, List<String> methods, SymbolTableImp symbolTable, String methodName, List<String> methodParametersNames, List<Symbol> globalVariables, List<String> globalVariablesNames, List<Symbol> methodParameters, List<Symbol> localVariables, List<String> localVariablesNames, List<Symbol> tempRegisters, int tempVarsCount, List<Symbol> objects, int objectsCount) {
+        this.ollirEmitter = ollirEmitter;
         this.methods = methods;
         this.symbolTable = symbolTable;
         this.globalVariables = globalVariables;
@@ -42,15 +43,14 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         this.localVariablesNames = localVariablesNames;
         this.methodType = "void";
         this.firstMultLines = false;
-        this.tempRegisters = tempRegisters;
-        this.tempVarsCount = tempVarsCount;
+        this.tempRegisters = this.ollirEmitter.getTempRegisters();
+        this.tempVarsCount = this.ollirEmitter.getTempVarsCount();
         this.lastSymbol = null;
         this.isField = false;
         this.fieldType = null;
-        this.objects = objects;
-        this.objectsCount = objectsCount;
+        this.objects = this.ollirEmitter.getObjects();
+        this.objectsCount = this.ollirEmitter.getObjectsCount();
         this.hasAssign = false;
-        this.ollirEmitter = ollirEmitter;
         addVisit("TwoPartExpression", this::visitTwoPartExpression);
     }
 
@@ -125,7 +125,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         JmmNode child = node.getChildren().get(0);
         if(child.getKind().equals("ClassCall")) {
             String className = child.getChildren().get(0).get("name");
-            Symbol s = addTempVar(className, false);
+            Symbol s = this.ollirEmitter.addTempVar(className, false);
             stringBuilder.append("\t\t" + s.getName() + "." + className + " :=." + className + " new(" + className + ")." + className + ";\n");
             stringBuilder.append("\t\tinvokespecial(" + s.getName() + "." + className + ", \"<init>\").V;\n");
             this.lastSymbol = s;
@@ -150,10 +150,13 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 isArray = true;
             }
         }
+        else {
+            this.methodType = this.ollirEmitter.getAssignType();
+        }
 
         if(this.firstMultLines) {
             stringBuilder.append(firstChildBuilder);
-            Symbol s = addTempVar(callType, isArray);
+            Symbol s = this.ollirEmitter.addTempVar(callType, isArray);
             temp.append("\t\t" + s.getName() + "." + getType(methodType) + " :=." + getType(methodType) + " invokevirtual(" + lastSymbol.getName() + "." + lastSymbol.getType().getName() + ", \"" + callMethodName + "\"");
             this.lastSymbol = s;
             this.firstMultLines = false;
@@ -161,7 +164,12 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         }
         else {
             if(!this.methods.contains(callMethodName)) {
-                temp.append("\t\tinvokestatic(");
+                if(this.ollirEmitter.getAssignType().equals("void")) {
+                    temp.append("\t\tinvokestatic(");
+                }
+                else {
+                    temp.append("invokestatic(");
+                }
             }
             else {
                 Type mType = symbolTable.getReturnType(callMethodName);
@@ -171,7 +179,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 }
                 temp.append(("invokevirtual("));
                 /*if(!mType.equals("void")) {
-                    Symbol s = addTempVar(mType.getName(), mType.isArray());
+                    Symbol s = this.ollirEmitter.addTempVar(mType.getName(), mType.isArray());
                     temp.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " invokespecial(");
                 }
                 else {
@@ -190,10 +198,10 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     Symbol s = null;
 
                     if(this.isField) {
-                        s = addTempVar(this.fieldType, type.contains("[]"));
+                        s = this.ollirEmitter.addTempVar(this.fieldType, type.contains("[]"));
 
                         if(checkIfObject(type)) {
-                            Symbol o = addObject(this.fieldType, type.contains("[]"));
+                            Symbol o = this.ollirEmitter.addObject(this.fieldType, type.contains("[]"));
                             stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(" + o.getName() + "." + getType(type) + ", " + child.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
                         }
                         else {
@@ -228,18 +236,32 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     temp.append(", " + value + "." + getType(type));
                 }
                 else if(child.getKind().equals("TwoPartExpression")) {
-                    String exprType = this.lastSymbol.getType().getName();
-                    if(this.lastSymbol.getType().isArray()) {
+                    StringBuilder tttt = new StringBuilder();
+                    tttt.append(visitTwoPartExpression(child, stringBuilder));
+                    String exprType = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+                    if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
                         exprType += "[]";
                     }
-                    temp.append(", " + this.lastSymbol.getName() + "." + getType(exprType));
+                    temp.append(", " + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + "." + getType(exprType));
+                }
+                else if(child.getKind().equals("AdditiveExpression") || child.getKind().equals("SubtractiveExpression") || child.getKind().equals("MultiplicativeExpression") || child.getKind().equals("DivisionExpression")) {
+                    StringBuilder tttt = new StringBuilder();
+                    tttt.append(this.ollirEmitter.generateExpression(child));
+                    this.ollirEmitter.addTempVar("int", false);
+                    temp.append(", " + this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 1).getName() + ".i32");
+                }
+                else if(child.getKind().equals("Less") || child.getKind().equals("And") || child.getKind().equals("Not")) {
+                    StringBuilder tttt = new StringBuilder();
+                    tttt.append(this.ollirEmitter.generateExpression(child));
+                    this.ollirEmitter.addTempVar("boolean", false);
+                    temp.append(", " + "t" + this.ollirEmitter.getTempVarsCount() + ".bool");
                 }
             }
         }
 
-        if(!hasLines && this.methods.contains(callMethodName)) {
+        if(!hasLines && (this.methods.contains(callMethodName) || !this.ollirEmitter.getAssignType().equals("void"))) {
             if (!this.methodType.equals("void")) {
-                Symbol s = addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
+                Symbol s = this.ollirEmitter.addTempVar(this.methodType.split("\\[")[0], this.methodType.contains("[]"));
                 StringBuilder sbFirst = new StringBuilder();
                 sbFirst.append("\t\t" + s.getName() + "." + getType(this.methodType) + " :=." + getType(this.methodType) + " ");
                 stringBuilder.append(sbFirst);
@@ -307,7 +329,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     }
 
     private Symbol addTempVar(String type, Boolean isArray) {
-        Symbol s = new Symbol(new Type("int", false), "t"+this.tempVarsCount);
+        Symbol s = new Symbol(new Type(type, isArray), "t"+this.tempVarsCount);
         this.tempRegisters.add(s);
         this.tempVarsCount++;
         return s;
