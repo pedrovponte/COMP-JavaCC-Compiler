@@ -48,6 +48,7 @@ public class OllirEmitter implements JmmVisitor {
     private Boolean insideWhile;
     private Boolean insiteNotConditional;
     private String assignType;
+    private Boolean insideTwoPart;
 
     public OllirEmitter(SymbolTable table) {
         this.symbolTable = (SymbolTableImp) table;
@@ -79,6 +80,7 @@ public class OllirEmitter implements JmmVisitor {
         this.insideWhile = false;
         this.insiteNotConditional = false;
         this.assignType = "void";
+        this.insideTwoPart = false;
     }
 
 
@@ -491,7 +493,7 @@ public class OllirEmitter implements JmmVisitor {
                         stringCode.append(stringBuilder);
                         //System.out.println("TEMP REGISTERS: " + this.tempRegisters);
                         //System.out.println("COUNTER: " + this.tempVarsCount);
-                        this.tempVarsCount = this.tempRegisters.size() + 1;
+                        //this.tempVarsCount = this.tempRegisters.size() + 1;
                         //System.out.println("TEMP COUNT: " + this.tempVarsCount);
                         String t = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
                         if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
@@ -550,7 +552,14 @@ public class OllirEmitter implements JmmVisitor {
     private String newAuxiliarVar(String type, JmmNode node){
         String value;
         value = generateExpression(node);
-        Symbol s = addTempVar(type, false);
+        Symbol s = null;
+        if(this.insideTwoPart) {
+            s = this.tempRegisters.get(this.tempRegisters.size() - 1);
+        }
+        else {
+            s = addTempVar(type, false);
+        }
+        this.insideTwoPart = false;
         if(!insideWhile){
             return s.getName() + "." + getType(type) + " :=." + getType(type) + " " + value + "." + getType(type) + ";\n";
         }else{
@@ -618,21 +627,22 @@ public class OllirEmitter implements JmmVisitor {
             case "DivisionExpression": {
                 System.out.println("TEMP BEFORE LEFT: " + this.tempVarsCount);
                 JmmNode left = node.getChildren().get(0);
-                if(left.getNumChildren()>0 ){
+                if(left.getNumChildren()>0){
                     st.append(newAuxiliarVar("i32", left));
                     leftValue = this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                    System.out.println("LEFT VALUE: " + leftValue);
                 }
                 else{
                     leftValue = generateExpression(left);
                 }
                 System.out.println("TEMP AFTER LEFT: " + this.tempVarsCount);
-                System.out.println("TEMP BEFORE RIGTH: " + this.tempVarsCount);
+                System.out.println("TEMP BEFORE RIGHT: " + this.tempVarsCount);
                 JmmNode right = node.getChildren().get(1);
-                if(right.getNumChildren()>0 ){
-                    System.out.println("HEREE");
-                    System.out.println("TEMP BEFORE RIGTH CHILD: " + this.tempVarsCount);
+                if(right.getNumChildren()>0){
+                    System.out.println("TEMP BEFORE RIGHT CHILD: " + this.tempVarsCount);
                     st.append(newAuxiliarVar("i32", right));
                     rightValue= this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32" ;
+                    System.out.println("RIGHT VALUE: " + rightValue);
                     System.out.println("TEMP AFTER RIGTH CHILD: " + this.tempVarsCount);
                     System.out.println("TEMP VARS AFTER: " + this.tempRegisters);
                 }
@@ -764,9 +774,10 @@ public class OllirEmitter implements JmmVisitor {
             }
             case "TwoPartExpression":
                 generateTwoPartExpression(node);
+                this.insideTwoPart = true;
                 System.out.println("TEMP VARS: " + this.tempRegisters);
                 System.out.println("TEMP COUNT BEFORE: " + this.tempVarsCount);
-                this.tempVarsCount = this.tempRegisters.size() + 1;
+                //this.tempVarsCount = this.tempRegisters.size() + 1;
                 System.out.println("TEMP COUNT AFTER: " + this.tempVarsCount);
                 break;
         }

@@ -188,7 +188,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                         s = this.ollirEmitter.addTempVar(this.fieldType, type.contains("[]"));
 
                         if(checkIfObject(type)) {
-                            Symbol o = addObject(this.fieldType, type.contains("[]"));
+                            Symbol o = this.ollirEmitter.addObject(this.fieldType, type.contains("[]"));
                             stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(" + o.getName() + "." + getType(type) + ", " + child.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
                         }
                         else {
