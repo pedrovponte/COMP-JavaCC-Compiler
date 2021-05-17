@@ -118,15 +118,12 @@ public class BackendStage implements JasminBackend {
 
                 Descriptor descriptor = OllirAccesser.getVarTable(method).get(dest.getName());
 
-                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF){
+                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF || dest.getType().getTypeOfElement()==ElementType.ARRAYREF){
                     if (descriptor.getVirtualReg()<4)
                         jasmin.append("\tastore_" + descriptor.getVirtualReg() + "\n");
                     else
                         jasmin.append("\tastore " + descriptor.getVirtualReg() + "\n");
                 }
-                /*else if(dest.getType().getTypeOfElement()==ElementType.ARRAYREF){
-
-                }*/
                 else{
                     if (descriptor.getVirtualReg()<4)
                         jasmin.append("\tistore_" + descriptor.getVirtualReg() + "\n");
@@ -159,13 +156,41 @@ public class BackendStage implements JasminBackend {
 
                         if (newFirst.getType().getTypeOfElement()==ElementType.ARRAYREF)
                         {
-                            if (OllirAccesser.getVarTable(method).get(newFirst.getName()).getVirtualReg()<4)
-                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newFirst.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newFirst.getName()).getVirtualReg() + "\n");
+                            for (Element operand : callInstruction.getListOfOperands())
+                            {
+                                if (operand.isLiteral())
+                                {
+                                    LiteralElement literalElement = (LiteralElement) operand;
+                                    LiteralValues(literalElement);
+                                }
+                                else{
+                                    Operand newOperand = (Operand) operand;
 
-                            jasmin.append("\tnewarray int");
-                            jasmin.append("\n");
+                                    Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(newOperand.getName());
+
+                                    if (OllirAccesser.getVarTable(method).get(elementDescriptor).getVirtualReg()<4)
+                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                    else
+                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                                }
+                            }
+
+                            if (((ArrayType) operandNew.getReturnType()).getTypeOfElements()==ElementType.INT32)
+                            {
+                                jasmin.append("\tnewarray int");
+                                jasmin.append("\n");
+                            }
+                            else if(callInstruction.getListOfOperands().size() > 1)
+                            {
+                                jasmin.append("\tmultianewarray [[I "+ callInstruction.getListOfOperands().size()+"\n");
+                            }
+                            else{
+                                /*ClassType classTypeNewArray = (ClassType) operandNew.getReturnType();
+
+                                jasmin.append("\tanewarray ");
+                                jasmin.append(classTypeNewArray.getName());
+                                jasmin.append("\n");*/
+                            }
                         }
                         else {
                             ClassType classTypeNew = (ClassType) operandNew.getFirstArg().getType();
