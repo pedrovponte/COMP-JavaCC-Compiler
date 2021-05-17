@@ -1,4 +1,4 @@
-import io;
+/*import io;
 class Simple {
 
     public int add(int a, int b){
@@ -32,14 +32,14 @@ class Simple {
         c = 10;
         return c;
    }
-}
+}*/
 
 
 // --------------------------------------------------------------------------------------
 
-/*import io;
+import io;
 class Simple {
-    boolean aa;
+    /*boolean aa;
     int tt;
     public int add(int a, int b){
         int c;
@@ -64,7 +64,13 @@ class Simple {
         }
 
         if(aa && k) {
-
+            if(!(c < i)) {
+                j = c + i;
+                c = 5;
+            }
+            else {
+                j = 2;
+            }
         }
         else {
 
@@ -141,7 +147,7 @@ class Simple {
 
     public int test1(int c) {
         return 2 + 3;
-    }
+    }*/
 
     public int[] sum(int[] A, int[] B){
         int[] C;
@@ -152,4 +158,4 @@ class Simple {
         return C;
     }
     
-}*/
+}
