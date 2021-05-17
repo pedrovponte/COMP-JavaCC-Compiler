@@ -78,25 +78,14 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
         switch (secondChild.getKind()) {
             case "InsideArray":
-                Boolean arr = true;
-                String t = "i32";
-                Symbol sim = addTempVar(t, arr);
-                stringBuilder.append("\t\t" + sim.getName() + "."+ t+ ":=." + t );
-                JmmNode no = secondChild.getChildren().get(0);
-               // TwoPartExpressionVisitor twoPartExpressionVisitor = new TwoPartExpressionVisitor(this, this.methods, this.symbolTable, this.methodName, this.methodParametersNames, this.globalVariables, this.globalVariablesNames, this.methodParameters, this.localVariables, this.localVariablesNames, this.tempRegisters, this.tempVarsCount, this.objects, this.objectsCount);
-                StringBuilder sb=new StringBuilder();
-                visit(no, sb);
+                generateInsideArray(secondChild.getChildren().get(0), stringBuilder, firstChildString);
                 break;
             case "DotExpression": // MethodCall or Length
                 if(secondChild.getChildren().get(0).getKind().equals("MethodCall")) {
                     generateMethodCall(secondChild.getChildren().get(0), stringBuilder, firstChildString);
                 }
                 if(secondChild.getChildren().get(0).getKind().equals("Length")) {
-                //    stringBuilder.append(firstChildString);
-                    Boolean isArray = true;
-                    String type = "i32";
-                    Symbol s = addTempVar(type, isArray);
-                    stringBuilder.append("\t\t" + s.getName() + "."+ type+ " := arraylength(" + ")."+ type + ";\n");
+                    generateLength(secondChild.getChildren().get(0), stringBuilder, firstChildString);
                 }
 
                 break;
@@ -106,11 +95,38 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     }
 
     public void generateIdentifier(JmmNode node, StringBuilder stringBuilder) {
-        stringBuilder.append(node.get("name"));
+        //stringBuilder.append(node.get("name"));
         String type = getNodeType(node);
-        if(type != null) {
-            stringBuilder.append("." + getType(type));
+        Symbol s = null;
+
+        if(this.isField) {
+            s = this.ollirEmitter.addTempVar(this.fieldType, type.contains("[]"));
+
+            if(checkIfObject(type)) {
+                Symbol o = this.ollirEmitter.addObject(this.fieldType, type.contains("[]"));
+                stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(" + o.getName() + "." + getType(type) + ", " + node.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+            }
+            else {
+                stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(this" + ", " + node.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+            }
+            this.isField = false;
+            stringBuilder.append(s.getName() + "." + getType(type));
         }
+        else {
+            if(this.methodParametersNames.contains(node.get("name"))) {
+                int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
+                stringBuilder.append("$" + idx + "." + node.get("name") + "." + getType(type));
+            }
+            else {
+                stringBuilder.append(node.get("name") + "." + getType(type));
+            }
+        }
+
+
+
+        /*if(type != null) {
+            stringBuilder.append("." + getType(type));
+        }*/
     }
 
     public void generateThis(StringBuilder stringBuilder) {
@@ -254,7 +270,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     StringBuilder tttt = new StringBuilder();
                     tttt.append(this.ollirEmitter.generateExpression(child));
                     this.ollirEmitter.addTempVar("boolean", false);
-                    temp.append(", " + "t" + this.ollirEmitter.getTempVarsCount() + ".bool");
+                    temp.append(", " + this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 1).getName() + ".bool");
                 }
             }
         }
@@ -276,6 +292,60 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         }
 
         stringBuilder.append(")." + getType(this.methodType) + ";\n");
+    }
+
+    public void generateLength(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
+        //stringBuilder.append(firstChildString);
+        Boolean isArray = true;
+        Symbol s = this.ollirEmitter.addTempVar("int", isArray);
+        stringBuilder.append("\t\t" + s.getName() + ".i32" + " :=.i32 arraylength(" + firstChildBuilder + ").i32" + ";\n");
+    }
+
+    public void generateInsideArray(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
+        System.out.println("NOOOOOOOOOOOOOOOOO: " + node);
+        System.out.println("STRINGGGGBU: " + firstChildBuilder);
+
+        if(node.getKind().equals("Identifier")) {
+            String type = getNodeType(node);
+            Symbol s = null;
+
+            if(this.isField) {
+                s = this.ollirEmitter.addTempVar(this.fieldType, type.contains("[]"));
+
+                if(checkIfObject(type)) {
+                    Symbol o = this.ollirEmitter.addObject(this.fieldType, type.contains("[]"));
+                    stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(" + o.getName() + "." + getType(type) + ", " + node.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+                }
+                else {
+                    stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(this" + ", " + node.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
+                }
+                this.isField = false;
+
+                Symbol sNew = this.ollirEmitter.addTempVar("int", false);
+                stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
+                stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                stringBuilder.append("[" + s.getName() + ".i32].i32;\n");
+            }
+            else {
+                if(this.methodParametersNames.contains(node.get("name"))) {
+                    int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
+
+                    Symbol sNew = this.ollirEmitter.addTempVar("int", false);
+                    stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
+                    stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                    stringBuilder.append("[$" + idx + "." + node.get("name") + ".i32].i32;\n");
+                }
+                else {
+                    Symbol sNew = this.ollirEmitter.addTempVar("int", false);
+                    stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
+                    stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                    stringBuilder.append("[" + node.get("name") + ".i32].i32;\n");
+                }
+            }
+        }
+        else if(node.getKind().equals("int")) {
+            System.out.println("\nTODO: int kind inside array\n");
+        }
     }
 
     private String getType(String type) {

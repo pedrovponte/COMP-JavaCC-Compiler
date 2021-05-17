@@ -478,25 +478,23 @@ public class OllirEmitter implements JmmVisitor {
                         if(second.getChildren().get(0).getKind().equals("Array") ){
                             generateArray(second);
                         }
-                            if (needPar) {
-                                Symbol sNew = addTempVar(getType(type), false);
-                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
-                                stringCode.append(stringBuilder);
-                                stringCode.append(sNew.getName() + "." + getType(type));
-                                stringCode.append(").V;\n");
-                                //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
-                            } else {
-                                stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                                if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
-                                    stringCode.append("new(" + getType(type) + "," + tempRegisters.get(tempRegisters.size()-1).getName() +".i32"+")." + getType(type) + ";\n");
-                                }
-                                else {
-                                    stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
-                                }
-                                //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                        if (needPar) {
+                            Symbol sNew = addTempVar(getType(type), false);
+                            stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
+                            stringCode.append(stringBuilder);
+                            stringCode.append(sNew.getName() + "." + getType(type));
+                            stringCode.append(").V;\n");
+                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                        } else {
+                            stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
+                                stringCode.append("new(array, " + tempRegisters.get(tempRegisters.size()-1).getName() +".i32"+")." + getType(type) + ";\n");
                             }
-
-
+                            else {
+                                stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
+                            }
+                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                        }
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
                         generateTwoPartExpression(second);
@@ -567,7 +565,7 @@ public class OllirEmitter implements JmmVisitor {
         if(node.getChildren().get(0).getKind().equals("InsideArray")){
             JmmNode insideArr=node.getChildren().get(0);
            if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
-                    generateTwoPartExpression(insideArr.getChildren().get(0));
+                generateTwoPartExpression(insideArr.getChildren().get(0));
            }
         }
 
@@ -803,10 +801,10 @@ public class OllirEmitter implements JmmVisitor {
             case "TwoPartExpression":
                 generateTwoPartExpression(node);
                 this.insideTwoPart = true;
-                System.out.println("TEMP VARS: " + this.tempRegisters);
-                System.out.println("TEMP COUNT BEFORE: " + this.tempVarsCount);
+                //System.out.println("TEMP VARS: " + this.tempRegisters);
+                //System.out.println("TEMP COUNT BEFORE: " + this.tempVarsCount);
                 //this.tempVarsCount = this.tempRegisters.size() + 1;
-                System.out.println("TEMP COUNT AFTER: " + this.tempVarsCount);
+                //System.out.println("TEMP COUNT AFTER: " + this.tempVarsCount);
                 break;
 
             }

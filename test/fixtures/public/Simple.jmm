@@ -39,6 +39,8 @@ class Simple {
 
 import io;
 class Simple {
+    int test;
+
     /*boolean aa;
     int tt;
     public int add(int a, int b){
@@ -150,11 +152,12 @@ class Simple {
     }*/
 
     public int[] sum(int[] A, int[] B){
+        test = 1;
         int[] C;
         C = new int[A.length];
         int i;
-        i=0;
-        C[i] = A[i] + B[i];
+        i = 0;
+        C[i] = A[1] + B[i];
         return C;
     }
     
