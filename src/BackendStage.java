@@ -154,7 +154,7 @@ public class BackendStage implements JasminBackend {
 
                         Operand newFirst = (Operand) callInstruction.getFirstArg();
 
-                        if (newFirst.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                        if (newFirst.getType() instanceof ArrayType)
                         {
                             for (Element operand : callInstruction.getListOfOperands())
                             {
@@ -182,18 +182,22 @@ public class BackendStage implements JasminBackend {
                             }
                             else if(callInstruction.getListOfOperands().size() > 1)
                             {
-                                jasmin.append("\tmultianewarray [[I "+ callInstruction.getListOfOperands().size()+"\n");
+                                jasmin.append("\tmultianewarray [");
+                                addType(callInstruction.getListOfOperands().get(0).getType());
+                                jasmin.append(" "+callInstruction.getListOfOperands().size()+"\n");
                             }
-                            else{
-                                /*ClassType classTypeNewArray = (ClassType) operandNew.getReturnType();
+                            else if (operandNew.getReturnType().getTypeOfElement()==ElementType.ARRAYREF){
+                                //var classTypeNewArray = (ClassType) operandNew.getReturnType();
+
+                                Operand newReturn = (Operand) callInstruction.getFirstArg();
 
                                 jasmin.append("\tanewarray ");
-                                jasmin.append(classTypeNewArray.getName());
-                                jasmin.append("\n");*/
+                                jasmin.append(newReturn.getName());
+                                jasmin.append("\n");
                             }
                         }
                         else {
-                            ClassType classTypeNew = (ClassType) operandNew.getFirstArg().getType();
+                            ClassType classTypeNew = (ClassType) callInstruction.getReturnType();
 
                             jasmin.append("\tnew " + classTypeNew.getName() + "\n");
                             jasmin.append("\tdup\n");
