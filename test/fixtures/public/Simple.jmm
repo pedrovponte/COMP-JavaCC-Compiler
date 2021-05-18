@@ -157,7 +157,7 @@ class Simple {
         C = new int[A.length];
         int i;
         i = 0;
-        C[i] = A[1] + B[i];
+        C[i] = A[1] + B[i] * i;
         return C;
     }
     

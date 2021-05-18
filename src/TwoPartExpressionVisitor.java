@@ -302,8 +302,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
     }
 
     public void generateInsideArray(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
-        System.out.println("NOOOOOOOOOOOOOOOOO: " + node);
-        System.out.println("STRINGGGGBU: " + firstChildBuilder);
 
         if(node.getKind().equals("Identifier")) {
             String type = getNodeType(node);
@@ -344,7 +342,10 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             }
         }
         else if(node.getKind().equals("int")) {
-            System.out.println("\nTODO: int kind inside array\n");
+            Symbol sss = this.ollirEmitter.addTempVar("int", false);
+            stringBuilder.append("\t\t" + sss.getName() + ".i32" + " :=.i32 " );
+            stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+            stringBuilder.append("[" + node.get("value") + ".i32].i32;\n");
         }
     }
 
