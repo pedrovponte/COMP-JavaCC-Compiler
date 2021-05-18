@@ -118,7 +118,7 @@ public class BackendStage implements JasminBackend {
 
                 Descriptor descriptor = OllirAccesser.getVarTable(method).get(dest.getName());
 
-                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF){
+                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF || dest.getType().getTypeOfElement()==ElementType.ARRAYREF){
                     if (descriptor.getVirtualReg()<4)
                         jasmin.append("\tastore_" + descriptor.getVirtualReg() + "\n");
                     else
@@ -138,6 +138,73 @@ public class BackendStage implements JasminBackend {
                 CallType callType = callInstruction.getInvocationType();
 
                 switch (callType){
+                    case arraylength:
+                        Operand arrayLengthFirst = (Operand) callInstruction.getFirstArg();
+
+                        if (OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg()<4)
+                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
+
+                        jasmin.append("\tarraylength\n");
+                        break;
+
+                    case NEW:
+                        CallInstruction operandNew = (CallInstruction) inst;
+
+                        Operand newFirst = (Operand) callInstruction.getFirstArg();
+
+                        if (newFirst.getType() instanceof ArrayType)
+                        {
+                            for (Element operand : callInstruction.getListOfOperands())
+                            {
+                                if (operand.isLiteral())
+                                {
+                                    LiteralElement literalElement = (LiteralElement) operand;
+                                    LiteralValues(literalElement);
+                                }
+                                else{
+                                    Operand newOperand = (Operand) operand;
+
+                                    Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(newOperand.getName());
+
+                                    if (OllirAccesser.getVarTable(method).get(elementDescriptor).getVirtualReg()<4)
+                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                    else
+                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                                }
+                            }
+
+                            if (((ArrayType) operandNew.getReturnType()).getTypeOfElements()==ElementType.INT32)
+                            {
+                                jasmin.append("\tnewarray int");
+                                jasmin.append("\n");
+                            }
+                            else if(callInstruction.getListOfOperands().size() > 1)
+                            {
+                                jasmin.append("\tmultianewarray [");
+                                addType(callInstruction.getListOfOperands().get(0).getType());
+                                jasmin.append(" "+callInstruction.getListOfOperands().size()+"\n");
+                            }
+                            else if (operandNew.getReturnType().getTypeOfElement()==ElementType.ARRAYREF){
+                                //var classTypeNewArray = (ClassType) operandNew.getReturnType();
+
+                                Operand newReturn = (Operand) callInstruction.getFirstArg();
+
+                                jasmin.append("\tanewarray ");
+                                jasmin.append(newReturn.getName());
+                                jasmin.append("\n");
+                            }
+                        }
+                        else {
+                            ClassType classTypeNew = (ClassType) callInstruction.getReturnType();
+
+                            jasmin.append("\tnew " + classTypeNew.getName() + "\n");
+                            jasmin.append("\tdup\n");
+                            jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
+                        }
+                        break;
+
                     case invokevirtual:
 
                         Operand callField1 = (Operand) callInstruction.getFirstArg();
@@ -292,16 +359,7 @@ public class BackendStage implements JasminBackend {
                         addType(((CallInstruction) inst).getReturnType());
                         jasmin.append("\n");
                         break;
-                    case NEW:
-                        CallInstruction operandNew = (CallInstruction) inst;
 
-                        ClassType classTypeNew = (ClassType) operandNew.getFirstArg().getType();
-
-                        jasmin.append("\tnew " + classTypeNew.getName() + "\n");
-                        jasmin.append("\tdup\n");
-                        jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
-                    //case arraylength:0
-                        //break;
                     case ldc:
                         break;
                 }
