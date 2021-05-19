@@ -358,6 +358,16 @@ public class OllirEmitter implements JmmVisitor {
                 JmmNode second = child.getChildren().get(1);
 
                 if (first.getKind().equals("Identifier")) {
+                    Boolean isArray = false;
+                    JmmNode insideArray = null;
+                    String arrayInfo = null;
+
+                    if(first.getNumChildren() > 0 && first.getChildren().get(0).getKind().equals("InsideArray")) {
+                        isArray = true;
+                        insideArray = first.getChildren().get(0).getChildren().get(0);
+                        arrayInfo = getInsideArray(insideArray);
+                    }
+
                     type = getNodeType(first);
                     this.assignType = type;
                     Symbol sf = null;
@@ -365,27 +375,54 @@ public class OllirEmitter implements JmmVisitor {
                     if(this.isField) {
                         if(checkIfObject(type)) {
                             Symbol o = addObject(this.fieldType, type.contains("[]"));
-                            stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
-                            this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
+                            if(isArray) {
+                                Symbol sArrAccess = addTempVar("int", false);
+                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + first.get("name") + "[" + arrayInfo + "].i32;\n");
+                                stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + sArrAccess.getName() + ".i32, ");
+                                this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + sArrAccess.getName() + ".i32, ");
+                            }
+                            else {
+                                stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
+                                this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
+                            }
+
                         }
                         else {
-                            stringBuilder.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
-                            this.auxGeral.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
+                            if(isArray) {
+                                Symbol sArrAccess = addTempVar("int", false);
+                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + first.get("name") + "[" + arrayInfo + "].i32;\n");
+                                stringBuilder.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
+                                this.auxGeral.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
+                            }
+                            else {
+                                stringBuilder.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
+                                this.auxGeral.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
+                            }
                         }
                         this.isField = false;
                         needPar = true;
                     }
                     else {
-                        if(this.methodParametersNames.contains(first.get("name"))) {
+                        if (this.methodParametersNames.contains(first.get("name"))) {
                             int idx = this.methodParametersNames.indexOf(first.get("name")) + 1;
-                            stringBuilder.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                            this.auxGeral.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                        }
-                        else {
-                            stringBuilder.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                            this.auxGeral.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            if (isArray) {
+                                stringBuilder.append("\t\t$" + idx + "." + first.get("name") + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                                this.auxGeral.append("\t\t$" + idx + "." + first.get("name") + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                            } else {
+                                stringBuilder.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                                this.auxGeral.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            }
+                        } else {
+                            if (isArray) {
+                                stringBuilder.append("\t\t" + first.get("name") + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                                this.auxGeral.append("\t\t" + first.get("name") + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                            } else {
+                                stringBuilder.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                                this.auxGeral.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            }
                         }
                     }
+                    //System.out.println("STRINGGG: " + stringBuilder);
 
                     if (second.getKind().equals("Identifier")){
                         String t = getNodeType(second);
@@ -479,12 +516,21 @@ public class OllirEmitter implements JmmVisitor {
                             generateArray(second);
                         }
                         if (needPar) {
-                            Symbol sNew = addTempVar(getType(type), false);
-                            stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
-                            stringCode.append(stringBuilder);
-                            stringCode.append(sNew.getName() + "." + getType(type));
-                            stringCode.append(").V;\n");
-                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
+                                Symbol sNew = addTempVar(getType(type), false);
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(array, " + this.tempRegisters.get(this.tempRegisters.size() - 2).getName() + ".i32).i32;\n");
+                                stringCode.append(stringBuilder);
+                                stringCode.append(sNew.getName() + "." + getType(type));
+                                stringCode.append(").V;\n");
+                            }
+                            else {
+                                Symbol sNew = addTempVar(getType(type), false);
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
+                                stringCode.append(stringBuilder);
+                                stringCode.append(sNew.getName() + "." + getType(type));
+                                stringCode.append(").V;\n");
+                                //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            }
                         } else {
                             stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
                             if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
@@ -497,6 +543,7 @@ public class OllirEmitter implements JmmVisitor {
                         }
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
+                        //System.out.println("TWO PART: " + second);
                         generateTwoPartExpression(second);
                         //System.out.println("STRInGGG: " + stringBuilder);
                         stringCode.append(stringBuilder);
@@ -561,12 +608,19 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateArray(JmmNode n){
-        JmmNode node= n.getChildren().get(0);
+        //System.out.println("NODE: " + n);
+        JmmNode node = n.getChildren().get(0);
         if(node.getChildren().get(0).getKind().equals("InsideArray")){
-            JmmNode insideArr=node.getChildren().get(0);
-           if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
+            JmmNode insideArr = node.getChildren().get(0);
+            //System.out.println("INSIDE ARRAY: " + insideArr);
+            if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
                 generateTwoPartExpression(insideArr.getChildren().get(0));
-           }
+                //System.out.println("NODE1: " + n);
+            }
+            else if(insideArr.getChildren().get(0).getKind().equals("int")) {
+                Symbol s = addTempVar("int", false);
+                stringCode.append("\t\t" + s.getName() + ".i32 :=.i32 " + insideArr.getChildren().get(0).get("value") + ".i32;\n");
+            }
         }
 
 
@@ -1021,6 +1075,67 @@ public class OllirEmitter implements JmmVisitor {
             var = "0";
         }
         stringCode.append("\n\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
+    }
+
+
+    public String getInsideArray(JmmNode node) {
+        String stringBuilder = null;
+        if (node.getKind().equals("Identifier")){
+            String t = getNodeType(node);
+            Symbol s = null;
+
+            if(this.isField) {
+                s = addTempVar(this.fieldType, t.contains("[]"));
+
+                if(checkIfObject(t)) {
+                    Symbol o = addObject(this.fieldType, t.contains("[]"));
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                }
+                else {
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                }
+                this.isField = false;
+                return s.getName() + "." + getType(t);
+            }
+            else {
+                if(this.methodParametersNames.contains(node.get("name"))) {
+                    int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
+
+                    return "$" + idx + "." + node.get("name") + "." + getType(t);
+
+                }
+                else {
+                    return node.get("name") + "." + getType(t);
+                }
+            }
+        }
+        else if (node.getKind().equals("int")) {
+            Symbol sInt = addTempVar("int", false);
+            stringCode.append("\t\t" + sInt.getName() + ".i32 :=.i32 " + node.get("value") + ".i32;\n");
+            return sInt.getName() + ".i32";
+
+        }
+        else if(node.getKind().equals("TwoPartExpression")) {
+            generateTwoPartExpression(node);
+            //System.out.println("STRInGGG: " + stringBuilder);
+            //System.out.println("TEMP REGISTERS: " + this.tempRegisters);
+            //System.out.println("COUNTER: " + this.tempVarsCount);
+            //this.tempVarsCount = this.tempRegisters.size() + 1;
+            //System.out.println("TEMP COUNT: " + this.tempVarsCount);
+            String t = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+            if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
+                t += "[]";
+            }
+            this.assignType = "void";
+            return this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + "." + getType(t);
+        }
+        else {
+            stringCode.append(generateExpression(node));
+            Symbol s = addTempVar("int", false);
+                        /*Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
+                        stringBuilder.append(stringBuilder + sExp.getName() + "." + getType(type));*/
+            return this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+        }
     }
 
     public String getType(String type) {
