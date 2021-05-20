@@ -1,11 +1,9 @@
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.Type;
-import pt.up.fe.comp.jmm.ast.JmmVisitor;
 import pt.up.fe.comp.jmm.ast.PostorderJmmVisitor;
 
 import java.util.List;
-import java.util.Map;
 
 public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder, Boolean> {
 
@@ -64,7 +62,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
         switch (firstChild.getKind()) {
             case "Identifier":
-                generateIdentifier(firstChild, firstChildString);
+                generateIdentifier(firstChild, firstChildString, stringBuilder);
                 break;
 
             case "This":
@@ -94,13 +92,13 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         return true;
     }
 
-    public void generateIdentifier(JmmNode node, StringBuilder stringBuilder) {
+    public void generateIdentifier(JmmNode node, StringBuilder firstChildString, StringBuilder stringBuilder) {
         //
         String type = getNodeType(node);
         Symbol s = null;
 
         if(type == null) {
-            stringBuilder.append(node.get("name"));
+            firstChildString.append(node.get("name"));
             return;
         }
 
@@ -115,15 +113,15 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 stringBuilder.append("\t\t" + s.getName() + "." + getType(type) + " :=." + getType(type) + " getfield(this" + ", " + node.get("name") + "." + getType(type) + ")." + getType(type) + ";\n");
             }
             this.isField = false;
-            stringBuilder.append(s.getName() + "." + getType(type));
+            firstChildString.append(s.getName() + "." + getType(type));
         }
         else {
             if(this.methodParametersNames.contains(node.get("name"))) {
                 int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
-                stringBuilder.append("$" + idx + "." + node.get("name") + "." + getType(type));
+                firstChildString.append("$" + idx + "." + node.get("name") + "." + getType(type));
             }
             else {
-                stringBuilder.append(node.get("name") + "." + getType(type));
+                firstChildString.append(node.get("name") + "." + getType(type));
             }
         }
 
@@ -294,9 +292,8 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
     public void generateLength(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
         //stringBuilder.append(firstChildString);
-        Boolean isArray = true;
-        Symbol s = this.ollirEmitter.addTempVar("int", isArray);
-        stringBuilder.append("\t\t" + s.getName() + ".i32" + " :=.i32 arraylength(" + firstChildBuilder + ").i32" + ";\n");
+        Symbol s = this.ollirEmitter.addTempVar("int", false);
+        stringBuilder.append("\t\t" + s.getName() + ".i32" + " :=.i32 arraylength(" + firstChildBuilder + ").i32;\n");
     }
 
     public void generateInsideArray(JmmNode node, StringBuilder stringBuilder, StringBuilder firstChildBuilder) {
@@ -359,7 +356,6 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             //stringBuilder.append("bla bla \n");
             System.out.println("FIRST CHILD: " + firstChildBuilder);
             //System.out.println("STRINGBUILDE: " + stringBuilder);
-            System.out.println("HEREEEE " + node);
             Symbol sss = this.ollirEmitter.addTempVar("int", false);
             stringBuilder.append("\t\t" + sss.getName() + ".i32 :=.i32 ");
             stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);

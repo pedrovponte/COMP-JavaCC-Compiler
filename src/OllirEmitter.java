@@ -252,6 +252,7 @@ public class OllirEmitter implements JmmVisitor {
             //generateStatement(node, false);
 
         }
+        stringCode.append("\n\t\tret.V;\n");
     }
 
     private void generateMethod(JmmNode node) {
@@ -325,6 +326,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateMethodBody(JmmNode node) {
+        Boolean hasReturn = false;
         for (int i = 0; i < node.getNumChildren(); i++) {
 
             JmmNode child = node.getChildren().get(i);
@@ -340,9 +342,15 @@ public class OllirEmitter implements JmmVisitor {
                     break;
                 case "Return":
                     generateReturn(child);
+                    hasReturn = true;
                     break;
             }
         }
+
+        if(!hasReturn) {
+            stringCode.append("\n\t\tret.V;\n");
+        }
+
     }
 
     private void generateStatement(JmmNode node) {
