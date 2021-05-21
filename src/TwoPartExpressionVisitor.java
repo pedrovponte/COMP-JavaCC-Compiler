@@ -121,7 +121,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 firstChildString.append("$" + idx + "." + node.get("name") + "." + getType(type));
             }
             else {
-                firstChildString.append(node.get("name") + "." + getType(type));
+                firstChildString.append(this.ollirEmitter.checkRestrictName(node.get("name")) + "." + getType(type));
             }
         }
 
@@ -230,7 +230,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                             temp.append(", " + "$" + idx + "." + child.get("name") + "." + getType(type));
                         }
                         else {
-                            temp.append(", " + child.get("name") + "." + getType(type));
+                            temp.append(", " + this.ollirEmitter.checkRestrictName(child.get("name")) + "." + getType(type));
                         }
                     }
                 }
@@ -331,7 +331,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                     Symbol sNew = this.ollirEmitter.addTempVar("int", false);
                     stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
                     stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
-                    stringBuilder.append("[" + node.get("name") + ".i32].i32;\n");
+                    stringBuilder.append("[" + this.ollirEmitter.checkRestrictName(node.get("name")) + ".i32].i32;\n");
                 }
             }
         }
