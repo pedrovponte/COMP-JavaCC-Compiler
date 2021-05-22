@@ -723,6 +723,13 @@ public class BackendStage implements JasminBackend {
                             }
                         }
                     }
+                    else
+                    {
+                        if (SingleDescriptor.getVirtualReg()<4)
+                            jasmin.append("\tiload_" + SingleDescriptor.getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\tiload " + SingleDescriptor.getVirtualReg() + "\n");
+                    }
                 }
                 break;
             case BRANCH:
