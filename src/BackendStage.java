@@ -401,13 +401,20 @@ public class BackendStage implements JasminBackend {
                 break;
             case RETURN:
                 ReturnInstruction returnInstruction = (ReturnInstruction) inst;
+                ElementType returnValue;
 
-                ElementType returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
-
-                if (returnValue==ElementType.VOID){
+                try{
+                    returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
+                }
+                catch (Exception e){
                     jasmin.append("\treturn\n");
                     return;
                 }
+
+                /*if (returnValue==ElementType.VOID){
+                    jasmin.append("\treturn\n");
+                    return;
+                }*/
 
                 Element operand = returnInstruction.getOperand();
                 if (operand.isLiteral()){
@@ -445,8 +452,10 @@ public class BackendStage implements JasminBackend {
                         break;
                     case OBJECTREF:
                         jasmin.append("\tareturn\n");
+                        break;
                     case ARRAYREF:
                         jasmin.append("\tareturn\n");
+                        break;
                 }
 
                 break;
