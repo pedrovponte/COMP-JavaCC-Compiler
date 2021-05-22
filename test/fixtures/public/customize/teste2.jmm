@@ -1,0 +1,89 @@
+import MathUtils; //lowerLimit,upperLimit
+import ioPlus;
+import io.println;
+
+class optimizationAlg {
+    public int max(int a, int b){
+        int temp;
+        if(a<b){
+            temp=b;
+        }
+        else{
+            temp=a;
+        }
+        return temp;
+    }
+
+    public int knapSack(int W, int[] wt, int[] val, int n){
+        int ret;
+        if(n<1){
+        ret = 0;
+        }
+        else{}
+        if(W<1){
+        ret=0;
+        }
+        else{}
+
+        if(W<wt[n-1]){
+            ret= this.knapSack(W,wt,val,n-1);
+        }
+        else{
+            ret= this.max(val[n-1] + this.knapSack(W-wt[n-1],wt,val,n-1), this.knapSack(W,wt,val,n-1));
+        }
+        return ret;
+    }
+
+
+     public int smallStatementTest(){
+        int x;
+        int y;
+        int i;
+        i = 0;
+        x = 10;
+        while(i< 20){
+            if ((i * 3)  < 7) {
+                if (!(i + 8 < 10)) {
+                    x = 2;
+                    if (true) {
+                        x = 3;
+                    }
+                    else {}
+                }
+                else {}
+            }
+            else {
+                while(!(x < 5)){
+                    x = x- 1;
+                }
+            }
+            i = i+1;
+        }
+        y = x+3;
+        io.println(y);
+        return 0;
+     }
+
+	public static void main(String[] args) {
+
+	    //KNAPSACK:
+		int[] val;
+		int i;
+		int n;
+		val[0]=60;
+		val[1]=100;
+        val[2]=120;
+        int[] wt;
+        wt[0]=10;
+        wt[1]=20;
+        wt[2]=30;
+        int W;
+        W=50;
+        n= val.length / val[0];
+		ioPlus.printResult(this.knapSack(W,wt,val,n));
+
+		//STATEMENT TEST
+		int k;
+		k=this.smallStatementTest();
+	}
+}

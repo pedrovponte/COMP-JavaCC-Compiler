@@ -6,8 +6,6 @@ import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
-import java.util.ArrayList;
-
 
 public class Tests {
 
@@ -216,6 +214,34 @@ public class Tests {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
         var res = TestUtils.parse(jmmCode);
         System.out.println("Report: " + res.getReports());
+        TestUtils.mustFail(res.getReports());
+    }
+
+    @Test
+    public void test1() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste1.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
+    }
+
+    @Test
+    public void test2() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste2.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
+    }
+
+    @Test
+    public void test3() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste3.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
+    }
+
+    @Test
+    public void test4() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste4.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.mustFail(res.getReports());
     }
 }

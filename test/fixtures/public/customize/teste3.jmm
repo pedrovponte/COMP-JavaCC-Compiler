@@ -1,0 +1,86 @@
+import io.println;
+
+class ConditionalsAndArrays {
+	public static void main(String[] args) {
+
+        int i;
+        int j;
+
+        int a;
+        int b;
+        int c;
+        int d;
+
+        int[] newField;
+        int result;
+
+        ConditionalsAndArrays x;
+
+        a = 4;
+        b = 1;
+        d= 2000/100+50*2;
+
+        x = new ConditionalsAndArrays();
+
+        i = 0;
+        newField = new int[5];
+        while(i < newField.length){
+            newField[i] = newField.length - i;
+            i = i + 1;
+            j = i;
+            while(j < newField.length){
+                j = j + 1;
+                io.println(j+i*j);
+            }
+        }
+
+        a = x.sub(1,1) * newField[1] + (2 * newField[1]);
+
+        b = new ConditionalsAndArrays().sub(1,1);
+
+        if((b+1) < (a-1)){
+            io.println(1);
+            if(true && false){
+                io.println(0-1);
+            }else{
+                io.println(2);
+                if(true && !false){
+                    io.println(1+2);
+                }else{
+                    io.println(5);
+                }
+            }
+            a = 0-1;
+        }
+        else{
+            a = 4;
+        }
+
+
+        newField[newField.length-1] = newField[1+ x.sub(1,1)] + (2 * newField[1]);
+        a = x.sub(1,1) * newField[1] + (2 * newField[1]);
+        b = this.sub(1,1);
+        c = newField[newField.length-1];
+
+        if(((b+d) < (a-c)) && true && (!false)){
+            result = b;
+        }
+        else{
+            result = 0-1;
+        }
+
+        io.println(result);
+        io.println(a);
+	}
+
+	public int[] array(){
+        int[] x;
+        x = new int[1];
+        x[0] = 1;
+        return x;
+     }
+
+	public int sub(int a, int b){
+		return a-b;
+	}
+}
