@@ -403,18 +403,13 @@ public class BackendStage implements JasminBackend {
                 ReturnInstruction returnInstruction = (ReturnInstruction) inst;
                 ElementType returnValue;
 
-                try{
-                    returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
-                }
-                catch (Exception e){
+                if (!returnInstruction.hasReturnValue())
+                {
                     jasmin.append("\treturn\n");
                     return;
                 }
-
-                /*if (returnValue==ElementType.VOID){
-                    jasmin.append("\treturn\n");
-                    return;
-                }*/
+                
+                returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
 
                 Element operand = returnInstruction.getOperand();
                 if (operand.isLiteral()){
