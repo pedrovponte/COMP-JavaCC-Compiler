@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import pt.up.fe.comp.TestUtils;
+import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
@@ -26,17 +27,62 @@ import java.util.ArrayList;
 public class BackendTest {
 
     @Test
+    public void testFindMaximum() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/FindMaximum.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
     public void testHelloWorld() {
-        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
         assertEquals("Hello, World!", output.trim());
     }
 
+    /*@Test
+    public void testLazysort() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }*/
+
+    @Test
+    public void testLife() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Life.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void testMonteCarloPi() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    /*@Test
+    public void testQuickSort() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }*/
+
     @Test
     public void testSimple() {
-        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Simple.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Simple.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
@@ -44,12 +90,25 @@ public class BackendTest {
     }
 
     @Test
-    public void jasmin_test() {
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")),null,new ArrayList<>()));
+    public void testTicTacToe() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
+        TestUtils.noErrors(result.getReports());
 
-        /*String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/NestedLoop.jmm");
-        var res =
-        System.out.println("Report: " + res.getReports());
-        TestUtils.mustFail(res.getReports());*/
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void testWhileAndIf() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        //var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void jasmin_test() {
+        JasminResult result = TestUtils.backend(new OllirResult(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")));
     }
 }

@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,6 +253,7 @@ public class OllirEmitter implements JmmVisitor {
             //generateStatement(node, false);
 
         }
+        stringCode.append("\n\t\tret.V;\n");
     }
 
     private void generateMethod(JmmNode node) {
@@ -325,6 +327,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateMethodBody(JmmNode node) {
+        Boolean hasReturn = false;
         for (int i = 0; i < node.getNumChildren(); i++) {
 
             JmmNode child = node.getChildren().get(i);
@@ -340,9 +343,15 @@ public class OllirEmitter implements JmmVisitor {
                     break;
                 case "Return":
                     generateReturn(child);
+                    hasReturn = true;
                     break;
             }
         }
+
+        if(!hasReturn) {
+            stringCode.append("\n\t\tret.V;\n");
+        }
+
     }
 
     private void generateStatement(JmmNode node) {
@@ -358,48 +367,91 @@ public class OllirEmitter implements JmmVisitor {
                 JmmNode second = child.getChildren().get(1);
 
                 if (first.getKind().equals("Identifier")) {
+                    Boolean isArray = false;
+                    JmmNode insideArray = null;
+                    String arrayInfo = null;
+                    String firstName = null;
+                    String secondName = null;
+
+                    if(first.getNumChildren() > 0 && first.getChildren().get(0).getKind().equals("InsideArray")) {
+                        isArray = true;
+                        insideArray = first.getChildren().get(0).getChildren().get(0);
+                        arrayInfo = getInsideArray(insideArray);
+                    }
+
                     type = getNodeType(first);
                     this.assignType = type;
                     Symbol sf = null;
 
                     if(this.isField) {
+                        firstName = first.get("name");
                         if(checkIfObject(type)) {
                             Symbol o = addObject(this.fieldType, type.contains("[]"));
-                            stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
-                            this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + first.get("name") + "." + getType(type) + ", ");
+                            if(isArray) {
+                                Symbol sArrAccess = addTempVar("int", false);
+                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + firstName + "[" + arrayInfo + "].i32;\n");
+                                stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + sArrAccess.getName() + ".i32, ");
+                                this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + sArrAccess.getName() + ".i32, ");
+                            }
+                            else {
+                                stringBuilder.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + firstName + "." + getType(type) + ", ");
+                                this.auxGeral.append("\t\tputfield(" + o.getName() + "." + getType(type) + ", " + firstName + "." + getType(type) + ", ");
+                            }
+
                         }
                         else {
-                            stringBuilder.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
-                            this.auxGeral.append("\t\tputfield(this" + ", " + first.get("name") + "." + getType(type) + ", ");
+                            if(isArray) {
+                                Symbol sArrAccess = addTempVar("int", false);
+                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + firstName + "[" + arrayInfo + "].i32;\n");
+                                stringBuilder.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
+                                this.auxGeral.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
+                            }
+                            else {
+                                stringBuilder.append("\t\tputfield(this" + ", " + firstName + "." + getType(type) + ", ");
+                                this.auxGeral.append("\t\tputfield(this" + ", " + firstName + "." + getType(type) + ", ");
+                            }
                         }
                         this.isField = false;
                         needPar = true;
                     }
                     else {
-                        if(this.methodParametersNames.contains(first.get("name"))) {
+                        if (this.methodParametersNames.contains(first.get("name"))) {
                             int idx = this.methodParametersNames.indexOf(first.get("name")) + 1;
-                            stringBuilder.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                            this.auxGeral.append("\t\t$" + idx + "." + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                        }
-                        else {
-                            stringBuilder.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
-                            this.auxGeral.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            firstName = first.get("name");
+                            if (isArray) {
+                                stringBuilder.append("\t\t$" + idx + "." + firstName + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                                this.auxGeral.append("\t\t$" + idx + "." + firstName + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                            } else {
+                                stringBuilder.append("\t\t$" + idx + "." + firstName + "." + getType(type) + " :=." + getType(type) + " ");
+                                this.auxGeral.append("\t\t$" + idx + "." + firstName + "." + getType(type) + " :=." + getType(type) + " ");
+                            }
+                        } else {
+                            firstName = checkRestrictName(first.get("name"));
+                            if (isArray) {
+                                stringBuilder.append("\t\t" + firstName + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                                this.auxGeral.append("\t\t" + firstName + "[" + arrayInfo + "].i32" + " :=.i32" + " ");
+                            } else {
+                                stringBuilder.append("\t\t" + firstName + "." + getType(type) + " :=." + getType(type) + " ");
+                                this.auxGeral.append("\t\t" + firstName + "." + getType(type) + " :=." + getType(type) + " ");
+                            }
                         }
                     }
+                    //System.out.println("STRINGGG: " + stringBuilder);
 
                     if (second.getKind().equals("Identifier")){
                         String t = getNodeType(second);
                         Symbol s = null;
 
                         if(this.isField) {
+                            secondName = second.get("name");
                             s = addTempVar(this.fieldType, t.contains("[]"));
 
                             if(checkIfObject(t)) {
                                 Symbol o = addObject(this.fieldType, t.contains("[]"));
-                                stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + second.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                                stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + secondName + "." + getType(t) + ")." + getType(t) + ";\n");
                             }
                             else {
-                                stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + second.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                                stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + secondName + "." + getType(t) + ")." + getType(t) + ";\n");
                             }
                             this.isField = false;
                             stringCode.append(stringBuilder);
@@ -413,12 +465,13 @@ public class OllirEmitter implements JmmVisitor {
                         }
                         else {
                             if(this.methodParametersNames.contains(second.get("name"))) {
+                                secondName = second.get("name");
                                 int idx = this.methodParametersNames.indexOf(second.get("name")) + 1;
                                 if(this.insideWhile) {
                                     stringCode.append("\t");
                                 }
                                 stringCode.append(stringBuilder);
-                                stringCode.append("$" + idx + "." + second.get("name") + "." + getType(t));
+                                stringCode.append("$" + idx + "." + secondName + "." + getType(t));
                                 if(needPar) {
                                     stringCode.append(").V;\n");
                                 }
@@ -427,11 +480,12 @@ public class OllirEmitter implements JmmVisitor {
                                 }
                             }
                             else {
+                                secondName = checkRestrictName(second.get("name"));
                                 if(this.insideWhile) {
                                     stringCode.append("\t");
                                 }
                                 stringCode.append(stringBuilder);
-                                stringCode.append(second.get("name") + "." + getType(t));
+                                stringCode.append(secondName + "." + getType(t));
                                 if(needPar) {
                                     stringCode.append(").V;\n");
                                 }
@@ -479,24 +533,34 @@ public class OllirEmitter implements JmmVisitor {
                             generateArray(second);
                         }
                         if (needPar) {
-                            Symbol sNew = addTempVar(getType(type), false);
-                            stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
-                            stringCode.append(stringBuilder);
-                            stringCode.append(sNew.getName() + "." + getType(type));
-                            stringCode.append(").V;\n");
-                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
+                                Symbol sNew = addTempVar(getType(type), false);
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(array, " + this.tempRegisters.get(this.tempRegisters.size() - 2).getName() + ".i32).i32;\n");
+                                stringCode.append(stringBuilder);
+                                stringCode.append(sNew.getName() + "." + getType(type));
+                                stringCode.append(").V;\n");
+                            }
+                            else {
+                                Symbol sNew = addTempVar(getType(type), false);
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(" + getType(type) + ")." + getType(type) + ";\n");
+                                stringCode.append(stringBuilder);
+                                stringCode.append(sNew.getName() + "." + getType(type));
+                                stringCode.append(").V;\n");
+                                //stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
+                            }
                         } else {
-                            stringCode.append("\t\t" + first.get("name") + "." + getType(type) + " :=." + getType(type) + " ");
+                            stringCode.append("\t\t" + firstName + "." + getType(type) + " :=." + getType(type) + " ");
                             if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
                                 stringCode.append("new(array, " + tempRegisters.get(tempRegisters.size()-1).getName() +".i32"+")." + getType(type) + ";\n");
                             }
                             else {
                                 stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
                             }
-                            //stringCode.append("\t\tinvokespecial(" + first.get("name") + "." + getType(type) + ", \"<init>\").V;\n");
+                            //stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
                         }
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
+                        //System.out.println("TWO PART: " + second);
                         generateTwoPartExpression(second);
                         //System.out.println("STRInGGG: " + stringBuilder);
                         stringCode.append(stringBuilder);
@@ -561,12 +625,19 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     private void generateArray(JmmNode n){
-        JmmNode node= n.getChildren().get(0);
+        //System.out.println("NODE: " + n);
+        JmmNode node = n.getChildren().get(0);
         if(node.getChildren().get(0).getKind().equals("InsideArray")){
-            JmmNode insideArr=node.getChildren().get(0);
-           if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
+            JmmNode insideArr = node.getChildren().get(0);
+            //System.out.println("INSIDE ARRAY: " + insideArr);
+            if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
                 generateTwoPartExpression(insideArr.getChildren().get(0));
-           }
+                //System.out.println("NODE1: " + n);
+            }
+            else if(insideArr.getChildren().get(0).getKind().equals("int")) {
+                Symbol s = addTempVar("int", false);
+                stringCode.append("\t\t" + s.getName() + ".i32 :=.i32 " + insideArr.getChildren().get(0).get("value") + ".i32;\n");
+            }
         }
 
 
@@ -619,16 +690,17 @@ public class OllirEmitter implements JmmVisitor {
                 String t = getNodeType(node);
                 Symbol s = null;
                 StringBuilder a = new StringBuilder();
+                String nodeName = null;
 
                 if(this.isField) {
                     s = addTempVar(this.fieldType, t.contains("[]"));
-
+                    nodeName = node.get("name");
                     if(checkIfObject(t)) {
                         Symbol o = addObject(this.fieldType, t.contains("[]"));
-                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
                     }
                     else {
-                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
                     }
                     this.isField = false;
                     a.append(s.getName() + "." + getType(t));
@@ -636,10 +708,12 @@ public class OllirEmitter implements JmmVisitor {
                 else {
                     if(this.methodParametersNames.contains(node.get("name"))) {
                         int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
-                        a.append("$" + idx + "." + node.get("name") + "." + getType(t));
+                        nodeName = node.get("name");
+                        a.append("$" + idx + "." + nodeName + "." + getType(t));
                     }
                     else {
-                        a.append(node.get("name") + "." + getType(t));
+                        nodeName = checkRestrictName(node.get("name"));
+                        a.append(nodeName + "." + getType(t));
                     }
                 }
                 return a.toString();
@@ -880,17 +954,18 @@ public class OllirEmitter implements JmmVisitor {
             String t = getNodeType(node);
             Symbol s = null;
             StringBuilder a = new StringBuilder();
-
+            String nodeName = null;
 
             if(this.isField) {
                 s = addTempVar(this.fieldType, t.contains("[]"));
+                nodeName = node.get("name");
 
                 if(checkIfObject(t)) {
                     Symbol o = addObject(this.fieldType, t.contains("[]"));
-                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
                 }
                 else {
-                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + node.get("name") + "." + getType(t) + ")." + getType(t) + ";\n");
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
                 }
                 this.isField = false;
                 a.append(s.getName() + "." + getType(t));
@@ -898,10 +973,12 @@ public class OllirEmitter implements JmmVisitor {
             else {
                 if(this.methodParametersNames.contains(node.get("name"))) {
                     int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
-                    a.append("$" + idx + "." + node.get("name") + "." + getType(t));
+                    nodeName = node.get("name");
+                    a.append("$" + idx + "." + nodeName + "." + getType(t));
                 }
                 else {
-                    a.append(node.get("name") + "." + getType(t));
+                    nodeName = checkRestrictName(node.get("name"));
+                    a.append(nodeName + "." + getType(t));
                 }
             }
 
@@ -985,7 +1062,7 @@ public class OllirEmitter implements JmmVisitor {
                     }
                 }
                 else {
-                    var = returnVarNode.get("name");
+                    var = checkRestrictName(returnVarNode.get("name"));
                     varKind = t;
                 }
             }
@@ -1021,6 +1098,70 @@ public class OllirEmitter implements JmmVisitor {
             var = "0";
         }
         stringCode.append("\n\t\tret." + getType(returnType) + " " + var + "." + getType(varKind) + ";\n");
+    }
+
+
+    public String getInsideArray(JmmNode node) {
+        String stringBuilder = null;
+        if (node.getKind().equals("Identifier")){
+            String t = getNodeType(node);
+            Symbol s = null;
+            String nodeName = null;
+
+            if(this.isField) {
+                s = addTempVar(this.fieldType, t.contains("[]"));
+                nodeName = node.get("name");
+                if(checkIfObject(t)) {
+                    Symbol o = addObject(this.fieldType, t.contains("[]"));
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
+                }
+                else {
+                    stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
+                }
+                this.isField = false;
+                return s.getName() + "." + getType(t);
+            }
+            else {
+                if(this.methodParametersNames.contains(node.get("name"))) {
+                    nodeName = node.get("name");
+                    int idx = this.methodParametersNames.indexOf(node.get("name")) + 1;
+
+                    return "$" + idx + "." + nodeName + "." + getType(t);
+
+                }
+                else {
+                    nodeName = checkRestrictName(node.get("name"));
+                    return nodeName + "." + getType(t);
+                }
+            }
+        }
+        else if (node.getKind().equals("int")) {
+            Symbol sInt = addTempVar("int", false);
+            stringCode.append("\t\t" + sInt.getName() + ".i32 :=.i32 " + node.get("value") + ".i32;\n");
+            return sInt.getName() + ".i32";
+
+        }
+        else if(node.getKind().equals("TwoPartExpression")) {
+            generateTwoPartExpression(node);
+            //System.out.println("STRInGGG: " + stringBuilder);
+            //System.out.println("TEMP REGISTERS: " + this.tempRegisters);
+            //System.out.println("COUNTER: " + this.tempVarsCount);
+            //this.tempVarsCount = this.tempRegisters.size() + 1;
+            //System.out.println("TEMP COUNT: " + this.tempVarsCount);
+            String t = this.tempRegisters.get(this.tempRegisters.size() - 1).getType().getName();
+            if(this.tempRegisters.get(this.tempRegisters.size() - 1).getType().isArray()) {
+                t += "[]";
+            }
+            this.assignType = "void";
+            return this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + "." + getType(t);
+        }
+        else {
+            stringCode.append(generateExpression(node));
+            Symbol s = addTempVar("int", false);
+                        /*Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
+                        stringBuilder.append(stringBuilder + sExp.getName() + "." + getType(type));*/
+            return this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".i32";
+        }
     }
 
     public String getType(String type) {
@@ -1090,6 +1231,39 @@ public class OllirEmitter implements JmmVisitor {
         return type;
     }
 
+
+    public Symbol addTempVar(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type(type, isArray), "t" + this.tempVarsCount);
+        this.tempRegisters.add(s);
+        this.tempVarsCount++;
+        return s;
+    }
+
+
+    public Symbol addObject(String type, Boolean isArray) {
+        Symbol s = new Symbol(new Type(type, isArray), "o"+this.objectsCount);
+        this.objects.add(s);
+        this.objectsCount++;
+        return s;
+    }
+
+
+    public Boolean checkIfObject(String type) {
+        if(!(type.equals("int") && type.equals("int[]") && type.equals("boolean") && type.equals("String[]") && type.equals("String"))) {
+            return false;
+        }
+        return true;
+    }
+
+    public String checkRestrictName(String name) {
+        if(name.equals("array") || name.equals("i32") || name.equals("bool")) {
+            return name + "_1";
+        }
+        else {
+            return name;
+        }
+    }
+
     private String defaultVisit(JmmNode node, String space) {
         String content = space + node.getKind();
         String attrs = node.getAttributes()
@@ -1105,26 +1279,7 @@ public class OllirEmitter implements JmmVisitor {
         return content;
     }
 
-    public Symbol addTempVar(String type, Boolean isArray) {
-        Symbol s = new Symbol(new Type(type, isArray), "t" + this.tempVarsCount);
-        this.tempRegisters.add(s);
-        this.tempVarsCount++;
-        return s;
-    }
-    
-    public Symbol addObject(String type, Boolean isArray) {
-        Symbol s = new Symbol(new Type(type, isArray), "o"+this.objectsCount);
-        this.objects.add(s);
-        this.objectsCount++;
-        return s;
-    }
 
-    public Boolean checkIfObject(String type) {
-        if(!(type.equals("int") && type.equals("int[]") && type.equals("boolean") && type.equals("String[]") && type.equals("String"))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public void setDefaultVisit(BiFunction method) {
