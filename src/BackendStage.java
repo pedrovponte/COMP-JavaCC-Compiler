@@ -158,7 +158,7 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\tastore " + descriptor.getVirtualReg() + "\n");
                 }
                 else if (dest instanceof ArrayOperand){
-                    jasmin.append("\tiastore\n");
+                    jasmin.append("\taastore\n");
                 }
                 else{
                     if (descriptor.getVirtualReg()<4)
@@ -208,13 +208,12 @@ public class BackendStage implements JasminBackend {
                                         jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
                                 }
                             }
-
-                            if (((ArrayType) operandNew.getReturnType()).getTypeOfElements()==ElementType.INT32)
-                            {
+                            /*if ((operandNew.getReturnType()).getTypeOfElement()==ElementType.INT32)
+                            {*/
                                 jasmin.append("\tnewarray int");
                                 jasmin.append("\n");
-                            }
-                            else if(callInstruction.getListOfOperands().size() > 1)
+                            //}
+                            /*else if(callInstruction.getListOfOperands().size() > 1)
                             {
                                 jasmin.append("\tmultianewarray [");
                                 addType(callInstruction.getListOfOperands().get(0).getType());
@@ -228,7 +227,7 @@ public class BackendStage implements JasminBackend {
                                 jasmin.append("\tanewarray ");
                                 jasmin.append(newReturn.getName());
                                 jasmin.append("\n");
-                            }
+                            }*/
                         }
                         else {
                             ClassType classTypeNew = (ClassType) callInstruction.getReturnType();
@@ -408,7 +407,7 @@ public class BackendStage implements JasminBackend {
                     jasmin.append("\treturn\n");
                     return;
                 }
-                
+
                 returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
 
                 Element operand = returnInstruction.getOperand();
@@ -595,10 +594,18 @@ public class BackendStage implements JasminBackend {
                     Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
 
                     //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF)
-                        jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    else
-                        jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF) {
+                        if (binaryDescriptor.getVirtualReg() < 4)
+                            jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
+                    }
+                    else {
+                        if (binaryDescriptor.getVirtualReg() < 4)
+                            jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\tiload " + binaryDescriptor.getVirtualReg() + "\n");
+                    }
                 }
 
                 //if (binaryOpInstruction.getRightOperand().getType() instanceof )
@@ -623,11 +630,6 @@ public class BackendStage implements JasminBackend {
 
                         ArrayOperand refArrayRigth = (ArrayOperand) rightOperand;
 
-                        if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
-                            jasmin.append("\tiaload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiaload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-
                         for (var index: refArrayRigth.getIndexOperands())
                         {
                             if (index.isLiteral())
@@ -639,11 +641,17 @@ public class BackendStage implements JasminBackend {
                                 Operand newOperand = (Operand) index;
 
                                 if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\tiaload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
                                 else
-                                    jasmin.append("\tiaload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
                             }
                         }
+
+                        if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
+                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                        jasmin.append("\taaload\n");
                     }
                     else
                     {
@@ -705,11 +713,6 @@ public class BackendStage implements JasminBackend {
 
                         ArrayOperand refArray = (ArrayOperand) singleOperand;
 
-                        if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg()<4)
-                            jasmin.append("\tiaload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiaload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-
                         for (var index: refArray.getIndexOperands())
                         {
                             if (index.isLiteral())
@@ -721,11 +724,17 @@ public class BackendStage implements JasminBackend {
                                 Operand newOperand = (Operand) index;
 
                                 if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\tiaload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
                                 else
-                                    jasmin.append("\tiaload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
                             }
                         }
+
+                        if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg()<4)
+                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
+                        jasmin.append("\taaload\n");
                     }
                     else
                     {
@@ -898,8 +907,8 @@ public class BackendStage implements JasminBackend {
 
         MethodOperations(method);
 
-        if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
-            jasmin.append("\treturn\n");
+        /*if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
+            jasmin.append("\treturn\n");*/
 
         jasmin.append(".end method\n");
 
