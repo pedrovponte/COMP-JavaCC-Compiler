@@ -821,6 +821,9 @@ public class BackendStage implements JasminBackend {
                     case LTE:
                         jasmin.append("\tif_icmple ");
                         break;
+                    case ANDB:
+                        jasmin.append("\tif_icmpeq ");
+                        break;
                 }
                 jasmin.append(branchInstruction.getLabel() + "\n");
                 break;
