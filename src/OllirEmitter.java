@@ -51,6 +51,7 @@ public class OllirEmitter implements JmmVisitor {
     private String assignType;
     private Boolean insideTwoPart;
     private int conditionNumber;
+    private StringBuilder insideArray;
 
     public OllirEmitter(SymbolTable table) {
         this.symbolTable = (SymbolTableImp) table;
@@ -84,6 +85,7 @@ public class OllirEmitter implements JmmVisitor {
         this.assignType = "void";
         this.insideTwoPart = false;
         this.conditionNumber = 0;
+        this.insideArray = new StringBuilder();
     }
 
 
@@ -530,12 +532,13 @@ public class OllirEmitter implements JmmVisitor {
                     }
                     else if(second.getKind().equals("New")) {
                         if(second.getChildren().get(0).getKind().equals("Array") ){
+                            this.insideArray = new StringBuilder();
                             generateArray(second);
                         }
                         if (needPar) {
                             if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
                                 Symbol sNew = addTempVar(getType(type), false);
-                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(array, " + this.tempRegisters.get(this.tempRegisters.size() - 2).getName() + ".i32).i32;\n");
+                                stringCode.append("\t\t" + sNew.getName() + "." + getType(type) + " :=." + getType(type) + " new(array, " + this.insideArray + ".i32).i32;\n");
                                 stringCode.append(stringBuilder);
                                 stringCode.append(sNew.getName() + "." + getType(type));
                                 stringCode.append(").V;\n");
@@ -551,7 +554,7 @@ public class OllirEmitter implements JmmVisitor {
                         } else {
                             stringCode.append("\t\t" + firstName + "." + getType(type) + " :=." + getType(type) + " ");
                             if(second.getChildren().get(0).getChildren().get(0).getKind().equals("InsideArray")){
-                                stringCode.append("new(array, " + tempRegisters.get(tempRegisters.size()-1).getName() +".i32"+")." + getType(type) + ";\n");
+                                stringCode.append("new(array, " + this.insideArray +".i32"+")." + getType(type) + ";\n");
                             }
                             else {
                                 stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
@@ -632,11 +635,46 @@ public class OllirEmitter implements JmmVisitor {
             //System.out.println("INSIDE ARRAY: " + insideArr);
             if(insideArr.getChildren().get(0).getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
                 generateTwoPartExpression(insideArr.getChildren().get(0));
+                this.insideArray.append(this.tempRegisters.get(this.tempRegisters.size() - 1).getName());
                 //System.out.println("NODE1: " + n);
             }
             else if(insideArr.getChildren().get(0).getKind().equals("int")) {
                 Symbol s = addTempVar("int", false);
                 stringCode.append("\t\t" + s.getName() + ".i32 :=.i32 " + insideArr.getChildren().get(0).get("value") + ".i32;\n");
+                this.insideArray.append(s.getName());
+            }
+            else if(insideArr.getChildren().get(0).getKind().equals("Identifier")) {
+                JmmNode identNode = insideArr.getChildren().get(0);
+
+                String t = getNodeType(identNode);
+                Symbol s = null;
+                StringBuilder a = new StringBuilder();
+                String nodeName = null;
+
+                if(this.isField) {
+                    s = addTempVar(this.fieldType, t.contains("[]"));
+                    nodeName = identNode.get("name");
+                    if(checkIfObject(t)) {
+                        Symbol o = addObject(this.fieldType, t.contains("[]"));
+                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(" + o.getName() + "." + getType(t) + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
+                    }
+                    else {
+                        stringCode.append("\t\t" + s.getName() + "." + getType(t) + " :=." + getType(t) + " getfield(this" + ", " + nodeName + "." + getType(t) + ")." + getType(t) + ";\n");
+                    }
+                    this.isField = false;
+                    this.insideArray.append(s.getName());
+                }
+                else {
+                    if(this.methodParametersNames.contains(identNode.get("name"))) {
+                        int idx = this.methodParametersNames.indexOf(identNode.get("name")) + 1;
+                        nodeName = identNode.get("name");
+                        this.insideArray.append(" $" + idx + "." + nodeName);
+                    }
+                    else {
+                        nodeName = checkRestrictName(identNode.get("name"));
+                        this.insideArray.append(nodeName);
+                    }
+                }
             }
         }
 
@@ -1256,7 +1294,7 @@ public class OllirEmitter implements JmmVisitor {
     }
 
     public String checkRestrictName(String name) {
-        if(name.equals("array") || name.equals("i32") || name.equals("bool")) {
+        if(name.equals("array") || name.equals("i32") || name.equals("bool") || name.equals("ret")) {
             return name + "_1";
         }
         else {

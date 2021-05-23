@@ -209,7 +209,7 @@ public class BackendStage implements JasminBackend {
                                 }
                             }
 
-                            if (((ArrayType) operandNew.getReturnType()).getTypeOfElements()==ElementType.INT32)
+                            if ((operandNew.getReturnType()).getTypeOfElement() == ElementType.INT32)
                             {
                                 jasmin.append("\tnewarray int");
                                 jasmin.append("\n");
@@ -898,8 +898,8 @@ public class BackendStage implements JasminBackend {
 
         MethodOperations(method);
 
-        if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
-            jasmin.append("\treturn\n");
+        //if (method.getReturnType().getTypeOfElement()==ElementType.VOID)
+            //jasmin.append("\treturn\n");
 
         jasmin.append(".end method\n");
 

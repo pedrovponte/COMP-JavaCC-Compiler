@@ -73,4 +73,22 @@ public class OptimizeTest {
         OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
+    @Test
+    public void testTeste1() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste1.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testTeste2() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste2.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testTeste3() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste3.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }
