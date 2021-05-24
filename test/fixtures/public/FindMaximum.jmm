@@ -1,7 +1,6 @@
 import ioPlus;
 class FindMaximum {
 	int[] test_arr;
-    FindMaximum fm;
 
 	public int find_maximum(int[] arr) {
 		int i;
