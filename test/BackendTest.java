@@ -86,7 +86,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
+        assertEquals("30", output.trim());
     }
 
     @Test
@@ -101,6 +101,33 @@ public class BackendTest {
     @Test
     public void testWhileAndIf() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void testTeste1() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste1.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void testTeste2() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste2.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        //assertEquals("30", output.trim());
+    }
+
+    @Test
+    public void testTeste3() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste3.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();

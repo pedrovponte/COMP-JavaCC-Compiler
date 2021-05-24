@@ -235,7 +235,7 @@ public class BackendStage implements JasminBackend {
 
                             jasmin.append("\tnew " + classTypeNew.getName() + "\n");
                             jasmin.append("\tdup\n");
-                            jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
+                            //jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
                         }
                         break;
 

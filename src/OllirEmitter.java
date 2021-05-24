@@ -551,7 +551,7 @@ public class OllirEmitter implements JmmVisitor {
                                 stringCode.append(stringBuilder);
                                 stringCode.append(sNew.getName() + "." + getType(type));
                                 stringCode.append(").V;\n");
-                                //stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
+                                stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
                             }
                         } else {
                             stringCode.append("\t\t" + firstName + "." + getType(type) + " :=." + getType(type) + " ");
@@ -560,8 +560,8 @@ public class OllirEmitter implements JmmVisitor {
                             }
                             else {
                                 stringCode.append("new(" + getType(type) + ")." + getType(type) + ";\n");
+                                stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
                             }
-                            //stringCode.append("\t\tinvokespecial(" + firstName + "." + getType(type) + ", \"<init>\").V;\n");
                         }
                     }
                     else if(second.getKind().equals("TwoPartExpression")) {
