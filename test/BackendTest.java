@@ -30,7 +30,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
+        assertEquals("Result: 28", output.trim());
     }
 
     @Test
@@ -132,17 +132,30 @@ public class BackendTest {
         //assertEquals("30", output.trim());
     }
 
+    /*@Test
+    public void testTeste4() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste4_geral.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        //assertEquals("30", output.trim());
+    }*/
+
     @Test
     public void testTeste5() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste5_geralClassInstantiation.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        //assertEquals("10000", output.trim());
+    }
+
+    @Test
+    public void testTeste7() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste7_extraVariableLoading.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
         assertEquals("10000", output.trim());
-    }
-
-    @Test
-    public void jasmin_test() {
-        JasminResult result = TestUtils.backend(new OllirResult(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")));
     }
 }

@@ -92,8 +92,20 @@ public class OptimizeTest {
         TestUtils.noErrors(result.getReports());
     }
 
+    /*@Test
+    public void testTeste4() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste4_geral.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }*/
+
     @Test
     public void testTeste5() {
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste5_geralClassInstantiation.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testTeste7() {
         OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste7_extraVariableLoading.jmm"));
         TestUtils.noErrors(result.getReports());
     }

@@ -1,8 +1,8 @@
 import io;
 
 /*
- * This class tests the compiler's capability of verifying
- * the different initializations of a variable.
+ * This class tests the compiler's capability of
+ * load different values on ollir using .
  */
 class DifferentLoads {
     public static void main(String[] args) {
