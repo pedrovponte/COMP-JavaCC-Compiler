@@ -2,6 +2,9 @@ import MathUtils; //lowerLimit,upperLimit
 import ioPlus;
 import io.println;
 
+ /* This test tests the compiler's capability of generating
+      * if/else and while statements using complex expressions
+      */
 class optimizationAlg {
     public int max(int a, int b){
         int temp;
@@ -13,6 +16,35 @@ class optimizationAlg {
         }
         return temp;
     }
+
+    public int smallStatementTest(){
+            int x;
+            int y;
+            int i;
+            i = 0;
+            x = 10;
+            while(i< 20){
+                if ((i * 3)  < 7) {
+                    if (!(i + 8 < 10)) {
+                        x = 2;
+                        if (true) {
+                            x = 3;
+                        }
+                        else {}
+                    }
+                    else {}
+                }
+                else {
+                    while(!(x < 5)){
+                        x = x- 1;
+                    }
+                }
+                i = i+1;
+            }
+            y = x+3;
+            io.println(y);
+            return 0;
+         }
 
     public int knapSack(int W, int[] wt, int[] val, int n){
         int ret;
@@ -35,34 +67,7 @@ class optimizationAlg {
     }
 
 
-     public int smallStatementTest(){
-        int x;
-        int y;
-        int i;
-        i = 0;
-        x = 10;
-        while(i< 20){
-            if ((i * 3)  < 7) {
-                if (!(i + 8 < 10)) {
-                    x = 2;
-                    if (true) {
-                        x = 3;
-                    }
-                    else {}
-                }
-                else {}
-            }
-            else {
-                while(!(x < 5)){
-                    x = x- 1;
-                }
-            }
-            i = i+1;
-        }
-        y = x+3;
-        io.println(y);
-        return 0;
-     }
+
 
 	public static void main(String[] args) {
 

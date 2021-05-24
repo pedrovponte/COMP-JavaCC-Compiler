@@ -22,8 +22,6 @@ import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
-import java.util.ArrayList;
-
 public class BackendTest {
 
     @Test
@@ -109,7 +107,7 @@ public class BackendTest {
 
     @Test
     public void testTeste1() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste1.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
@@ -118,7 +116,7 @@ public class BackendTest {
 
     @Test
     public void testTeste2() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste2.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste2_geralBlockStatements.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
@@ -127,7 +125,7 @@ public class BackendTest {
 
     @Test
     public void testTeste3() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste3.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste3_geralConditionalsAndArrays.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
@@ -136,7 +134,7 @@ public class BackendTest {
 
     @Test
     public void testTeste5() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste5.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste7_extraVariableLoading.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();

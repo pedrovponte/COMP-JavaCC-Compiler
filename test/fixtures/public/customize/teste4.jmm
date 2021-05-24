@@ -1,9 +1,0 @@
-import io.println;
-
-class initializeVariable {
-	public static void main(String[] args) {
-	    //This fails
-        int a;
-        b=3;
-    }
-}

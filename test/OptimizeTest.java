@@ -76,25 +76,25 @@ public class OptimizeTest {
 
     @Test
     public void testTeste1() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste1.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testTeste2() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste2.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste2_geralBlockStatements.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testTeste3() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste3.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste3_geralConditionalsAndArrays.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testTeste5() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste5.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste7_extraVariableLoading.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 }

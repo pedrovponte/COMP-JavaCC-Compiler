@@ -2,7 +2,6 @@ import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
-import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
@@ -219,35 +218,49 @@ public class Tests {
 
     @Test
     public void test1() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste1.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void test2() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste2.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste2_geralBlockStatements.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void test3() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste3.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste3_geralConditionalsAndArrays.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
+    }
+
+    @Test
+    public void test6() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste6_extraVariableInitialization.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.mustFail(res.getReports());
+    }
+
+    @Test
+    public void test7() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste7_extraVariableLoading.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void test4() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste4.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste4_geral.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
-        TestUtils.mustFail(res.getReports());
+        TestUtils.noErrors(res.getReports());
     }
 
     @Test
     public void test5() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste5.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste5_geralClassInstantiation.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.noErrors(res.getReports());
     }

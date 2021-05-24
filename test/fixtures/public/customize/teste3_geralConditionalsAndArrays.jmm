@@ -1,5 +1,10 @@
 import io.println;
 
+/*
+ * This class tests the compiler's capabilites regarding
+ * complex conditional expresions and array
+ * creation/access also using complex expressions
+ */
 class ConditionalsAndArrays {
 	public static void main(String[] args) {
 

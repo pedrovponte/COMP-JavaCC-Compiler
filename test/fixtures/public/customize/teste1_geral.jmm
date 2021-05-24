@@ -18,7 +18,6 @@ class MiniGame {
         boolean play;
         boolean out;
         int[] res;
-
         int num_attempts;
         num_attempts = 15;
 

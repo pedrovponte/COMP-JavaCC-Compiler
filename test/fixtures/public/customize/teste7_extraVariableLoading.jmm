@@ -1,5 +1,9 @@
 import io;
 
+/*
+ * This class tests the compiler's capability of verifying
+ * the different initializations of a variable.
+ */
 class DifferentLoads {
     public static void main(String[] args) {
         int a;

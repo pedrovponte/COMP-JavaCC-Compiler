@@ -1,0 +1,16 @@
+import io.println;
+
+/*
+ * This class tests the compiler's capability of verifying
+ * the initialized variables.
+ */
+class initializeVariable {
+    int a;
+    int c;
+	public static void main(String[] args) {
+        a=4;
+        //The next too lines fail:
+        a = a + c;
+        b=3;
+    }
+}

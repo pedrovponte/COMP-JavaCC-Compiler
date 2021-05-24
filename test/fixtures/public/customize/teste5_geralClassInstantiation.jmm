@@ -1,0 +1,44 @@
+import io.println;
+import Pair;
+
+class ClassTest {
+    int N;
+
+    public int sub(int a, int b){
+    		return a-b;
+    }
+
+    public int setN(int newN){
+            N = newN;
+            return N;
+    }
+
+     public int getN(){
+            return N;
+     }
+
+	public static void main(String[] args) {
+        int a;
+        a = 1;
+
+        ClassTest c1;
+        c1 = new ClassTest();
+        c1.setN(a);
+
+        ClassTest c2;
+        c2 = new ClassTest();
+        c2.setN(2);
+
+        ClassTest c3;
+        c3 = new ClassTest();
+        c3.setN(c3.sub(3, 2));
+
+        io.println(c1.getN());
+        io.println(c2.getN());
+        io.println(c3.getN());
+
+        Pair pair1;
+        pair1 = new Pair();
+
+    }
+}

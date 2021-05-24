@@ -1,0 +1,140 @@
+import io.print;
+import io.println;
+import io.read;
+
+class Algorithm {
+
+    int[] firstTABLE;
+    int[] secondTABLE;
+    int[] thirdTABLE;
+    int[] tape;
+
+    int symbols;
+    int states;
+    int H;
+    int L;
+    int R;
+    int current_state;
+    int current_position;
+
+    public static void main(String[] a) {
+        states=5;
+        Algorithm alg;
+        alg = new Algorithm();
+        alg.init_3s2sy();
+        alg.run();
+    }
+
+    public boolean run() {
+        int temp;
+        boolean b;
+        b = false;
+        while (!b) {
+            this.printThis();
+            temp = io.read();
+            b = !this.trans();
+        }
+        this.printThis();
+        return true;
+    }
+
+    public boolean printThis() {
+        int i;
+        i = 0;
+        current_position = 2;
+        current_state=2;
+        while (i < tape.length) {
+            if (!(!(i < current_position) && !(current_position < i)))
+                io.print(0);
+            else
+                io.print(current_state + 1);
+            i = i + 1;
+        }
+
+        i = 0;
+        while (i < tape.length) {
+            io.print(tape[i]);
+            i = i + 1;
+        }
+        return true;
+    }
+
+    public boolean init_3s2sy() {
+            tape = this.initGeneric(3, 2, 18);
+            this.setT(0, 0, 1, R, 1);
+            this.setT(0, 1, 1, L, 0);
+            this.setT(0, 2, 1, L, 1);
+            this.setT(1, 0, 1, L, 2);
+            return true;
+        }
+
+
+        public boolean init_4s2sy() {
+            tape = this.initGeneric(4, 2, 20);
+            this.setT(0, 0, 1, R, 1);
+            this.setT(0, 1, 1, L, 0);
+            this.setT(0, 2, 1, R, H);
+            this.setT(0, 3, 1, R, 3);
+            this.setT(1, 0, 1, L, 1);
+            this.setT(1, 1, 0, L, 2);
+            return true;
+        }
+
+    public boolean trans() {
+        boolean b;
+
+        int curS;
+        curS = tape[current_position];
+        int write;
+        write = firstTABLE[this.ss2i(curS, current_state)];
+        int move;
+        move = secondTABLE[this.ss2i(curS, current_state)];
+        int next;
+        next = thirdTABLE[this.ss2i(curS, current_state)];
+
+        tape[current_position] = write;
+        current_position = current_position + move;
+        current_state = next;
+
+        H=3;
+        if ((!(H < current_state) && !(current_state < H)))
+            b = false;
+        else
+            b = true;
+
+        return b;
+    }
+
+    public int ss2i(int symbol, int state) {
+        return state + symbol * states;
+    }
+
+    public int[] initGeneric(int st, int sy, int len) {
+        symbols = sy;
+        states = st;
+
+        int tlen;
+        tlen = symbols * states;
+
+        H = 0-1;
+        L = 0-1;
+        R = 1;
+
+        firstTABLE = new int[tlen];
+        secondTABLE = new int[tlen];
+        thirdTABLE = new int[tlen];
+
+        int[] ret;
+        ret = new int[len];
+        current_state = 0;
+        current_position = ret.length / 2;
+        return ret;
+    }
+
+    public boolean setT(int symbol, int state, int write, int move, int next) {
+        firstTABLE[this.ss2i(symbol, state)] = write;
+        secondTABLE[this.ss2i(symbol, state)] = move;
+        thirdTABLE[this.ss2i(symbol, state)] = next;
+        return true;
+    }
+}
