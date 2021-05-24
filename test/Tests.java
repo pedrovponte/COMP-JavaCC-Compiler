@@ -244,4 +244,11 @@ public class Tests {
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.mustFail(res.getReports());
     }
+
+    @Test
+    public void test5() {
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste5.jmm");
+        JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
+        TestUtils.noErrors(res.getReports());
+    }
 }

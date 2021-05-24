@@ -602,6 +602,7 @@ public class OllirEmitter implements JmmVisitor {
                 }
             } 
             else if (child.getKind().equals("TwoPartExpression")) { //InsideArray or DotExpression
+                this.assignType = "void";
                 generateTwoPartExpression(child);
             }
             else if (child.getKind().equals("While")) {

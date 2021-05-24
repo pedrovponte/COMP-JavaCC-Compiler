@@ -135,6 +135,15 @@ public class BackendTest {
     }
 
     @Test
+    public void testTeste5() {
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste5.jmm"));
+        TestUtils.noErrors(result.getReports());
+
+        var output = result.run();
+        assertEquals("10000", output.trim());
+    }
+
+    @Test
     public void jasmin_test() {
         JasminResult result = TestUtils.backend(new OllirResult(SpecsIo.getResource("fixtures/public/ollir/myclass1.ollir")));
     }
