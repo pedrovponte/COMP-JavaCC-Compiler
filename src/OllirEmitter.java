@@ -403,8 +403,10 @@ public class OllirEmitter implements JmmVisitor {
                         }
                         else {
                             if(isArray) {
+                                Symbol sArr = addTempVar("int", true);
+                                stringCode.append("\t\t" + sArr.getName() + ".array.i32 :=.array.i32 getfield(this, " + firstName + ".array.i32).array.i32;\n");
                                 Symbol sArrAccess = addTempVar("int", false);
-                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + firstName + "[" + arrayInfo + "].i32;\n");
+                                stringCode.append("\t\t" + sArrAccess.getName() + ".i32 :=.i32 " + sArr.getName() + "[" + arrayInfo + "].i32;\n");
                                 stringBuilder.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
                                 this.auxGeral.append("\t\tputfield(this" + ", " + sArrAccess.getName() + ".i32, ");
                             }
