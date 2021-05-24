@@ -566,8 +566,8 @@ public class BackendStage implements JasminBackend {
                     jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
                 jasmin.append("\tgetfield ");
 
-
-                jasmin.append(field1.getName() + "/");
+                ClassType classType2 = (ClassType) field1.getType();
+                jasmin.append(classType2.getName() + "/");
                 jasmin.append(field2.getName()+" ");
 
                 addType(getFieldInstruction.getSecondOperand().getType());
