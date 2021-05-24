@@ -504,7 +504,7 @@ public class OllirEmitter implements JmmVisitor {
                             stringCode.append("\t");
                         }
                         stringCode.append(stringBuilder);
-                        stringCode.append(second.get("value") + "." + getType(type));
+                        stringCode.append(second.get("value") + ".i32");
                         if(needPar) {
                             stringCode.append(").V;\n");
                         }
@@ -592,7 +592,12 @@ public class OllirEmitter implements JmmVisitor {
                         stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));*/
                         if(needPar) {
                             Symbol sExp = addTempVar(type.split("\\[")[0], type.contains("[]"));
-                            stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));
+                            if(type.equals("int[]")) {
+                                stringCode.append(stringBuilder + sExp.getName() + ".i32");
+                            }
+                            else {
+                                stringCode.append(stringBuilder + sExp.getName() + "." + getType(type));
+                            }
                             stringCode.append(").V;\n");
                         }
                         else {
