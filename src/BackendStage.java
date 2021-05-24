@@ -24,6 +24,7 @@ import java.util.List;
 
 public class BackendStage implements JasminBackend {
     StringBuilder jasmin = new StringBuilder();
+    Integer numberOfVariables = 0;
     Integer lthOperation = 1;
 
     public void addType(Type type){
@@ -158,7 +159,7 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\tastore " + descriptor.getVirtualReg() + "\n");
                 }
                 else if (dest instanceof ArrayOperand){
-                    jasmin.append("\taastore\n");
+                    jasmin.append("\tiastore\n");
                 }
                 else{
                     if (descriptor.getVirtualReg()<4)
@@ -651,7 +652,7 @@ public class BackendStage implements JasminBackend {
                             jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                        jasmin.append("\taaload\n");
+                        jasmin.append("\tiaload\n");
                     }
                     else
                     {
@@ -734,7 +735,7 @@ public class BackendStage implements JasminBackend {
                             jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-                        jasmin.append("\taaload\n");
+                        jasmin.append("\tiaload\n");
                     }
                     else
                     {
@@ -928,10 +929,11 @@ public class BackendStage implements JasminBackend {
             else if (field.isFinalField())
                 jasmin.append("final");
 
-            jasmin.append(field.getFieldName()+" ");
+            jasmin.append("'"+field.getFieldName()+"'"+" ");
             addType(field.getFieldType());
             jasmin.append("\n");
         }
+        jasmin.append("\n");
     }
 
     public void AddClass(ClassUnit ollirClass){
