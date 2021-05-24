@@ -290,7 +290,7 @@ void RelationalExpression() #void : {}
 
 void AdditiveExpression() #void : {Token t;}
 {
-    SubtrativeExpression() (t=<PLUS> SubtrativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #AdditiveExpression(2))*
+    MultiplicativeExpression() ((t=<PLUS> MultiplicativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #AdditiveExpression(2) | t=<MINUS> MultiplicativeExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #SubtrativeExpression(2)))*
 }
 
 void SubtrativeExpression() #void : {Token t;}
@@ -300,7 +300,7 @@ void SubtrativeExpression() #void : {Token t;}
 
 void MultiplicativeExpression() #void : {Token t;}
 {
-    DivisionExpression() (t=<STAR> DivisionExpression() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #MultiplicativeExpression(2))*
+    UnaryExpressionNotPlusMinus() ((t=<STAR> UnaryExpressionNotPlusMinus() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #MultiplicativeExpression(2) | t=<SLASH> UnaryExpressionNotPlusMinus() {jjtThis.value = t.image; jjtThis.put("operation", t.image);} #DivisionExpression(2)))*
 }
 
 void DivisionExpression() #void : {Token t;}
