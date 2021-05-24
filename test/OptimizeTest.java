@@ -92,11 +92,11 @@ public class OptimizeTest {
         TestUtils.noErrors(result.getReports());
     }
 
-    /*@Test
+    @Test
     public void testTeste4() {
         OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste4_geral.jmm"));
         TestUtils.noErrors(result.getReports());
-    }*/
+    }
 
     @Test
     public void testTeste5() {

@@ -132,14 +132,14 @@ public class BackendTest {
         //assertEquals("30", output.trim());
     }
 
-    /*@Test
+    @Test
     public void testTeste4() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste4_geral.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
         //assertEquals("30", output.trim());
-    }*/
+    }
 
     @Test
     public void testTeste5() {

@@ -509,7 +509,7 @@ public class OllirEmitter implements JmmVisitor {
                                 }
                                 else if(needPar && isArray) {
                                     stringCode.append(stringBuilder);
-                                    stringCode.append("$" + idx + "." + secondName + "." + getType(t) + "\n");
+                                    stringCode.append("$" + idx + "." + secondName + "." + getType(t) + ";\n");
                                     stringCode.append("\t\tputfield(this" + ", " + first.get("name") + ".array.i32" + ", " + arrTemp.getName() + ".array.i32");
                                     stringCode.append(").V;\n");
                                 }
