@@ -130,6 +130,7 @@ public class BackendStage implements JasminBackend {
                     else
                         jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() + "\n");
 
+
                     for (var index: destArray.getIndexOperands())
                     {
                         if (index.isLiteral())
@@ -140,10 +141,20 @@ public class BackendStage implements JasminBackend {
                         else{
                             Operand newOperand = (Operand) index;
 
-                            if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                            if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                            {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                            }
                             else
-                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                            {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                    jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                            }
                         }
                     }
                 }
@@ -203,10 +214,20 @@ public class BackendStage implements JasminBackend {
                                 else{
                                     Operand newOperand = (Operand) operand;
 
-                                    if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                                    {
+                                        if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                        else
+                                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    }
                                     else
-                                        jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    {
+                                        if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                            jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                        else
+                                            jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    }
                                 }
                             }
                             /*if ((operandNew.getReturnType()).getTypeOfElement()==ElementType.INT32)
@@ -262,7 +283,7 @@ public class BackendStage implements JasminBackend {
                                 Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
 
                                 //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
                                 {
                                     if (elementDescriptor.getVirtualReg()<4)
                                         jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
@@ -320,7 +341,7 @@ public class BackendStage implements JasminBackend {
                                 Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
 
                                 //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
                                 {
                                     if (elementDescriptor.getVirtualReg()<4)
                                         jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
@@ -361,8 +382,14 @@ public class BackendStage implements JasminBackend {
                                 Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
 
                                 //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
                                 {
+                                    if (elementDescriptor.getVirtualReg()<4)
+                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                                    else
+                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                                }
+                                else if (element instanceof ArrayOperand){
                                     if (elementDescriptor.getVirtualReg()<4)
                                         jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
                                     else
@@ -423,7 +450,7 @@ public class BackendStage implements JasminBackend {
                     Descriptor returnDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
 
                     //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                    if (operand.getType().getTypeOfElement()==ElementType.OBJECTREF)
+                    if (operand.getType().getTypeOfElement()==ElementType.OBJECTREF || operand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (returnDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + returnDescriptor.getVirtualReg() + "\n");
@@ -467,7 +494,7 @@ public class BackendStage implements JasminBackend {
 
                     Descriptor firstDescriptor = OllirAccesser.getVarTable(method).get(firstOperand.getName());
 
-                    if (firstOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || firstOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (firstOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || firstOperand.getType().getTypeOfElement()==ElementType.THIS || firstOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (firstDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + firstDescriptor.getVirtualReg() + "\n");
@@ -492,7 +519,7 @@ public class BackendStage implements JasminBackend {
 
                     Descriptor thirdDescriptor = OllirAccesser.getVarTable(method).get(thirdOperand.getName());
 
-                    if (thirdOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || thirdOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (thirdOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || thirdOperand.getType().getTypeOfElement()==ElementType.THIS || thirdOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (thirdDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + thirdDescriptor.getVirtualReg() + "\n");
@@ -565,7 +592,7 @@ public class BackendStage implements JasminBackend {
 
                         //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
 
-                        if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS)
+                        if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                         {
                             if (binaryDescriptor.getVirtualReg()<4)
                                 jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
@@ -599,7 +626,7 @@ public class BackendStage implements JasminBackend {
                     Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
 
                     //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF) {
+                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || leftOperand.getType().getTypeOfElement()==ElementType.ARRAYREF) {
                         if (binaryDescriptor.getVirtualReg() < 4)
                             jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
                         else
@@ -624,7 +651,7 @@ public class BackendStage implements JasminBackend {
                     Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(rightOperand.getName());
 
                     //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (binaryDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
@@ -652,18 +679,37 @@ public class BackendStage implements JasminBackend {
                             }
                         }
 
-                        if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                        if (refArrayRigth.getType().getTypeOfElement()==ElementType.OBJECTREF || refArrayRigth.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                        {
+                            if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
+                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                        }
                         else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                        jasmin.append("\tiaload\n");
+                        {
+                            if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
+                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
+                        }
                     }
                     else
                     {
-                        if (binaryDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                        if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                        {
+                            if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()<4)
+                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
+                        }
                         else
-                            jasmin.append("\tiload " + binaryDescriptor.getVirtualReg() + "\n");
+                        {
+                            if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()<4)
+                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
+                        }
                     }
                 }
 
@@ -707,7 +753,7 @@ public class BackendStage implements JasminBackend {
                     Descriptor SingleDescriptor = OllirAccesser.getVarTable(method).get(singleOperand.getName());
 
                     //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (singleOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || singleOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (singleOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || singleOperand.getType().getTypeOfElement()==ElementType.THIS || singleOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (SingleDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + SingleDescriptor.getVirtualReg() + "\n");
@@ -717,6 +763,11 @@ public class BackendStage implements JasminBackend {
                     else if (singleOperand instanceof ArrayOperand){
 
                         ArrayOperand refArray = (ArrayOperand) singleOperand;
+
+                        if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg()<4)
+                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
+                        else
+                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
 
                         for (var index: refArray.getIndexOperands())
                         {
@@ -728,25 +779,41 @@ public class BackendStage implements JasminBackend {
                             else{
                                 Operand newOperand = (Operand) index;
 
-                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                                {
+                                    if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    else
+                                        jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                }
                                 else
-                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                {
+                                    if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
+                                        jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                    else
+                                        jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
+                                }
                             }
                         }
 
-                        if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
                         jasmin.append("\tiaload\n");
                     }
                     else
                     {
-                        if (SingleDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + SingleDescriptor.getVirtualReg() + "\n");
+                        if (singleOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || singleOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                        {
+                            if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()<4)
+                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
+                        }
                         else
-                            jasmin.append("\tiload " + SingleDescriptor.getVirtualReg() + "\n");
+                        {
+                            if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()<4)
+                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
+                        }
                     }
                 }
                 break;
@@ -764,7 +831,7 @@ public class BackendStage implements JasminBackend {
 
                     Descriptor leftDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
 
-                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || leftOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || leftOperand.getType().getTypeOfElement()==ElementType.THIS || leftOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (leftDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + leftDescriptor.getVirtualReg() + "\n");
@@ -789,7 +856,7 @@ public class BackendStage implements JasminBackend {
 
                     Descriptor rigthDescriptor = OllirAccesser.getVarTable(method).get(rigthOperand.getName());
 
-                    if (rigthOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rigthOperand.getType().getTypeOfElement()==ElementType.THIS)
+                    if (rigthOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rigthOperand.getType().getTypeOfElement()==ElementType.THIS || rigthOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
                     {
                         if (rigthDescriptor.getVirtualReg()<4)
                             jasmin.append("\taload_" + rigthDescriptor.getVirtualReg() + "\n");
