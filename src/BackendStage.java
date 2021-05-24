@@ -179,6 +179,8 @@ public class BackendStage implements JasminBackend {
                         jasmin.append("\tistore " + descriptor.getVirtualReg() + "\n");
                 }
 
+
+
                 break;
             case CALL:
                 CallInstruction callInstruction = (CallInstruction) inst;
@@ -257,7 +259,7 @@ public class BackendStage implements JasminBackend {
                             jasmin.append("\tnew " + classTypeNew.getName() + "\n");
                             jasmin.append("\tdup\n");
 
-                            //jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
+                            jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
                         }
                         break;
 
@@ -322,9 +324,9 @@ public class BackendStage implements JasminBackend {
                     //case invokeinterface:
                     //break;
                     case invokespecial:
-                        Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
+                        //Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
 
-                        if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
+                        /*if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
                             jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
@@ -362,8 +364,9 @@ public class BackendStage implements JasminBackend {
                         LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
                         jasmin.append( callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
                         addType(((CallInstruction) inst).getReturnType());
-                        jasmin.append("\n");
-                        break;
+                        jasmin.append("\n");*/
+                        return;
+
                     case invokestatic:
                         Operand callField1Static = (Operand) callInstruction.getFirstArg();
 
