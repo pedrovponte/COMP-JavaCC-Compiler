@@ -11,12 +11,12 @@ import java.util.List;
 
 /**
  * Copyright 2021 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -211,8 +211,8 @@ public class BackendStage implements JasminBackend {
                             }
                             /*if ((operandNew.getReturnType()).getTypeOfElement()==ElementType.INT32)
                             {*/
-                                jasmin.append("\tnewarray int");
-                                jasmin.append("\n");
+                            jasmin.append("\tnewarray int");
+                            jasmin.append("\n");
                             //}
                             /*else if(callInstruction.getListOfOperands().size() > 1)
                             {
@@ -235,6 +235,7 @@ public class BackendStage implements JasminBackend {
 
                             jasmin.append("\tnew " + classTypeNew.getName() + "\n");
                             jasmin.append("\tdup\n");
+
                             //jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
                         }
                         break;
@@ -298,11 +299,11 @@ public class BackendStage implements JasminBackend {
 
                         break;
                     //case invokeinterface:
-                        //break;
+                    //break;
                     case invokespecial:
                         Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
 
-                        if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
+                        /*if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
                             jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
@@ -334,9 +335,9 @@ public class BackendStage implements JasminBackend {
                                         jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
                                 }
                             }
-                        }
-                        //ClassType classTypeVirtual = (ClassType) callInstruction.getFirstArg().getType();
-                        jasmin.append("\tinvokespecial java/lang/Object.");
+                        }*/
+                        ClassType classTypeVirtual1 = (ClassType) callInstruction.getFirstArg().getType();
+                        jasmin.append("\tinvokespecial " + classTypeVirtual1.getName() + ".");
                         LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
                         jasmin.append( callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
                         addType(((CallInstruction) inst).getReturnType());
@@ -872,7 +873,9 @@ public class BackendStage implements JasminBackend {
             jasmin.append("\n");
             jasmin.append("\t.limit stack 99\n" + "\t.limit locals 99\n");
             //jasmin.append("\n\taload_0\n");
-            GetInstructions(method.getInstr(0), method);
+            //GetInstructions(method.getInstr(0), method);
+            jasmin.append("\taload_0\n");
+            jasmin.append("\tinvokespecial java/lang/Object.<init>()V\n");
             //jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
             jasmin.append("\treturn\n");
             jasmin.append(".end method\n");
