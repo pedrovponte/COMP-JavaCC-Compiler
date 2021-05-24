@@ -53,11 +53,11 @@ public class BackendStage implements JasminBackend {
                 break;
             case OBJECTREF:
                 ClassType classType = (ClassType) type;
-                jasmin.append("[" + classType.getName() + ";");
+                jasmin.append(classType.getName());
                 break;
             case CLASS:
                 ClassType classType1 = (ClassType) type;
-                jasmin.append("[" + classType1.getName() + ";");
+                jasmin.append(classType1.getName());
                 //jasmin.append("");
                 break;
             case THIS:
@@ -303,7 +303,7 @@ public class BackendStage implements JasminBackend {
                     case invokespecial:
                         Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
 
-                        /*if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
+                        if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
                             jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
@@ -335,7 +335,7 @@ public class BackendStage implements JasminBackend {
                                         jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
                                 }
                             }
-                        }*/
+                        }
                         ClassType classTypeVirtual1 = (ClassType) callInstruction.getFirstArg().getType();
                         jasmin.append("\tinvokespecial " + classTypeVirtual1.getName() + ".");
                         LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
@@ -539,8 +539,11 @@ public class BackendStage implements JasminBackend {
                     jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
                 jasmin.append("\tgetfield ");
 
+
+                jasmin.append(field1.getName() + "/");
+                jasmin.append(field2.getName()+" ");
+
                 addType(getFieldInstruction.getSecondOperand().getType());
-                jasmin.append(" " + field2.getName());
                 jasmin.append("\n");
 
                 break;
@@ -679,16 +682,16 @@ public class BackendStage implements JasminBackend {
                         break;
                     case AND:
                         jasmin.append("\tiand\n");
-                        break;
+                        break;/*
                     case LTH:
                         jasmin.append("\tif_icmplt LT_True_" + lthOperation + "\n");
                         jasmin.append("\ticonst_0\n");
                         jasmin.append("\tgoto LT_END_" + lthOperation + "\n" );
-                        jasmin.append("\tLT_True_" + lthOperation + ":\n");
+                        jasmin.append("LT_True_" + lthOperation + ":\n");
                         jasmin.append("\ticonst_1\n");
-                        jasmin.append("\tLT_End_" + lthOperation + "\n");
+                        jasmin.append("LT_End_" + lthOperation + ":\n");
                         lthOperation++;
-                        break;
+                        break;*/
                 }
                 break;
             case NOPER:
