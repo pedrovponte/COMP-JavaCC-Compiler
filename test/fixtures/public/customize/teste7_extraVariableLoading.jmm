@@ -2,7 +2,7 @@ import io;
 
 /*
  * This class tests the compiler's capability of
- * load different values on ollir using .
+ * load different values on ollir using bipush, sipush, iconst_.
  */
 class DifferentLoads {
     public static void main(String[] args) {
