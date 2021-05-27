@@ -65,8 +65,7 @@ public class BackendTest {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
         TestUtils.noErrors(result.getReports());
 
-        var output = result.run();
-        //assertEquals("30", output.trim());
+        var output = result.run("3");
     }
 
     /*@Test
@@ -147,7 +146,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("10000", output.trim());
+        assertEquals("1\r\n2\r\n1", output.trim());
     }
 
     @Test

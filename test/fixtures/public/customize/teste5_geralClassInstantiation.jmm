@@ -37,8 +37,7 @@ class ClassTest {
         io.println(c2.getN());
         io.println(c3.getN());
 
-        Pair pair1;
-        pair1 = new Pair();
+
 
     }
 }
