@@ -785,7 +785,10 @@ public class BackendStage implements JasminBackend {
                         break;
                     case AND:
                         jasmin.append("\tiand\n");
-                        break;/*
+                        break;
+                    case ANDB:
+                        jasmin.append("\tiand\n");
+                        /*
                     case LTH:
                         jasmin.append("\tif_icmplt LT_True_" + lthOperation + "\n");
                         jasmin.append("\ticonst_0\n");
