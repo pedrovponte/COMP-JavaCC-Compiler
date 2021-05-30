@@ -788,17 +788,20 @@ public class BackendStage implements JasminBackend {
                         break;
                     case ANDB:
                         jasmin.append("\tiand\n");
-                        /*
+                        break;
                     case LTH:
-                        jasmin.append("\tif_icmplt LT_True_" + lthOperation + "\n");
+                        jasmin.append("\tif_icmplt LTH_True_" + lthOperation + "\n");
                         jasmin.append("\ticonst_0\n");
-                        jasmin.append("\tgoto LT_END_" + lthOperation + "\n" );
-                        jasmin.append("LT_True_" + lthOperation + ":\n");
+                        jasmin.append("\tgoto LTH_End_" + lthOperation + "\n" );
+                        jasmin.append("\tLTH_True_" + lthOperation + ":\n");
                         jasmin.append("\ticonst_1\n");
                         currentNumber++;
-                        jasmin.append("LT_End_" + lthOperation + ":\n");
+                        jasmin.append("\tLTH_End_" + lthOperation + ":\n");
                         lthOperation++;
-                        break;*/
+                        break;
+                    case NOTB:
+                        jasmin.append("\tixor\n");
+                        break;
                 }
                 nonAssign=true;
                 break;
