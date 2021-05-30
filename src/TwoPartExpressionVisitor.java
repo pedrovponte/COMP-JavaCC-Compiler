@@ -354,12 +354,23 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
         else if(node.getKind().equals("TwoPartExpression")) {
             // confirmar se e assim e fazer
             //stringBuilder.append("bla bla \n");
-            System.out.println("FIRST CHILD: " + firstChildBuilder);
             //System.out.println("STRINGBUILDE: " + stringBuilder);
             Symbol sss = this.ollirEmitter.addTempVar("int", false);
             stringBuilder.append("\t\t" + sss.getName() + ".i32 :=.i32 ");
             stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
-            stringBuilder.append("[" + this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getName() + ".i32].i32;\n");
+            String inside = null;
+            if(this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getType().getName().equals("int") && this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getType().isArray() == false) {
+                inside = this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getName();
+            }
+            else {
+                int i = this.ollirEmitter.getTempRegisters().size() - 3;
+                while(!(this.ollirEmitter.getTempRegisters().get(i).getType().getName().equals("int") && this.ollirEmitter.getTempRegisters().get(i).getType().isArray() == false)) {
+                    i--;
+                }
+                inside = this.ollirEmitter.getTempRegisters().get(i).getName();
+            }
+
+            stringBuilder.append("[" + inside + ".i32].i32;\n");
         }
     }
 
