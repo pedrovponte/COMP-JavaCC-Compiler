@@ -121,6 +121,9 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
                 firstChildString.append("$" + idx + "." + node.get("name") + "." + getType(type));
             }
             else {
+                System.out.println("NODEEEE: " + node);
+                System.out.println("NAMEEEE: " + node.get("name"));
+                System.out.println("NAMEEE RESTRICTTT: " + this.ollirEmitter.checkRestrictName(node.get("name")));
                 firstChildString.append(this.ollirEmitter.checkRestrictName(node.get("name")) + "." + getType(type));
             }
         }
@@ -315,7 +318,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
                 Symbol sNew = this.ollirEmitter.addTempVar("int", false);
                 stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
-                stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
                 stringBuilder.append("[" + s.getName() + ".i32].i32;\n");
             }
             else {
@@ -324,13 +327,13 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
 
                     Symbol sNew = this.ollirEmitter.addTempVar("int", false);
                     stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
-                    stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                    stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
                     stringBuilder.append("[$" + idx + "." + node.get("name") + ".i32].i32;\n");
                 }
                 else {
                     Symbol sNew = this.ollirEmitter.addTempVar("int", false);
                     stringBuilder.append("\t\t" + sNew.getName() + ".i32" + " :=.i32 " );
-                    stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+                    stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
                     stringBuilder.append("[" + this.ollirEmitter.checkRestrictName(node.get("name")) + ".i32].i32;\n");
                 }
             }
@@ -340,7 +343,8 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             stringBuilder.append("\t\t" + tempSym.getName() + ".i32 :=.i32 " + node.get("value") + ".i32;\n");
             Symbol sss = this.ollirEmitter.addTempVar("int", false);
             stringBuilder.append("\t\t" + sss.getName() + ".i32" + " :=.i32 " );
-            stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+            System.out.println("LELELE: " + firstChildBuilder.toString().split("\\.array")[0]);
+            stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
             stringBuilder.append("[" + tempSym.getName() + ".i32].i32;\n");
         }
         else if(node.getKind().equals("AdditiveExpression") || node.getKind().equals("SubtractiveExpression") || node.getKind().equals("MultiplicativeExpression") || node.getKind().equals("DivisionExpression")) {
@@ -348,7 +352,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             Symbol sExp = this.ollirEmitter.addTempVar("int", false);
             Symbol sss = this.ollirEmitter.addTempVar("int", false);
             stringBuilder.append("\t\t" + sss.getName() + ".i32" + " :=.i32 " );
-            stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+            stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
             stringBuilder.append("[" + sExp.getName() + ".i32].i32;\n");
         }
         else if(node.getKind().equals("TwoPartExpression")) {
@@ -357,7 +361,7 @@ public class TwoPartExpressionVisitor extends PostorderJmmVisitor<StringBuilder,
             //System.out.println("STRINGBUILDE: " + stringBuilder);
             Symbol sss = this.ollirEmitter.addTempVar("int", false);
             stringBuilder.append("\t\t" + sss.getName() + ".i32 :=.i32 ");
-            stringBuilder.append(firstChildBuilder.toString().split(".array")[0]);
+            stringBuilder.append(firstChildBuilder.toString().split("\\.array")[0]);
             String inside = null;
             if(this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getType().getName().equals("int") && this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getType().isArray() == false) {
                 inside = this.ollirEmitter.getTempRegisters().get(this.ollirEmitter.getTempRegisters().size() - 2).getName();

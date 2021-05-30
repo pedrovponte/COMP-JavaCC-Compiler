@@ -70,7 +70,7 @@ public class OptimizeTest {
 
     @Test
     public void testWhileAndIf() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
