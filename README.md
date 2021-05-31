@@ -1,5 +1,94 @@
 # Compilers Project
 
+### GROUP: 5E
+
+NAME1: Mariana Ramos, NR1: up201806869, GRADE1: 19, CONTRIBUTION1: 33.33%
+
+NAME2: Pedro Ferreira, NR2: up201806506, GRADE2: 19, CONTRIBUTION2: 33.33%
+
+NAME2: Pedro Ponte, NR2: up201809694, GRADE2: 19, CONTRIBUTION2: 33.33%
+
+...
+
+**GLOBAL Grade of the project:** 19
+
+
+** SUMMARY:** (Describe what your tool does and its main features.)
+
+The intention of this assignment was to develop a compiler which is able to translate Java-- programs. The compiler follows a well defined compilation flow, which includes: lexical analysis (with an LL(1) parser), syntactic analysis, semantic analysis and code generation. The code generation was also optimized (???). Among these stages, it includes:
+- Error treatment and recovery mechanisms
+- Generation of a Syntax Tree (Abstract Syntax Tree)
+- Generation of an OLLIR
+- Generation of Jasmin  
+
+
+**DEALING WITH SYNTACTIC ERRORS:** (Describe how the syntactic error recovery of your tool works. Does it exit after the first error?)
+The compiler is able to skip a predefined number of errors. (?)
+
+
+**SEMANTIC ANALYSIS:** 
+
+The compiler implements the following semantic rules:
+
+- Variables:
+    - Checks if all the variables including arrays are previously declared.
+    - Checks if a variable is not defined more than one time.
+    - Checks if variables are assigned to other variables with compatible types.
+    - Verifies if a variable associated with a function call is a class type variable.
+    - Checks if a variable is valid within a given scope.
+    - Checks if a non-static variable is referenced in a static context.
+
+- Functions:
+    - Checks if the "this" keyword is not used in a static context.
+    - Checks if the function called is compatible with any function (that is, a function having the same signature - number of arguments, as well as the type of those arguments).
+    - Checks if the return value of a function can be assigned to a variable.
+    - Checks if the return value of a function is initialized.
+    - Checks if the return value of a function can be used in an expression.
+    - Checks if a function of type void does not return anything.
+    - Verifies additional types in the function return, including String, class variables and void.
+    - Verifies if the function parameters have all different names.
+
+- Arrays:
+    - Checks if array expression is an integer and if it has been initialized.
+    - Checks if the array access is always made in a variable of an array type (int[] or String[]).
+    - Checks if the property length is only used in arrays.
+
+- Block Statements (While and If..Else):
+    - Checks if While and If have an expression that evaluates to a boolean.
+    - Checks variable initialization inside if or else block.
+
+- Classes:
+    - Verifies the existance of a class when it is used.
+    - When a class calls a function, verifies if the class variable is initialized and if it includes the function.
+    - Verifies that a class is not instantiated inside an expression without any call to one of its functions. 
+
+- Operations:
+    - Verifies if conditional operations && (logical and) and ! (negation) are only used with boolean expressions.
+    - Checks if conditional operator < (less than) is only used with arithmetic expressions or integers.
+    - Verifies if an array is not directly used in an arithmetic or conditional operation (of type less than).
+ 
+
+**CODE GENERATION:** (describe how the code generation of your tool works and identify the possible problems your tool has regarding code generation.)
+
+The Code generation is performed using as an input the OLLIR, which is populated during the Semantic Analysis.
+
+
+**TASK DISTRIBUTION:** (Identify the set of tasks done by each member of the project. You can divide this by checkpoint it if helps)
+The tasks were well distributed between all the peers in this work. 
+Pedro Ponte: Análise semântica;
+Mariana Ramos: Ollir code generation;
+Pedro Ferreira: Jasmin code generation;
+
+
+**PROS:**
+ 
+All the suggested stages for the compiler were followed and accomplished, resulting on a successfully implemented Java-- compiler. 
+This project gave us a better insight vision of how a compiller works and processes the information. 
+It should also be taken in account the amount of new information learnt over the course of the semester to build this compiler.
+
+**CONS:** (Identify the most negative aspects of your tool)
+During the initial stages of the project, we did not realize how much code the compiler would need, not being very carefull about code organization in the beggining. This required a lot of refactoring in the middle of the implementation of the project.
+
 For this project, you need to [install Gradle](https://gradle.org/install/)
 
 ## Project setup
