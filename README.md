@@ -2,15 +2,15 @@
 
 ### GROUP: 5E
 
-- NAME1: Mariana Ramos, NR1: up201806869, GRADE1: 19, CONTRIBUTION1: 33.33%
+- NAME1: Mariana Ramos, NR1: up201806869, GRADE1: 20, CONTRIBUTION1: 33.33%
 
-- NAME2: Pedro Ferreira, NR2: up201806506, GRADE2: 19, CONTRIBUTION2: 33.33%
+- NAME2: Pedro Ferreira, NR2: up201806506, GRADE2: 20, CONTRIBUTION2: 33.33%
 
-- NAME2: Pedro Ponte, NR2: up201809694, GRADE2: 19, CONTRIBUTION2: 33.33%
+- NAME2: Pedro Ponte, NR2: up201809694, GRADE2: 20, CONTRIBUTION2: 33.33%
 
 ...
 
-**GLOBAL Grade of the project:** 19
+**GLOBAL Grade of the project:** 16
 
 
 **SUMMARY:** (Describe what your tool does and its main features.)
