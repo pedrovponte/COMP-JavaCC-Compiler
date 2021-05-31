@@ -13,7 +13,7 @@ NAME2: Pedro Ponte, NR2: up201809694, GRADE2: 19, CONTRIBUTION2: 33.33%
 **GLOBAL Grade of the project:** 19
 
 
-** SUMMARY:** (Describe what your tool does and its main features.)
+**SUMMARY:** (Describe what your tool does and its main features.)
 
 The intention of this assignment was to develop a compiler which is able to translate Java-- programs. The compiler follows a well defined compilation flow, which includes: lexical analysis (with an LL(1) parser), syntactic analysis, semantic analysis and code generation. The code generation was also optimized (???). Among these stages, it includes:
 - Error treatment and recovery mechanisms
@@ -36,10 +36,9 @@ The compiler implements the following semantic rules:
     - Checks if variables are assigned to other variables with compatible types.
     - Verifies if a variable associated with a function call is a class type variable.
     - Checks if a variable is valid within a given scope.
-    - Checks if a non-static variable is referenced in a static context.
 
 - Functions:
-    - Checks if the "this" keyword is not used in a static context.
+    - Checks if the "this" keyword is not used in a static context. (??)
     - Checks if the function called is compatible with any function (that is, a function having the same signature - number of arguments, as well as the type of those arguments).
     - Checks if the return value of a function can be assigned to a variable.
     - Checks if the return value of a function is initialized.
