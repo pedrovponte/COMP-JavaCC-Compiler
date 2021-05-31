@@ -48,6 +48,9 @@ class optimizationAlg {
 
     public int knapSack(int W, int[] wt, int[] val, int n){
         int ret;
+        int i;
+        int j;
+        int k;
         if(n<1){
         ret = 0;
         }
@@ -61,7 +64,10 @@ class optimizationAlg {
             ret= this.knapSack(W,wt,val,n-1);
         }
         else{
-            ret= this.max(val[n-1] + this.knapSack(W-wt[n-1],wt,val,n-1), this.knapSack(W,wt,val,n-1));
+            i = val[n-1];
+            j = this.knapSack(wt[n-1],wt,val,n-1);
+            k = this.knapSack(W,wt,val,n-1);
+            ret= this.max(i + j, k);
         }
         return ret;
     }
