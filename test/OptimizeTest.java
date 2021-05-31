@@ -76,7 +76,7 @@ public class OptimizeTest {
 
     @Test
     public void testTeste1() {
-        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm"));
+        OllirResult result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/customize/teste1_power.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 

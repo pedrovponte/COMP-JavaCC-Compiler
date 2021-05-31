@@ -1,0 +1,36 @@
+import io.println;
+
+class Power {
+  public static void main(String[] args) {
+
+    int base;
+    int powerbase;
+    Power pow;
+    pow = new Power();
+    base = 6;
+    powerbase = 3;
+    int result;
+    result = pow.power(base, powerbase);
+
+    io.println(result);
+  }
+
+  public int power(int base, int powerRaised) {
+    int power_result;
+    if (!this.eq(powerRaised,0)) {
+      power_result = 1;
+    }
+    else {
+      power_result = (base * this.power(base, powerRaised - 1));
+    }
+    return power_result;
+  }
+
+  public boolean eq(int a, int b) {
+  		return (!this.lt(a, b) && !this.lt(b, a));
+  	}
+
+  public boolean lt(int a, int b) {
+    return (a < b);
+  }
+}

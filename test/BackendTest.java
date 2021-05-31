@@ -70,7 +70,7 @@ public class BackendTest {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
         TestUtils.noErrors(result.getReports());
 
-        var output = result.run();
+        //var output = result.run();
         //assertEquals("30", output.trim());
     }
 
@@ -103,11 +103,11 @@ public class BackendTest {
 
     @Test
     public void testTeste1() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/customize/teste1_power.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
+        assertEquals("216", output.trim());
     }
 
     @Test

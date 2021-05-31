@@ -2,7 +2,6 @@ import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
-import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
 
@@ -218,7 +217,7 @@ public class Tests {
 
     @Test
     public void test1() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste1_geral.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/customize/teste1_power.jmm");
         JmmSemanticsResult res = TestUtils.analyse(TestUtils.parse(jmmCode));
         TestUtils.noErrors(res.getReports());
     }

@@ -693,6 +693,12 @@ public class BackendStage implements JasminBackend {
                 }
                 currentNumber++;
 
+                if (operationType==OperationType.NOTB){
+                    jasmin.append("\ticonst_1\n");
+                    jasmin.append("\tixor\n");
+                    break;
+                }
+
                 //if (binaryOpInstruction.getRightOperand().getType() instanceof )
                 if (binaryOpInstruction.getRightOperand().isLiteral()){
                     LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getRightOperand();
@@ -798,9 +804,6 @@ public class BackendStage implements JasminBackend {
                         currentNumber++;
                         jasmin.append("\tLTH_End_" + lthOperation + ":\n");
                         lthOperation++;
-                        break;
-                    case NOTB:
-                        jasmin.append("\tixor\n");
                         break;
                 }
                 nonAssign=true;
