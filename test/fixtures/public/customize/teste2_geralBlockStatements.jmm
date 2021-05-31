@@ -54,20 +54,21 @@ class optimizationAlg {
         if(n<1){
         ret = 0;
         }
-        else{}
-        if(W<1){
-        ret=0;
-        }
-        else{}
-
-        if(W<wt[n-1]){
-            ret= this.knapSack(W,wt,val,n-1);
-        }
         else{
-            i = val[n-1];
-            j = this.knapSack(wt[n-1],wt,val,n-1);
-            k = this.knapSack(W,wt,val,n-1);
-            ret= this.max(i + j, k);
+            if(W<1){
+            ret=0;
+            }
+            else{}
+
+            if(W<wt[n-1]){
+                ret= this.knapSack(W,wt,val,n-1);
+            }
+            else{
+                i = val[n-1];
+                j = this.knapSack(wt[n-1],wt,val,n-1);
+                k = this.knapSack(W,wt,val,n-1);
+                ret= this.max(i + j, k);
+            }
         }
         return ret;
     }
@@ -79,24 +80,25 @@ class optimizationAlg {
 
 	    //KNAPSACK:
 		int[] val;
-		val = new int[10];
+		val = new int[3];
 		int i;
 		int n;
 		val[0]=60;
 		val[1]=100;
         val[2]=120;
         int[] wt;
-        wt = new int[10];
+        wt = new int[3];
         wt[0]=10;
         wt[1]=20;
         wt[2]=30;
         int W;
         W=50;
         n= val.length / val[0];
-		ioPlus.printResult(this.knapSack(W,wt,val,n));
+        optimizationAlg opt;
+        opt = new optimizationAlg();
+		ioPlus.printResult(opt.knapSack(W,wt,val,n));
 
-		//STATEMENT TEST
 		int k;
-		k=this.smallStatementTest();
+        k=opt.smallStatementTest();
 	}
 }

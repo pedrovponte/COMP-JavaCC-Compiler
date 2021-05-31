@@ -12,15 +12,12 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
-import pt.up.fe.comp.jmm.ollir.OllirResult;
-import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
+
+import static org.junit.Assert.assertEquals;
 
 public class BackendTest {
 
@@ -42,14 +39,14 @@ public class BackendTest {
         assertEquals("Hello, World!", output.trim());
     }
 
-    /*@Test
+    @Test
     public void testLazysort() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
         TestUtils.noErrors(result.getReports());
 
-        //var output = result.run();
+        var output = result.run();
         //assertEquals("30", output.trim());
-    }*/
+    }
 
     @Test
     public void testLife() {
@@ -68,14 +65,14 @@ public class BackendTest {
         var output = result.run("3");
     }
 
-    /*@Test
+    @Test
     public void testQuickSort() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
         TestUtils.noErrors(result.getReports());
 
-        //var output = result.run();
+        var output = result.run();
         //assertEquals("30", output.trim());
-    }*/
+    }
 
     @Test
     public void testSimple() {
