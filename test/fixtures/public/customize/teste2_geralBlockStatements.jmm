@@ -79,12 +79,14 @@ class optimizationAlg {
 
 	    //KNAPSACK:
 		int[] val;
+		val = new int[10];
 		int i;
 		int n;
 		val[0]=60;
 		val[1]=100;
         val[2]=120;
         int[] wt;
+        wt = new int[10];
         wt[0]=10;
         wt[1]=20;
         wt[2]=30;
