@@ -98,14 +98,21 @@ The tasks were well distributed between all the peers in this work.
 **PROS:**
  
 All the suggested stages for the compiler were followed and accomplished, resulting on a successfully implemented Java-- compiler. 
+
+Our parser is capable of parse syntactically and semantically almost all Java-- code files, and then generate OLLIR and Jasmin code and run it succefully.
+
 Some extras were implemented, like verifying variables initialization before they are used.
+
 This project gave us a better insight vision of how a compiller works and processes the information. 
 It should also be taken in account the amount of new information learnt over the course of the semester to build this compiler.
 
 **CONS:** (Identify the most negative aspects of your tool)
 
 During the initial stages of the project, we did not realize how much code the compiler would need, not being very carefull about code organization in the beggining. This required a lot of refactoring in the middle of the implementation of the project.
+
 Method Overloading: When we start the Semantic Analysis, we did not realize that this is possible in Java--, only when we finished the implementation of this analysis we had known this possibility. To adapt our parser to that feature, it would require to much work, so our parser doesn't work with classes that have method overloading.
+
+Unfortunately, we didn't have enough time to implement `-o` and `-r` optimizations.
 
 
 ## Project setup
