@@ -64,7 +64,9 @@ class ConditionalsAndArrays {
 
         newField[newField.length-1] = newField[1+ x.sub(1,1)] + (2 * newField[1]);
         a = x.sub(1,1) * newField[1] + (2 * newField[1]);
-        b = this.sub(1,1);
+        ConditionalsAndArrays ca;
+        ca = new ConditionalsAndArrays();
+        b = ca.sub(1,1);
         c = newField[newField.length-1];
 
         if(((b+d) < (a-c)) && true && (!false)){
