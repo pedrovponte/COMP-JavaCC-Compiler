@@ -3,10 +3,8 @@ import pt.up.fe.comp.jmm.jasmin.JasminBackend;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
-import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1072,7 +1070,7 @@ public class BackendStage implements JasminBackend {
 
         int locals = method.getVarTable().size()+1;
 
-        finalJasmin.append("\n\t.limit stack 1" + numberLimit + "\n" + "\t.limit locals " + locals + "\n");
+        finalJasmin.append("\n\t.limit stack " + numberLimit + "\n" + "\t.limit locals " + locals + "\n");
 
         //jasmin.append(".limits " + numberLimit);
         finalJasmin.append(jasmin);
