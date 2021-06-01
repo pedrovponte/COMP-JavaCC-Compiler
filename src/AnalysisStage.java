@@ -14,6 +14,8 @@ import pt.up.fe.comp.jmm.report.Stage;
 
 public class AnalysisStage implements JmmAnalysis {
 
+    SymbolTableImp symbolTable;
+
     @Override
     public JmmSemanticsResult semanticAnalysis(JmmParserResult parserResult) {
 
@@ -31,31 +33,19 @@ public class AnalysisStage implements JmmAnalysis {
 
         JmmNode node = parserResult.getRootNode();
 
-        SymbolTableImp symbolTable = new SymbolTableImp();
+        this.symbolTable = new SymbolTableImp();
 
         System.out.println("\n\nImport Visitor\n");
-        ImportVisitor visitorImport = new ImportVisitor("Import", symbolTable);
+        ImportVisitor visitorImport = new ImportVisitor("Import", this.symbolTable);
         System.out.println(visitorImport.visit(node, ""));
 
         System.out.println("\n\nClass Visitor\n");
-        ClassVisitor visitorClass = new ClassVisitor("Class", symbolTable);
+        ClassVisitor visitorClass = new ClassVisitor("Class", this.symbolTable);
         System.out.println(visitorClass.visit(node, ""));
 
         List<Report> reports = new ArrayList<>();
 
-        try {
-            FileOutputStream fileSymbolTable = new FileOutputStream( "SymbolTable.txt");
-            fileSymbolTable.write(symbolTable.print().getBytes());
-            fileSymbolTable.close();
-
-        }
-        catch(Exception e) {
-            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, -1, "Detected generic error: " + e.getMessage()));
-            return new JmmSemanticsResult(parserResult, symbolTable, reports);
-        }
-
-
-        SemanticVisitor lengthVisitor = new SemanticVisitor(symbolTable);
+        SemanticVisitor lengthVisitor = new SemanticVisitor(this.symbolTable);
         lengthVisitor.visit(node, reports);
 
         return new JmmSemanticsResult(parserResult, symbolTable, reports);
@@ -81,5 +71,9 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // System.out.println("NODE: " + node.getClass());
+    }
+
+    public SymbolTableImp getSymbolTable() {
+        return symbolTable;
     }
 }

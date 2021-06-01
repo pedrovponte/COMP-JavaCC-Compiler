@@ -16,6 +16,7 @@ import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsStrings;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,7 +28,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("Result: 28", output.trim());
+        assertEquals("Result: 28", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -36,7 +37,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("Hello, World!", output.trim());
+        assertEquals("Hello, World!", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("30", output.trim());
+        assertEquals("30", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("10\n10\n10\n10\n10\n10\n10\n10\n10\n10", output.trim());
+        assertEquals("10\n10\n10\n10\n10\n10\n10\n10\n10\n10", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("216", output.trim());
+        assertEquals("216", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("Result: 0\n6", output.trim());
+        assertEquals("Result: 0\n6", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -115,7 +116,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("1\n2\n3\n4\n5\n6\n7\n8\n9\n10", output.trim());
+        assertEquals("1\n2\n3\n4\n5\n6\n7\n8\n9\n10", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -124,7 +125,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("1\n2\n1", output.trim());
+        assertEquals("1\n2\n1", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 
     @Test
@@ -133,6 +134,6 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("10000", output.trim());
+        assertEquals("10000", SpecsStrings.normalizeFileContents(output.trim(), true));
     }
 }

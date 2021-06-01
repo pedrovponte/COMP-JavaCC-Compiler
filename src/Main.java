@@ -53,21 +53,38 @@ public class Main implements JmmParser {
     public static void main(String[] args) {
 		String filename = args[0].split("\\.jmm")[0];
 
-		Main main = new Main();
-		JmmParserResult parserResult = main.parse(SpecsIo.read(args[0]));
+		try {
+			Main main = new Main();
+			JmmParserResult parserResult = main.parse(SpecsIo.read(args[0]));
 
-		AnalysisStage analysisStage = new AnalysisStage();
-		JmmSemanticsResult semanticsResult = analysisStage.semanticAnalysis(parserResult);
+			AnalysisStage analysisStage = new AnalysisStage();
+			JmmSemanticsResult semanticsResult = analysisStage.semanticAnalysis(parserResult);
 
-		OptimizationStage optimizationStage = new OptimizationStage();
-		OllirResult ollirResult = optimizationStage.toOllir(semanticsResult);
+			FileOutputStream fileSymbolTable = new FileOutputStream( filename + ".symbols.txt");
+			fileSymbolTable.write(semanticsResult.getSymbolTable().print().getBytes());
+			fileSymbolTable.close();
 
-		BackendStage backendStage = new BackendStage();
-		JasminResult jasminResult = backendStage.toJasmin(ollirResult);
+			OptimizationStage optimizationStage = new OptimizationStage();
+			OllirResult ollirResult = optimizationStage.toOllir(semanticsResult);
 
-		File jasminFile = new File("Jasmin.j");
-		File outputDir = new File("comp2021-5e");
+			FileOutputStream jsonOllirCode = new FileOutputStream( filename + ".ollir");
+			jsonOllirCode.write(ollirResult.getOllirCode().getBytes());
+			jsonOllirCode.close();
 
-		JasminUtils.assemble(jasminFile, outputDir);
+			BackendStage backendStage = new BackendStage();
+			JasminResult jasminResult = backendStage.toJasmin(ollirResult);
+
+			FileOutputStream fileJasminCode = new FileOutputStream( filename + ".j");
+			fileJasminCode.write(jasminResult.getJasminCode().getBytes());
+			fileJasminCode.close();
+
+			File jasminFile = new File(filename + ".j");
+			File outputDir = new File("comp2021-5e");
+
+			JasminUtils.assemble(jasminFile, outputDir);
+		}
+		catch (Exception e) {
+			e.getMessage();
+		}
 	}
 }

@@ -1148,17 +1148,6 @@ public class BackendStage implements JasminBackend {
             // More reports from this stage
             List<Report> reports = new ArrayList<>();
 
-            try {
-                FileOutputStream fileJasminCode = new FileOutputStream( "Jasmin.j");
-                fileJasminCode.write(jasminCode.getBytes());
-                fileJasminCode.close();
-
-            }
-            catch(Exception e) {
-                reports.add(new Report(ReportType.ERROR, Stage.GENERATION, -1, "Detected generic error: " + e.getMessage()));
-                return new JasminResult(ollirResult, null, reports);
-            }
-
             return new JasminResult(ollirResult, jasminCode, reports);
 
         } catch (OllirErrorException e) {

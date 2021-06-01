@@ -5,6 +5,7 @@ import pt.up.fe.comp.jmm.analysis.table.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SymbolTableImp implements SymbolTable {
     private List<String> imports;
@@ -182,5 +183,6 @@ public class SymbolTableImp implements SymbolTable {
     public void changeInitMethod(String methodName, Symbol var) {
         methodVarsInit.get(methodName).replace(var, true);
     }
+
 
 }

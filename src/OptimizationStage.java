@@ -64,17 +64,6 @@ public class OptimizationStage implements JmmOptimization {
         // More reports from this stage
         List<Report> reports = new ArrayList<>();
 
-        try {
-            FileOutputStream jsonOllirCode = new FileOutputStream( "OLLIRCode.ollir");
-            jsonOllirCode.write(ollirCode.getBytes());
-            jsonOllirCode.close();
-        }
-        catch(Exception e) {
-            reports.add(new Report(ReportType.ERROR, Stage.LLIR, -1, "Detected generic error: " + e.getMessage()));
-            return new OllirResult(semanticsResult, null, reports);
-        }
-
-
         return new OllirResult(semanticsResult, ollirCode, reports);
     }
 
