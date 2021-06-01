@@ -933,9 +933,9 @@ public class OllirEmitter implements JmmVisitor {
                 else if(node.getParent().getKind().equals("While")) {
                     stringCode.append("\t\tif (" + leftValue + " <" + ".bool " + rightValue);
                 }
-                else if(this.insiteNotConditional) {
-                    stringCode.append("\t\tif (" + leftValue + " <" + ".bool " + rightValue);
-                }
+                /*else if(this.insiteNotConditional) {
+                    stringCode.append("\t\tif (" + leftValue + " >=" + ".bool " + rightValue);
+                }*/
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
                     stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " <" + ".bool " + rightValue + ";\n");
@@ -976,9 +976,9 @@ public class OllirEmitter implements JmmVisitor {
 
                     //stringCode.append("\t\tif (" + leftValue + " &&" + ".bool " + rightValue);
                 }
-                else if(this.insiteNotConditional) {
+                /*else if(this.insiteNotConditional) {
                     stringCode.append("\t\tif (" + leftValue + " &&" + ".bool " + rightValue);
-                }
+                }*/
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
                     stringCode.append("\t\tt" + tempVarsCount + ".bool" + " :=.bool " + leftValue + " &&" + ".bool " + rightValue + ";\n");
@@ -1001,6 +1001,11 @@ public class OllirEmitter implements JmmVisitor {
                 }
                 if(node.getParent().getKind().equals("Assign") && !needPar) {
                     stringCode.append(this.auxGeral + leftValue + " !" + ".bool " + leftValue);
+                }
+                else if(this.insiteNotConditional) {
+                    addTempVar("boolean", false);
+                    stringCode.append("\t\t" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool" + " :=.bool" + leftValue + " !" + ".bool " + leftValue + ";\n");
+                    stringCode.append("\t\tif (" + this.tempRegisters.get(this.tempRegisters.size() - 1).getName() + ".bool &&.bool 1.bool");
                 }
                 else {
                     //st.append(leftValue + " " + node.get("operation") + ".i32 " + rightValue + ";\n");
@@ -1151,7 +1156,8 @@ public class OllirEmitter implements JmmVisitor {
         }
         else if(node.getKind().equals("Not")) {
             this.insiteNotConditional = true;
-            insideConditionExpression(node.getChildren().get(0));
+            stringCode.append(generateExpression(node));
+            //insideConditionExpression(node.getChildren().get(0));
             this.insiteNotConditional = false;
         }
         else if(node.getKind().equals("TwoPartExpression")) {

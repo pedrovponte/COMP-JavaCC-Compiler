@@ -40,15 +40,6 @@ public class BackendTest {
     }
 
     @Test
-    public void testLazysort() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
-        TestUtils.noErrors(result.getReports());
-
-        var output = result.run();
-        //assertEquals("30", output.trim());
-    }
-
-    @Test
     public void testLife() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Life.jmm"));
         TestUtils.noErrors(result.getReports());
@@ -66,15 +57,6 @@ public class BackendTest {
     }
 
     @Test
-    public void testQuickSort() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
-        TestUtils.noErrors(result.getReports());
-
-        //var output = result.run();
-        //assertEquals("30", output.trim());
-    }
-
-    @Test
     public void testSimple() {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Simple.jmm"));
         TestUtils.noErrors(result.getReports());
@@ -88,17 +70,17 @@ public class BackendTest {
         JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
         TestUtils.noErrors(result.getReports());
 
-        var output = result.run();
+        var output = result.run("0, 0");
         //assertEquals("30", output.trim());
     }
 
     @Test
     public void testWhileAndIf() {
-        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIf.jmm"));
+        JasminResult result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("10\r\n10\r\n10\r\n10\r\n10\r\n10\r\n10\r\n10\r\n10\r\n10", output.trim());
+        assertEquals("10\n10\n10\n10\n10\n10\n10\n10\n10\n10", output.trim());
     }
 
     @Test
@@ -116,7 +98,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
+        assertEquals("Result: 0\n6", output.trim());
     }
 
     @Test
@@ -143,7 +125,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        assertEquals("1\r\n2\r\n1", output.trim());
+        assertEquals("1\n2\n1", output.trim());
     }
 
     @Test
