@@ -45,7 +45,6 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
     }
 
     @Test
@@ -116,7 +115,7 @@ public class BackendTest {
         TestUtils.noErrors(result.getReports());
 
         var output = result.run();
-        //assertEquals("30", output.trim());
+        assertEquals("1\n2\n3\n4\n5\n6\n7\n8\n9\n10", output.trim());
     }
 
     @Test
