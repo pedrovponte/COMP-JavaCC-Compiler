@@ -3,6 +3,7 @@ import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class SymbolTableImp implements SymbolTable {
                 return this.parameters.get(key);
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

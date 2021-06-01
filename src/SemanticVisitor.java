@@ -94,10 +94,10 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
                 if(!symbolTable.getMethods().contains(methodCallName) && !importMethod && !superMethod) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(methodNode.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Method '" + methodCallName + "' not declared in class"));
                 }
-                else if(methodArgs != null && methodArgs.size() != argsSize) {
+                else if(!methodArgs.isEmpty() && methodArgs.size() != argsSize) {
                     reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, Integer.parseInt(methodNode.getChildren().get(0).get("line")), Integer.parseInt(node.getChildren().get(0).get("col")), "Wrong parameters number for method '" + methodCallName + "' call. Provided " + argsSize + " arguments, but " + methodArgs.size() + " is / are needed."));
                 }
-                else if(methodArgs != null && methodArgs.size() == argsSize) {
+                else if(!methodArgs.isEmpty() && methodArgs.size() == argsSize) {
                     for(int i = 0; i < methodArgs.size(); i++) {
                         Symbol identifierSymbol = checkIdentifiers(methodNode.getChildren().get(i+1), methodName);
                         String identifierType = null;
@@ -417,7 +417,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
     public Symbol checkIdentifiers(JmmNode node, String methodName) {
         List<Symbol> allVariables = new ArrayList<>();
         List<String> allNames = new ArrayList<>();
-        if(symbolTable.getParameters(methodName) != null && !symbolTable.getParameters(methodName).isEmpty()) {
+        if(!symbolTable.getParameters(methodName).isEmpty()) {
             allVariables.addAll(symbolTable.getParameters(methodName));
         }
         if(symbolTable.getLocalVariables(methodName) != null && !symbolTable.getLocalVariables(methodName).isEmpty()) {
@@ -456,7 +456,7 @@ public class SemanticVisitor extends PreorderJmmVisitor<List<Report>, Boolean> {
 
                 for(int i = 0; i < symbolTable.getActualMethods().size(); i++) {
                     if(symbolTable.getActualMethods().get(i).getName().equals(methodName)) {
-                        if(symbolTable.getParameters(methodName) != null) {
+                        if(!symbolTable.getParameters(methodName).isEmpty()) {
                             methodArgsSize = symbolTable.getParameters(methodName).size();
                         }
                         if(methodArgsSize == argumentsSize) {
