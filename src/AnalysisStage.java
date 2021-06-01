@@ -1,3 +1,4 @@
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +42,19 @@ public class AnalysisStage implements JmmAnalysis {
         System.out.println(visitorClass.visit(node, ""));
 
         List<Report> reports = new ArrayList<>();
+
+        try {
+            FileOutputStream fileSymbolTable = new FileOutputStream( "SymbolTable.txt");
+            fileSymbolTable.write(symbolTable.print().getBytes());
+            fileSymbolTable.close();
+
+        }
+        catch(Exception e) {
+            reports.add(new Report(ReportType.ERROR, Stage.SEMANTIC, -1, "Detected generic error: " + e.getMessage()));
+            return new JmmSemanticsResult(parserResult, symbolTable, reports);
+        }
+
+
         SemanticVisitor lengthVisitor = new SemanticVisitor(symbolTable);
         lengthVisitor.visit(node, reports);
 

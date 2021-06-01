@@ -1,3 +1,4 @@
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,9 +61,19 @@ public class OptimizationStage implements JmmOptimization {
         System.out.println("\n\nOLLIR CODE: \n\n");
         System.out.println(ollirCode);
 
-
         // More reports from this stage
         List<Report> reports = new ArrayList<>();
+
+        try {
+            FileOutputStream jsonOllirCode = new FileOutputStream( "OLLIRCode.ollir");
+            jsonOllirCode.write(ollirCode.getBytes());
+            jsonOllirCode.close();
+        }
+        catch(Exception e) {
+            reports.add(new Report(ReportType.ERROR, Stage.LLIR, -1, "Detected generic error: " + e.getMessage()));
+            return new OllirResult(semanticsResult, null, reports);
+        }
+
 
         return new OllirResult(semanticsResult, ollirCode, reports);
     }

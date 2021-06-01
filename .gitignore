@@ -20,3 +20,9 @@ gradlew.bat
 *.dot
 
 AST.json
+
+Jasmin.j
+
+OLLIRCode.ollir
+
+SymbolTable.txt

@@ -2,95 +2,110 @@
 
 ### GROUP: 5E
 
-- NAME1: Mariana Ramos, NR1: up201806869, GRADE1: 20, CONTRIBUTION1: 33.33%
+- NAME1: Mariana Ramos, NR1: 201806869, GRADE1: 20, CONTRIBUTION1: 33.33%
 
-- NAME2: Pedro Ferreira, NR2: up201806506, GRADE2: 20, CONTRIBUTION2: 33.33%
+- NAME2: Luanna Lopes, NR2: 201809282, GRADE2: 0, CONTRIBUTION2: 0%
 
-- NAME2: Pedro Ponte, NR2: up201809694, GRADE2: 20, CONTRIBUTION2: 33.33%
+- NAME3: Pedro Ferreira, NR3: 201806506, GRADE3: 20, CONTRIBUTION3: 33.33%
 
-...
+- NAME4: Pedro Ponte, NR4: 201809694, GRADE4: 20, CONTRIBUTION4: 33.33%
+
+----
 
 **GLOBAL Grade of the project:** 16
 
 
 **SUMMARY:** (Describe what your tool does and its main features.)
 
-The intention of this assignment was to develop a compiler which is able to translate Java-- programs. The compiler follows a well defined compilation flow, which includes: lexical analysis (with an LL(1) parser), syntactic analysis, semantic analysis and code generation. The code generation was also optimized (???). Among these stages, it includes:
-- Error treatment and recovery mechanisms
-- Generation of a Syntax Tree (Abstract Syntax Tree)
-- Generation of an OLLIR
-- Generation of Jasmin  
+The intention of this assignment was to develop a compiler which is able to translate Java-- programs. The compiler follows a well defined compilation flow, which includes: lexical analysis (with an LL(1) parser), syntactic analysis, semantic analysis and code generation. Among these stages, it includes:
+
+- Syntactic Analysis with error treatment and recovery mechanisms;
+- Generation of a Syntax Tree (Abstract Syntax Tree);
+- Semantic Analysis;
+- Generation of OLLIR;
+- Generation of Jasmin.  
 
 
 **DEALING WITH SYNTACTIC ERRORS:** (Describe how the syntactic error recovery of your tool works. Does it exit after the first error?)
 
-The compiler is able to skip a predefined number of errors. (?)
+We deal with syntactic errors in the *while* expression. In this case, when a syntactic error is found, the compiler recovers from this error and continues the parse of the program, presenting a list with the error reports when finishes the parse. The compiler could report the first 10 errors found before aborting the execution.
 
+For the other error types, it returns immediatly and shows the error message to the user.
 
 **SEMANTIC ANALYSIS:** 
 
 The compiler implements the following semantic rules:
 
-- Variables:
+- **Variables**:
     - Checks if all the variables including arrays are previously declared.
     - Checks if a variable is not defined more than one time.
     - Checks if variables are assigned to other variables with compatible types.
     - Verifies if a variable associated with a function call is a class type variable.
     - Checks if a variable is valid within a given scope.
 
-- Functions:
-    - Checks if the "this" keyword is not used in a static context. (??)
+- **Methods**:
     - Checks if the function called is compatible with any function (that is, a function having the same signature - number of arguments, as well as the type of those arguments).
     - Checks if the return value of a function can be assigned to a variable.
     - Checks if the return value of a function is initialized.
     - Checks if the return value of a function can be used in an expression.
     - Checks if a function of type void does not return anything.
-    - Verifies additional types in the function return, including String, class variables and void.
     - Verifies if the function parameters have all different names.
+    - Verifies if the "target" of the method exists and if it contains the method (eg: a.foo, verifies if 'a' exists and if it contains 'foo' method).
+    - Case of it's of the same type of the declared class (i.e., using *this*), checks if the method exists or if it has an *extend*.
+    - In case the methos isn't part of the declared class (i.e., imported class), assume that the method exists and returns the expected type.
 
-- Arrays:
+- **Arrays**:
     - Checks if array expression is an integer and if it has been initialized.
-    - Checks if the array access is always made in a variable of an array type (int[] or String[]).
+    - Checks if the array access is always made in a variable of an array type (int[]).
     - Checks if the property length is only used in arrays.
 
-- Block Statements (While and If..Else):
+- **Block Statements (While and If..Else)**:
     - Checks if While and If have an expression that evaluates to a boolean.
     - Checks variable initialization inside if or else block.
 
-- Classes:
+- **Classes**:
     - Verifies the existance of a class when it is used.
     - When a class calls a function, verifies if the class variable is initialized and if it includes the function.
     - Verifies that a class is not instantiated inside an expression without any call to one of its functions. 
 
-- Operations:
+- **Operations**:
     - Verifies if conditional operations && (logical and) and ! (negation) are only used with boolean expressions.
     - Checks if conditional operator < (less than) is only used with arithmetic expressions or integers.
-    - Verifies if an array is not directly used in an arithmetic or conditional operation (of type less than).
- 
+    - Verifies if an array is not directly used in an arithmetic or conditional operation (of type less than) (eg: array1 + array2 is invalid).
+    - Checks if operands in the operations have he same type (eg: int + boolean is invalid).
+    - Verifies if an array access is in fact done on an array(1[10] is invalid).
+    - Verifies if the index of an array access has int type (a[true] is invalid).
+    - Check if assignee type is equal to assigned type (a_int = b_boolean is invalid).
+      
+- **Extras**:
+    - Verifies if variables are initialized before they are used in operations or method calls, etc...
 
+ 
 **CODE GENERATION:** (describe how the code generation of your tool works and identify the possible problems your tool has regarding code generation.)
 
-The Code generation is performed using as an input the OLLIR, which is populated during the Semantic Analysis.
+The parser first makes a syntactic analysis to the input program. Then, it fills in the symbol table, traversing the generated AST, in order to use that in the semantic analysis. After this step is done, it generates the OLLIR code using the AST. After having OLLIR code generated, the parser then moves forward to Jasmin stage, where it finally generates the Jasmin code.
 
 
 **TASK DISTRIBUTION:** (Identify the set of tasks done by each member of the project. You can divide this by checkpoint it if helps)
 
 The tasks were well distributed between all the peers in this work. 
 
-- Pedro Ponte: Análise semântica and Ollir generation;
-- Mariana Ramos: Ollir code generation;
-- Pedro Ferreira: Jasmin code generation;
+- Pedro Ponte: Syntactic Analysis (parser construction and AST generation), Symbol Table generation, Semantic Analysis and Ollir code generation;
+- Mariana Ramos: Syntactic Analysis (parser construction), Ollir code generation, generate new tests;
+- Pedro Ferreira: Syntactic Analysis (Handling errors), Jasmin code generation, generate new tests;
 
 
 **PROS:**
  
 All the suggested stages for the compiler were followed and accomplished, resulting on a successfully implemented Java-- compiler. 
+Some extras were implemented, like verifying variables initialization before they are used.
 This project gave us a better insight vision of how a compiller works and processes the information. 
 It should also be taken in account the amount of new information learnt over the course of the semester to build this compiler.
 
 **CONS:** (Identify the most negative aspects of your tool)
 
 During the initial stages of the project, we did not realize how much code the compiler would need, not being very carefull about code organization in the beggining. This required a lot of refactoring in the middle of the implementation of the project.
+Method Overloading: When we start the Semantic Analysis, we did not realize that this is possible in Java--, only when we finished the implementation of this analysis we had known this possibility. To adapt our parser to that feature, it would require to much work, so our parser doesn't work with classes that have method overloading.
 
 
 ## Project setup

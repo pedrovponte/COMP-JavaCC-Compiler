@@ -3,8 +3,10 @@ import pt.up.fe.comp.jmm.jasmin.JasminBackend;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1145,6 +1147,17 @@ public class BackendStage implements JasminBackend {
 
             // More reports from this stage
             List<Report> reports = new ArrayList<>();
+
+            try {
+                FileOutputStream fileJasminCode = new FileOutputStream( "Jasmin.j");
+                fileJasminCode.write(jasminCode.getBytes());
+                fileJasminCode.close();
+
+            }
+            catch(Exception e) {
+                reports.add(new Report(ReportType.ERROR, Stage.GENERATION, -1, "Detected generic error: " + e.getMessage()));
+                return new JasminResult(ollirResult, null, reports);
+            }
 
             return new JasminResult(ollirResult, jasminCode, reports);
 

@@ -3,6 +3,7 @@ import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
+import pt.up.fe.comp.jmm.jasmin.JasminUtils;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
@@ -37,8 +38,7 @@ public class Main implements JmmParser {
 			if (e instanceof ParseException) {
 				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, ((ParseException) e).currentToken.beginLine, "Detected generic error: " + e.getMessage()));
 			}
-			else
-			{
+			else {
 				reports.add(new Report(ReportType.ERROR, Stage.SYNTATIC, -1, "Detected generic error: " + e.getMessage()));
 			}
 			return new JmmParserResult(null, reports);
@@ -51,6 +51,8 @@ public class Main implements JmmParser {
 	// java -cp "./build/classes/java/main/" Main test/fixtures/public/HelloWorld.jmm
 	// .\comp2021-5e.bat Main test/fixtures/public/WhileAndIF.jmm
     public static void main(String[] args) {
+		String filename = args[0].split("\\.jmm")[0];
+
 		Main main = new Main();
 		JmmParserResult parserResult = main.parse(SpecsIo.read(args[0]));
 
@@ -62,5 +64,10 @@ public class Main implements JmmParser {
 
 		BackendStage backendStage = new BackendStage();
 		JasminResult jasminResult = backendStage.toJasmin(ollirResult);
+
+		File jasminFile = new File("Jasmin.j");
+		File outputDir = new File("comp2021-5e");
+
+		JasminUtils.assemble(jasminFile, outputDir);
 	}
 }
