@@ -703,12 +703,13 @@ public class OllirEmitter implements JmmVisitor {
                 generateTwoPartExpression(child);
             }
             else if (child.getKind().equals("While")) {
-                generateWhileStatement(child, statementConditionNumber);
                 this.conditionNumber++;
+                generateWhileStatement(child, statementConditionNumber);
+
             }
             else if (child.getKind().equals("If")) {
-                generateIf(child, statementConditionNumber);
                 this.conditionNumber++;
+                generateIf(child, statementConditionNumber);
             }
             else if(child.getKind().equals("IfBody")) {
                 this.insideWhile = true;

@@ -1,4 +1,3 @@
-
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
@@ -16,15 +15,15 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Main implements JmmParser {
+	private static String filename;
 	public JmmParserResult parse(String jmmCode) {
-
 		try {
 		    Parser myParser = new Parser(new ByteArrayInputStream(jmmCode.getBytes()));
     		SimpleNode root = myParser.Program(); // returns reference to root node
 
     		root.dump(""); // prints the tree on the screen
 
-			FileOutputStream jsonFile = new FileOutputStream("AST.json");
+			FileOutputStream jsonFile = new FileOutputStream(filename + ".json");
 
 			JmmParserResult parserResult = new JmmParserResult(root, myParser.getSyntacticErrors());
 			jsonFile.write(parserResult.toJson().getBytes());
@@ -51,7 +50,8 @@ public class Main implements JmmParser {
 	// java -cp "./build/classes/java/main/" Main test/fixtures/public/HelloWorld.jmm
 	// .\comp2021-5e.bat Main test/fixtures/public/WhileAndIF.jmm
     public static void main(String[] args) {
-		String filename = args[0].split("\\.jmm")[0];
+		filename = args[0].split("\\.jmm")[0];
+		System.out.println("FILENAME: " + filename);
 
 		try {
 			Main main = new Main();
@@ -79,7 +79,7 @@ public class Main implements JmmParser {
 			fileJasminCode.close();
 
 			File jasminFile = new File(filename + ".j");
-			File outputDir = new File("comp2021-5e");
+			File outputDir = new File("./");
 
 			JasminUtils.assemble(jasminFile, outputDir);
 		}
