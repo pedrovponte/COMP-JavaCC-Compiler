@@ -1,13 +1,41 @@
-import org.specs.comp.ollir.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.specs.comp.ollir.AccessModifiers;
+import org.specs.comp.ollir.ArrayOperand;
+import org.specs.comp.ollir.ArrayType;
+import org.specs.comp.ollir.AssignInstruction;
+import org.specs.comp.ollir.BinaryOpInstruction;
+import org.specs.comp.ollir.CallInstruction;
+import org.specs.comp.ollir.CallType;
+import org.specs.comp.ollir.ClassType;
+import org.specs.comp.ollir.ClassUnit;
+import org.specs.comp.ollir.CondBranchInstruction;
+import org.specs.comp.ollir.Descriptor;
+import org.specs.comp.ollir.Element;
+import org.specs.comp.ollir.ElementType;
+import org.specs.comp.ollir.Field;
+import org.specs.comp.ollir.GetFieldInstruction;
+import org.specs.comp.ollir.GotoInstruction;
+import org.specs.comp.ollir.Instruction;
+import org.specs.comp.ollir.LiteralElement;
+import org.specs.comp.ollir.Method;
+import org.specs.comp.ollir.OllirAccesser;
+import org.specs.comp.ollir.OllirErrorException;
+import org.specs.comp.ollir.Operand;
+import org.specs.comp.ollir.OperationType;
+import org.specs.comp.ollir.PutFieldInstruction;
+import org.specs.comp.ollir.ReturnInstruction;
+import org.specs.comp.ollir.SingleOpInstruction;
+import org.specs.comp.ollir.Type;
+import org.specs.comp.ollir.UnaryOpInstruction;
+
 import pt.up.fe.comp.jmm.jasmin.JasminBackend;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.Stage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Copyright 2021 SPeCS.
@@ -31,660 +59,609 @@ public class BackendStage implements JasminBackend {
     Boolean nonAssign = true;
 
     public void setNumberLimit() {
-        if(this.currentNumber > this.numberLimit)
+        if (this.currentNumber > this.numberLimit)
             this.numberLimit = this.currentNumber;
         this.currentNumber = 0;
     }
 
-    public void addType(Type type){
-        switch (type.getTypeOfElement()){
-            case INT32:
-                jasmin.append("I");
-                break;
-            case BOOLEAN:
-                jasmin.append("Z");
-                break;
-            case ARRAYREF:
-                ArrayType arrayType = (ArrayType) type;
-                ElementType elementType =  arrayType.getTypeOfElements();
-                if (elementType == ElementType.BOOLEAN)
-                {
-                    jasmin.append("[Z");
-                }
-                else if (elementType == ElementType.INT32)
-                {
-                    jasmin.append("[I");
-                }
-                else if (elementType == ElementType.STRING)
-                {
-                    jasmin.append("[Ljava/lang/String;");
-                }
-                break;
-            case OBJECTREF:
-                ClassType classType = (ClassType) type;
-                jasmin.append(classType.getName());
-                break;
-            case CLASS:
-                ClassType classType1 = (ClassType) type;
-                jasmin.append(classType1.getName());
-                //jasmin.append("");
-                break;
-            case THIS:
-                //jasmin.append(" java/lang/Object");
-                jasmin.append("this");
-                break;
-            case STRING:
-                jasmin.append("Ljava/lang/String;");
-                break;
-            case VOID:
-                jasmin.append("V");
-                break;
+    public void addType(Type type) {
+        switch (type.getTypeOfElement()) {
+        case INT32:
+            jasmin.append("I");
+            break;
+        case BOOLEAN:
+            jasmin.append("Z");
+            break;
+        case ARRAYREF:
+            ArrayType arrayType = (ArrayType) type;
+            ElementType elementType = arrayType.getTypeOfElements();
+            if (elementType == ElementType.BOOLEAN) {
+                jasmin.append("[Z");
+            } else if (elementType == ElementType.INT32) {
+                jasmin.append("[I");
+            } else if (elementType == ElementType.STRING) {
+                jasmin.append("[Ljava/lang/String;");
+            }
+            break;
+        case OBJECTREF:
+            ClassType classType = (ClassType) type;
+            jasmin.append(classType.getName());
+            break;
+        case CLASS:
+            ClassType classType1 = (ClassType) type;
+            jasmin.append(classType1.getName());
+            // jasmin.append("");
+            break;
+        case THIS:
+            // jasmin.append(" java/lang/Object");
+            jasmin.append("this");
+            break;
+        case STRING:
+            jasmin.append("Ljava/lang/String;");
+            break;
+        case VOID:
+            jasmin.append("V");
+            break;
         }
     }
 
-    public void LiteralValues(LiteralElement literalElement){
-        switch (literalElement.getLiteral()){
-            case("-1"):
-                jasmin.append("\ticonst_m1 \n");
-                break;
-            case ("0"):
-                jasmin.append("\ticonst_0 \n");
-                break;
-            case ("1"):
-                jasmin.append("\ticonst_1 \n");
-                break;
-            case ("2"):
-                jasmin.append("\ticonst_2 \n");
-                break;
-            case("3"):
-                jasmin.append("\ticonst_3 \n");
-                break;
-            case("4"):
-                jasmin.append("\ticonst_4 \n");
-                break;
-            case ("5"):
-                jasmin.append("\ticonst_5 \n");
-                break;
-            default:
-                if (Integer.parseInt(literalElement.getLiteral())>=-128 && Integer.parseInt(literalElement.getLiteral())<=127)
-                    jasmin.append("\tbipush " + literalElement.getLiteral() + "\n");
-                else if (Integer.parseInt(literalElement.getLiteral())>=-32768 && Integer.parseInt(literalElement.getLiteral())<=32767)
-                    jasmin.append("\tsipush " + literalElement.getLiteral() + "\n");
-                else if (Integer.parseInt(literalElement.getLiteral())>=-2147483648 && Integer.parseInt(literalElement.getLiteral())<=2147483647)
-                    jasmin.append("\tldc " + literalElement.getLiteral() + "\n");
-                break;
+    public void LiteralValues(LiteralElement literalElement) {
+        switch (literalElement.getLiteral()) {
+        case ("-1"):
+            jasmin.append("\ticonst_m1 \n");
+            break;
+        case ("0"):
+            jasmin.append("\ticonst_0 \n");
+            break;
+        case ("1"):
+            jasmin.append("\ticonst_1 \n");
+            break;
+        case ("2"):
+            jasmin.append("\ticonst_2 \n");
+            break;
+        case ("3"):
+            jasmin.append("\ticonst_3 \n");
+            break;
+        case ("4"):
+            jasmin.append("\ticonst_4 \n");
+            break;
+        case ("5"):
+            jasmin.append("\ticonst_5 \n");
+            break;
+        default:
+            if (Integer.parseInt(literalElement.getLiteral()) >= -128
+                    && Integer.parseInt(literalElement.getLiteral()) <= 127)
+                jasmin.append("\tbipush " + literalElement.getLiteral() + "\n");
+            else if (Integer.parseInt(literalElement.getLiteral()) >= -32768
+                    && Integer.parseInt(literalElement.getLiteral()) <= 32767)
+                jasmin.append("\tsipush " + literalElement.getLiteral() + "\n");
+            else if (Integer.parseInt(literalElement.getLiteral()) >= -2147483648
+                    && Integer.parseInt(literalElement.getLiteral()) <= 2147483647)
+                jasmin.append("\tldc " + literalElement.getLiteral() + "\n");
+            break;
         }
     }
 
-    public void GetInstructions(Instruction inst, Method method){
-        if (!method.getLabels(inst).isEmpty()){
-            for (var label: method.getLabels(inst))
-            {
+    public void GetInstructions(Instruction inst, Method method) {
+        if (!method.getLabels(inst).isEmpty()) {
+            for (var label : method.getLabels(inst)) {
                 jasmin.append(label + ":\n");
             }
         }
         switch (inst.getInstType()) {
-            case ASSIGN:
-                nonAssign=false;
-                AssignInstruction assignInstruction = (AssignInstruction) inst;
+        case ASSIGN:
+            nonAssign = false;
+            AssignInstruction assignInstruction = (AssignInstruction) inst;
 
-                Instruction rhs = assignInstruction.getRhs();
+            Instruction rhs = assignInstruction.getRhs();
 
-                Operand dest = (Operand) assignInstruction.getDest();
+            Operand dest = (Operand) assignInstruction.getDest();
 
-                if (dest instanceof ArrayOperand){
-                    ArrayOperand destArray = (ArrayOperand) assignInstruction.getDest();
+            if (dest instanceof ArrayOperand) {
+                ArrayOperand destArray = (ArrayOperand) assignInstruction.getDest();
 
-                    if (OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg()<4)
-                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() + "\n");
-                    else
-                        jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() + "\n");
-                    currentNumber++;
-
-                    for (var index: destArray.getIndexOperands())
-                    {
-                        if (index.isLiteral())
-                        {
-                            LiteralElement literalElement = (LiteralElement) index;
-                            LiteralValues(literalElement);
-                        }
-                        else{
-                            Operand newOperand = (Operand) index;
-
-                            if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                            {
-                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                else
-                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                            }
-                            else
-                            {
-                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                else
-                                    jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                            }
-                        }
-                        currentNumber++;
-                    }
-
-                }
-
-                GetInstructions(rhs,method);
-
-                Descriptor descriptor = OllirAccesser.getVarTable(method).get(dest.getName());
-
-                if (dest.getType().getTypeOfElement()==ElementType.OBJECTREF || dest.getType().getTypeOfElement()==ElementType.ARRAYREF){
-                    if (descriptor.getVirtualReg()<4)
-                        jasmin.append("\tastore_" + descriptor.getVirtualReg() + "\n");
-                    else
-                        jasmin.append("\tastore " + descriptor.getVirtualReg() + "\n");
-                }
-                else if (dest instanceof ArrayOperand){
-                    jasmin.append("\tiastore\n");
-                }
-                else{
-                    if (descriptor.getVirtualReg()<4)
-                        jasmin.append("\tistore_" + descriptor.getVirtualReg() + "\n");
-                    else
-                        jasmin.append("\tistore " + descriptor.getVirtualReg() + "\n");
-                }
-
-                currentNumber++;
-                setNumberLimit();
-
-                break;
-            case CALL:
-                CallInstruction callInstruction = (CallInstruction) inst;
-
-                CallType callType = callInstruction.getInvocationType();
-
-                switch (callType){
-                    case arraylength:
-                        Operand arrayLengthFirst = (Operand) callInstruction.getFirstArg();
-
-                        if (OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
-                        currentNumber++;
-                        jasmin.append("\tarraylength\n");
-                        break;
-
-                    case NEW:
-                        CallInstruction operandNew = (CallInstruction) inst;
-
-                        Operand newFirst = (Operand) callInstruction.getFirstArg();
-
-                        if (newFirst.getType() instanceof ArrayType)
-                        {
-                            for (Element operand : callInstruction.getListOfOperands())
-                            {
-                                if (operand.isLiteral())
-                                {
-                                    LiteralElement literalElement = (LiteralElement) operand;
-                                    LiteralValues(literalElement);
-                                }
-                                else{
-                                    Operand newOperand = (Operand) operand;
-
-                                    if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                                    {
-                                        if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                        else
-                                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                    }
-                                    else
-                                    {
-                                        if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                            jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                        else
-                                            jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                    }
-                                }
-                                currentNumber++;
-                            }
-                            /*if ((operandNew.getReturnType()).getTypeOfElement()==ElementType.INT32)
-                            {*/
-                            jasmin.append("\tnewarray int");
-                            currentNumber++;
-                            jasmin.append("\n");
-                            //}
-                            /*else if(callInstruction.getListOfOperands().size() > 1)
-                            {
-                                jasmin.append("\tmultianewarray [");
-                                addType(callInstruction.getListOfOperands().get(0).getType());
-                                jasmin.append(" "+callInstruction.getListOfOperands().size()+"\n");
-                            }
-                            else if (operandNew.getReturnType().getTypeOfElement()==ElementType.ARRAYREF){
-                                //var classTypeNewArray = (ClassType) operandNew.getReturnType();
-
-                                Operand newReturn = (Operand) callInstruction.getFirstArg();
-
-                                jasmin.append("\tanewarray ");
-                                jasmin.append(newReturn.getName());
-                                jasmin.append("\n");
-                            }*/
-                        }
-                        else {
-                            ClassType classTypeNew = (ClassType) callInstruction.getReturnType();
-
-                            jasmin.append("\tnew " + classTypeNew.getName() + "\n");
-                            jasmin.append("\tdup\n");
-                            currentNumber+=2;
-
-                            jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
-                            //numberLimit++;
-                        }
-                        break;
-
-                    case invokevirtual:
-
-                        Operand callField1 = (Operand) callInstruction.getFirstArg();
-
-                        if (OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() + "\n");
-
-                        currentNumber++;
-
-                        ArrayList<Element> elements = callInstruction.getListOfOperands();
-
-                        for (Element element : elements){
-                            if (element.isLiteral()){
-                                LiteralElement literalElement = (LiteralElement) element;
-                                LiteralValues(literalElement);
-                            }
-                            else {
-                                Operand returnOperand = (Operand) element;
-
-                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
-
-                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                                else
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-
-                            }
-                            currentNumber++;
-                        }
-                        LiteralElement callField2 = (LiteralElement) callInstruction.getSecondArg();
-                        ClassType classTypeVirtual = (ClassType) callInstruction.getFirstArg().getType();
-                        jasmin.append("\tinvokevirtual " + classTypeVirtual.getName() + "." + callField2.getLiteral().substring( 1, callField2.getLiteral().length() - 1 ) + "(");
-
-                        //Boolean first = false;
-                        for (Element element : elements){
-                            /*if (first == true)
-                            {
-                                jasmin.append(" ");
-                            }*/
-                            addType(element.getType());
-                            //first = true;
-                        }
-                        jasmin.append(")");
-
-                        addType(((CallInstruction) inst).getReturnType());
-                        if (((CallInstruction) inst).getReturnType().getTypeOfElement()!=ElementType.VOID)
-                        {
-                            if (nonAssign)
-                                jasmin.append("\tpop\n");
-                        }
-                        jasmin.append("\n");
-
-                        break;
-                    //case invokeinterface:
-                    //break;
-                    case invokespecial:
-                        //Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
-
-                        /*if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
-                        ArrayList<Element> elementsSpecial = callInstruction.getListOfOperands();
-
-                        for (Element element : elementsSpecial){
-                            if (element.isLiteral()){
-                                LiteralElement literalElement = (LiteralElement) element;
-                                LiteralValues(literalElement);
-                            }
-                            else {
-                                Operand returnOperand = (Operand) element;
-
-                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
-
-                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                                else
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                            }
-                        }
-                        ClassType classTypeVirtual1 = (ClassType) callInstruction.getFirstArg().getType();
-                        jasmin.append("\tinvokespecial " + classTypeVirtual1.getName() + ".");
-                        LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append( callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
-                        addType(((CallInstruction) inst).getReturnType());
-                        jasmin.append("\n");*/
-                        return;
-
-                    case invokestatic:
-                        Operand callField1Static = (Operand) callInstruction.getFirstArg();
-
-                        //jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callField1Static.getName()).getVirtualReg() + "\n");
-
-                        ArrayList<Element> elementsStatic = callInstruction.getListOfOperands();
-
-                        for (Element element : elementsStatic){
-                            if (element.isLiteral()){
-                                LiteralElement literalElement = (LiteralElement) element;
-                                LiteralValues(literalElement);
-                            }
-                            else {
-                                Operand returnOperand = (Operand) element;
-
-                                Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
-
-                                //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                                if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                                else if (element instanceof ArrayOperand){
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                                else
-                                {
-                                    if (elementDescriptor.getVirtualReg()<4)
-                                        jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
-                                }
-                            }
-                            currentNumber++;
-                        }
-                        LiteralElement callField2Static = (LiteralElement) callInstruction.getSecondArg();
-                        jasmin.append("\tinvokestatic " + callField1Static.getName() + "." + callField2Static.getLiteral().substring( 1, callField2Static.getLiteral().length() - 1 ) + "(");
-                        currentNumber++;
-                        //Boolean first = false;
-                        for (Element element : elementsStatic){
-                            /*if (first == true)
-                            {
-                                jasmin.append(" ");
-                            }*/
-                            addType(element.getType());
-                            //first = true;
-                        }
-                        jasmin.append(")");
-
-                        addType(((CallInstruction) inst).getReturnType());
-                        if (((CallInstruction) inst).getReturnType().getTypeOfElement()!=ElementType.VOID)
-                        {
-                            if (nonAssign)
-                                jasmin.append("\tpop\n");
-                        }
-                        jasmin.append("\n");
-                        break;
-
-                    case ldc:
-                        break;
-                }
-                setNumberLimit();
-                nonAssign=true;
-                break;
-            case RETURN:
-                ReturnInstruction returnInstruction = (ReturnInstruction) inst;
-                ElementType returnValue;
-
-                if (!returnInstruction.hasReturnValue())
-                {
-                    jasmin.append("\treturn\n");
-                    return;
-                }
-
-                returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
-
-                Element operand = returnInstruction.getOperand();
-                if (operand.isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) operand;
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand returnOperand = (Operand) operand;
-
-                    Descriptor returnDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
-
-                    //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                    if (operand.getType().getTypeOfElement()==ElementType.OBJECTREF || operand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (returnDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + returnDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + returnDescriptor.getVirtualReg() + "\n");
-                    }
-                    else
-                    {
-                        if (returnDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiload " + returnDescriptor.getVirtualReg() + "\n");
-                    }
-                }
-                currentNumber++;
-
-                switch (returnValue){
-                    case INT32:
-                        jasmin.append("\tireturn\n");
-                        break;
-                    case BOOLEAN:
-                        jasmin.append("\tireturn\n");
-                        break;
-                    case OBJECTREF:
-                        jasmin.append("\tareturn\n");
-                        break;
-                    case ARRAYREF:
-                        jasmin.append("\tareturn\n");
-                        break;
-                }
-                nonAssign=true;
-                break;
-            case PUTFIELD:
-                PutFieldInstruction putFieldInstruction = (PutFieldInstruction) inst;
-
-                if (putFieldInstruction.getFirstOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) putFieldInstruction.getFirstOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand firstOperand = (Operand) putFieldInstruction.getFirstOperand();
-
-                    Descriptor firstDescriptor = OllirAccesser.getVarTable(method).get(firstOperand.getName());
-
-                    if (firstOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || firstOperand.getType().getTypeOfElement()==ElementType.THIS || firstOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (firstDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + firstDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + firstDescriptor.getVirtualReg() + "\n");
-                    }
-                    else
-                    {
-                        if (firstDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + firstDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiload " + firstDescriptor.getVirtualReg() + "\n");
-                    }
-                }
-
-                currentNumber++;
-
-                if (putFieldInstruction.getThirdOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) putFieldInstruction.getThirdOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand thirdOperand = (Operand) putFieldInstruction.getThirdOperand();
-
-                    Descriptor thirdDescriptor = OllirAccesser.getVarTable(method).get(thirdOperand.getName());
-
-                    if (thirdOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || thirdOperand.getType().getTypeOfElement()==ElementType.THIS || thirdOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (thirdDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + thirdDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + thirdDescriptor.getVirtualReg() + "\n");
-                    }
-                    else
-                    {
-                        if (thirdDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + thirdDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiload " + thirdDescriptor.getVirtualReg() + "\n");
-                    }
-                }
-
-                currentNumber++;
-
-                jasmin.append("\tputfield ");
-
-                Operand operand1 = (Operand) putFieldInstruction.getFirstOperand();
-                Operand operand2 = (Operand) putFieldInstruction.getSecondOperand();
-
-                /*if(operand1.getName()=="this"){
-                    jasmin.append(operand1.getName() + "/");
-                    jasmin.append(operand2.getName() + " ");
-                    addType(putFieldInstruction.getSecondOperand().getType());
-                    jasmin.append("\n");
-                }
-                else{*/
-                ClassType class1 = (ClassType) operand1.getType();
-                jasmin.append(class1.getName() + "/");
-                jasmin.append(operand2.getName() + " ");
-                addType(putFieldInstruction.getSecondOperand().getType());
-                jasmin.append("\n");
-                //}
-                setNumberLimit();
-                nonAssign=true;
-                break;
-            case GETFIELD:
-                GetFieldInstruction getFieldInstruction = (GetFieldInstruction) inst;
-
-                Operand field1 = (Operand) getFieldInstruction.getFirstOperand();
-                Operand field2 = (Operand) getFieldInstruction.getSecondOperand();
-
-                if (OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg()<4)
-                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
+                if (OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() < 4)
+                    jasmin.append("\taload_"
+                            + OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() + "\n");
                 else
-                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
+                    jasmin.append("\taload "
+                            + OllirAccesser.getVarTable(method).get(destArray.getName()).getVirtualReg() + "\n");
+                currentNumber++;
+
+                for (var index : destArray.getIndexOperands()) {
+                    if (index.isLiteral()) {
+                        LiteralElement literalElement = (LiteralElement) index;
+                        LiteralValues(literalElement);
+                    } else {
+                        Operand newOperand = (Operand) index;
+
+                        if (newOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                                || newOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                            if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                jasmin.append("\taload_"
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                            else
+                                jasmin.append("\taload "
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                        } else {
+                            if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                jasmin.append("\tiload_"
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                            else
+                                jasmin.append("\tiload "
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                        }
+                    }
+                    currentNumber++;
+                }
+
+            }
+
+            GetInstructions(rhs, method);
+
+            Descriptor descriptor = OllirAccesser.getVarTable(method).get(dest.getName());
+
+            if (dest.getType().getTypeOfElement() == ElementType.OBJECTREF
+                    || dest.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                if (descriptor.getVirtualReg() < 4)
+                    jasmin.append("\tastore_" + descriptor.getVirtualReg() + "\n");
+                else
+                    jasmin.append("\tastore " + descriptor.getVirtualReg() + "\n");
+            } else if (dest instanceof ArrayOperand) {
+                jasmin.append("\tiastore\n");
+            } else {
+                if (descriptor.getVirtualReg() < 4)
+                    jasmin.append("\tistore_" + descriptor.getVirtualReg() + "\n");
+                else
+                    jasmin.append("\tistore " + descriptor.getVirtualReg() + "\n");
+            }
+
+            currentNumber++;
+            setNumberLimit();
+
+            break;
+        case CALL:
+            CallInstruction callInstruction = (CallInstruction) inst;
+
+            CallType callType = callInstruction.getInvocationType();
+
+            switch (callType) {
+            case arraylength:
+                Operand arrayLengthFirst = (Operand) callInstruction.getFirstArg();
+
+                if (OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() < 4)
+                    jasmin.append("\taload_"
+                            + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
+                else
+                    jasmin.append("\taload "
+                            + OllirAccesser.getVarTable(method).get(arrayLengthFirst.getName()).getVirtualReg() + "\n");
+                currentNumber++;
+                jasmin.append("\tarraylength\n");
+                break;
+
+            case NEW:
+                CallInstruction operandNew = (CallInstruction) inst;
+
+                Operand newFirst = (Operand) callInstruction.getFirstArg();
+
+                if (newFirst.getType() instanceof ArrayType) {
+                    for (Element operand : callInstruction.getListOfOperands()) {
+                        if (operand.isLiteral()) {
+                            LiteralElement literalElement = (LiteralElement) operand;
+                            LiteralValues(literalElement);
+                        } else {
+                            Operand newOperand = (Operand) operand;
+
+                            if (newOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                                    || newOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                            } else {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                    jasmin.append("\tiload_" + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload " + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                            }
+                        }
+                        currentNumber++;
+                    }
+                    /*if ((operandNew.getReturnType()).getTypeOfElement()==ElementType.INT32)
+                    {*/
+                    jasmin.append("\tnewarray int");
+                    currentNumber++;
+                    jasmin.append("\n");
+                    // }
+                    /*else if(callInstruction.getListOfOperands().size() > 1)
+                    {
+                        jasmin.append("\tmultianewarray [");
+                        addType(callInstruction.getListOfOperands().get(0).getType());
+                        jasmin.append(" "+callInstruction.getListOfOperands().size()+"\n");
+                    }
+                    else if (operandNew.getReturnType().getTypeOfElement()==ElementType.ARRAYREF){
+                        //var classTypeNewArray = (ClassType) operandNew.getReturnType();
+                    
+                        Operand newReturn = (Operand) callInstruction.getFirstArg();
+                    
+                        jasmin.append("\tanewarray ");
+                        jasmin.append(newReturn.getName());
+                        jasmin.append("\n");
+                    }*/
+                } else {
+                    ClassType classTypeNew = (ClassType) callInstruction.getReturnType();
+
+                    jasmin.append("\tnew " + classTypeNew.getName() + "\n");
+                    jasmin.append("\tdup\n");
+                    currentNumber += 2;
+
+                    jasmin.append("\tinvokespecial " + classTypeNew.getName() + ".<init>()V\n");
+                    // numberLimit++;
+                }
+                break;
+
+            case invokevirtual:
+
+                Operand callField1 = (Operand) callInstruction.getFirstArg();
+
+                if (OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() < 4)
+                    jasmin.append("\taload_"
+                            + OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() + "\n");
+                else
+                    jasmin.append("\taload "
+                            + OllirAccesser.getVarTable(method).get(callField1.getName()).getVirtualReg() + "\n");
 
                 currentNumber++;
 
-                jasmin.append("\tgetfield ");
+                ArrayList<Element> elements = callInstruction.getListOfOperands();
 
-                ClassType classType2 = (ClassType) field1.getType();
-                jasmin.append(classType2.getName() + "/");
-                jasmin.append(field2.getName()+" ");
+                for (Element element : elements) {
+                    if (element.isLiteral()) {
+                        LiteralElement literalElement = (LiteralElement) element;
+                        LiteralValues(literalElement);
+                    } else {
+                        Operand returnOperand = (Operand) element;
 
-                addType(getFieldInstruction.getSecondOperand().getType());
+                        Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                        // jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                        if (element.getType().getTypeOfElement() == ElementType.OBJECTREF
+                                || element.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                            if (elementDescriptor.getVirtualReg() < 4)
+                                jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                        } else {
+                            if (elementDescriptor.getVirtualReg() < 4)
+                                jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
+                        }
+
+                    }
+                    currentNumber++;
+                }
+                LiteralElement callField2 = (LiteralElement) callInstruction.getSecondArg();
+                ClassType classTypeVirtual = (ClassType) callInstruction.getFirstArg().getType();
+                jasmin.append("\tinvokevirtual " + classTypeVirtual.getName() + "."
+                        + callField2.getLiteral().substring(1, callField2.getLiteral().length() - 1) + "(");
+
+                // Boolean first = false;
+                for (Element element : elements) {
+                    /*if (first == true)
+                    {
+                        jasmin.append(" ");
+                    }*/
+                    addType(element.getType());
+                    // first = true;
+                }
+                jasmin.append(")");
+
+                addType(((CallInstruction) inst).getReturnType());
+                if (((CallInstruction) inst).getReturnType().getTypeOfElement() != ElementType.VOID) {
+                    if (nonAssign)
+                        jasmin.append("\tpop\n");
+                }
                 jasmin.append("\n");
-                setNumberLimit();
-                nonAssign=true;
+
                 break;
-            case UNARYOPER:
-                UnaryOpInstruction unaryOpInstruction = (UnaryOpInstruction) inst;
+            // case invokeinterface:
+            // break;
+            case invokespecial:
+                // Operand callFieldSpecial = (Operand) callInstruction.getFirstArg();
 
-                OperationType unaryOperationType = unaryOpInstruction.getUnaryOperation().getOpType();
-
-                if (unaryOperationType == OperationType.NOT || unaryOperationType == OperationType.NOTB)
-                {
-                    if (unaryOpInstruction.getRightOperand().isLiteral()){
-                        LiteralElement literalElement = (LiteralElement) unaryOpInstruction.getRightOperand();
+                /*if (OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg()<4)
+                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
+                else
+                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(callFieldSpecial.getName()).getVirtualReg() + "\n");
+                ArrayList<Element> elementsSpecial = callInstruction.getListOfOperands();
+                
+                for (Element element : elementsSpecial){
+                    if (element.isLiteral()){
+                        LiteralElement literalElement = (LiteralElement) element;
                         LiteralValues(literalElement);
                     }
                     else {
-                        Operand rightOperand = (Operand) unaryOpInstruction.getRightOperand();
-
-                        Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(rightOperand.getName());
-
-                        //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-
-                        if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
+                        Operand returnOperand = (Operand) element;
+                
+                        Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+                
+                        //jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                        if (element.getType().getTypeOfElement()==ElementType.OBJECTREF || element.getType().getTypeOfElement()==ElementType.ARRAYREF)
                         {
-                            if (binaryDescriptor.getVirtualReg()<4)
-                                jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
+                            if (elementDescriptor.getVirtualReg()<4)
+                                jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
                             else
-                                jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
+                                jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
                         }
                         else
                         {
-                            if (binaryDescriptor.getVirtualReg()<4)
-                                jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                            if (elementDescriptor.getVirtualReg()<4)
+                                jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
                             else
-                                jasmin.append("\tiload " + binaryDescriptor.getVirtualReg() + "\n");
+                                jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
+                        }
+                    }
+                }
+                ClassType classTypeVirtual1 = (ClassType) callInstruction.getFirstArg().getType();
+                jasmin.append("\tinvokespecial " + classTypeVirtual1.getName() + ".");
+                LiteralElement callField2Special = (LiteralElement) callInstruction.getSecondArg();
+                jasmin.append( callField2Special.getLiteral().substring( 1, callField2Special.getLiteral().length() - 1 ) + "()");
+                addType(((CallInstruction) inst).getReturnType());
+                jasmin.append("\n");*/
+                return;
+
+            case invokestatic:
+                Operand callField1Static = (Operand) callInstruction.getFirstArg();
+
+                // jasmin.append("\taload_" +
+                // OllirAccesser.getVarTable(method).get(callField1Static.getName()).getVirtualReg() + "\n");
+
+                ArrayList<Element> elementsStatic = callInstruction.getListOfOperands();
+
+                for (Element element : elementsStatic) {
+                    if (element.isLiteral()) {
+                        LiteralElement literalElement = (LiteralElement) element;
+                        LiteralValues(literalElement);
+                    } else {
+                        Operand returnOperand = (Operand) element;
+
+                        Descriptor elementDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                        // jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                        if (element.getType().getTypeOfElement() == ElementType.OBJECTREF
+                                || element.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                            if (elementDescriptor.getVirtualReg() < 4)
+                                jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                        } else if (element instanceof ArrayOperand) {
+                            if (elementDescriptor.getVirtualReg() < 4)
+                                jasmin.append("\taload_" + elementDescriptor.getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\taload " + elementDescriptor.getVirtualReg() + "\n");
+                        } else {
+                            if (elementDescriptor.getVirtualReg() < 4)
+                                jasmin.append("\tiload_" + elementDescriptor.getVirtualReg() + "\n");
+                            else
+                                jasmin.append("\tiload " + elementDescriptor.getVirtualReg() + "\n");
                         }
                     }
                     currentNumber++;
-                    jasmin.append("\ticonst_1\n");
-                    currentNumber++;
-                    jasmin.append("\tixor\n");
-                    if(this.currentNumber > this.numberLimit)
-                        this.numberLimit = this.currentNumber;
-                    currentNumber--;
                 }
-                nonAssign=true;
+                LiteralElement callField2Static = (LiteralElement) callInstruction.getSecondArg();
+                jasmin.append("\tinvokestatic " + callField1Static.getName() + "."
+                        + callField2Static.getLiteral().substring(1, callField2Static.getLiteral().length() - 1) + "(");
+                currentNumber++;
+                // Boolean first = false;
+                for (Element element : elementsStatic) {
+                    /*if (first == true)
+                    {
+                        jasmin.append(" ");
+                    }*/
+                    addType(element.getType());
+                    // first = true;
+                }
+                jasmin.append(")");
+
+                addType(((CallInstruction) inst).getReturnType());
+                if (((CallInstruction) inst).getReturnType().getTypeOfElement() != ElementType.VOID) {
+                    if (nonAssign)
+                        jasmin.append("\tpop\n");
+                }
+                jasmin.append("\n");
                 break;
-            case BINARYOPER:
-                BinaryOpInstruction binaryOpInstruction = (BinaryOpInstruction) inst;
 
-                OperationType operationType = binaryOpInstruction.getUnaryOperation().getOpType();
+            case ldc:
+                break;
+            }
+            setNumberLimit();
+            nonAssign = true;
+            break;
+        case RETURN:
+            ReturnInstruction returnInstruction = (ReturnInstruction) inst;
+            ElementType returnValue;
 
-                if (binaryOpInstruction.getLeftOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getLeftOperand();
-                    LiteralValues(literalElement);
+            if (!returnInstruction.hasReturnValue()) {
+                jasmin.append("\treturn\n");
+                return;
+            }
+
+            returnValue = returnInstruction.getOperand().getType().getTypeOfElement();
+
+            Element operand = returnInstruction.getOperand();
+            if (operand.isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) operand;
+                LiteralValues(literalElement);
+            } else {
+                Operand returnOperand = (Operand) operand;
+
+                Descriptor returnDescriptor = OllirAccesser.getVarTable(method).get(returnOperand.getName());
+
+                // jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                if (operand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || operand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (returnDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + returnDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + returnDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (returnDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + returnDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + returnDescriptor.getVirtualReg() + "\n");
                 }
-                else {
-                    Operand leftOperand = (Operand) binaryOpInstruction.getLeftOperand();
+            }
+            currentNumber++;
 
-                    Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
+            switch (returnValue) {
+            case INT32:
+                jasmin.append("\tireturn\n");
+                break;
+            case BOOLEAN:
+                jasmin.append("\tireturn\n");
+                break;
+            case OBJECTREF:
+                jasmin.append("\tareturn\n");
+                break;
+            case ARRAYREF:
+                jasmin.append("\tareturn\n");
+                break;
+            }
+            nonAssign = true;
+            break;
+        case PUTFIELD:
+            PutFieldInstruction putFieldInstruction = (PutFieldInstruction) inst;
 
-                    //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || leftOperand.getType().getTypeOfElement()==ElementType.ARRAYREF) {
+            if (putFieldInstruction.getFirstOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) putFieldInstruction.getFirstOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand firstOperand = (Operand) putFieldInstruction.getFirstOperand();
+
+                Descriptor firstDescriptor = OllirAccesser.getVarTable(method).get(firstOperand.getName());
+
+                if (firstOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || firstOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || firstOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (firstDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + firstDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + firstDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (firstDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + firstDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + firstDescriptor.getVirtualReg() + "\n");
+                }
+            }
+
+            currentNumber++;
+
+            if (putFieldInstruction.getThirdOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) putFieldInstruction.getThirdOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand thirdOperand = (Operand) putFieldInstruction.getThirdOperand();
+
+                Descriptor thirdDescriptor = OllirAccesser.getVarTable(method).get(thirdOperand.getName());
+
+                if (thirdOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || thirdOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || thirdOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (thirdDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + thirdDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + thirdDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (thirdDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + thirdDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + thirdDescriptor.getVirtualReg() + "\n");
+                }
+            }
+
+            currentNumber++;
+
+            jasmin.append("\tputfield ");
+
+            Operand operand1 = (Operand) putFieldInstruction.getFirstOperand();
+            Operand operand2 = (Operand) putFieldInstruction.getSecondOperand();
+
+            /*if(operand1.getName()=="this"){
+                jasmin.append(operand1.getName() + "/");
+                jasmin.append(operand2.getName() + " ");
+                addType(putFieldInstruction.getSecondOperand().getType());
+                jasmin.append("\n");
+            }
+            else{*/
+            ClassType class1 = (ClassType) operand1.getType();
+            jasmin.append(class1.getName() + "/");
+            jasmin.append(operand2.getName() + " ");
+            addType(putFieldInstruction.getSecondOperand().getType());
+            jasmin.append("\n");
+            // }
+            setNumberLimit();
+            nonAssign = true;
+            break;
+        case GETFIELD:
+            GetFieldInstruction getFieldInstruction = (GetFieldInstruction) inst;
+
+            Operand field1 = (Operand) getFieldInstruction.getFirstOperand();
+            Operand field2 = (Operand) getFieldInstruction.getSecondOperand();
+
+            if (OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() < 4)
+                jasmin.append(
+                        "\taload_" + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
+            else
+                jasmin.append(
+                        "\taload " + OllirAccesser.getVarTable(method).get(field1.getName()).getVirtualReg() + "\n");
+
+            currentNumber++;
+
+            jasmin.append("\tgetfield ");
+
+            ClassType classType2 = (ClassType) field1.getType();
+            jasmin.append(classType2.getName() + "/");
+            jasmin.append(field2.getName() + " ");
+
+            addType(getFieldInstruction.getSecondOperand().getType());
+            jasmin.append("\n");
+            setNumberLimit();
+            nonAssign = true;
+            break;
+        case UNARYOPER:
+            UnaryOpInstruction unaryOpInstruction = (UnaryOpInstruction) inst;
+
+            OperationType unaryOperationType = unaryOpInstruction.getUnaryOperation().getOpType();
+
+            if (unaryOperationType == OperationType.NOT || unaryOperationType == OperationType.NOTB) {
+                if (unaryOpInstruction.getRightOperand().isLiteral()) {
+                    LiteralElement literalElement = (LiteralElement) unaryOpInstruction.getRightOperand();
+                    LiteralValues(literalElement);
+                } else {
+                    Operand rightOperand = (Operand) unaryOpInstruction.getRightOperand();
+
+                    Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(rightOperand.getName());
+
+                    // jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+
+                    if (rightOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                            || rightOperand.getType().getTypeOfElement() == ElementType.THIS
+                            || rightOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
                         if (binaryDescriptor.getVirtualReg() < 4)
                             jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
                         else
                             jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
-                    }
-                    else {
+                    } else {
                         if (binaryDescriptor.getVirtualReg() < 4)
                             jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
                         else
@@ -692,337 +669,383 @@ public class BackendStage implements JasminBackend {
                     }
                 }
                 currentNumber++;
-
-                if (operationType==OperationType.NOTB){
-                    jasmin.append("\ticonst_1\n");
-                    jasmin.append("\tixor\n");
-                    break;
-                }
-
-                //if (binaryOpInstruction.getRightOperand().getType() instanceof )
-                if (binaryOpInstruction.getRightOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getRightOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand rightOperand = (Operand) binaryOpInstruction.getRightOperand();
-
-                    Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(rightOperand.getName());
-
-                    //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.THIS || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (binaryDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
-                        currentNumber++;
-                    }
-                    else if (rightOperand instanceof ArrayOperand){
-
-                        ArrayOperand refArrayRigth = (ArrayOperand) rightOperand;
-
-                        for (var index: refArrayRigth.getIndexOperands())
-                        {
-                            if (index.isLiteral())
-                            {
-                                LiteralElement literalElement = (LiteralElement) index;
-                                LiteralValues(literalElement);
-                            }
-                            else{
-                                Operand newOperand = (Operand) index;
-
-                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                else
-                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                            }
-                            currentNumber++;
-                        }
-
-                        if (refArrayRigth.getType().getTypeOfElement()==ElementType.OBJECTREF || refArrayRigth.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                        {
-                            if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
-                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                        }
-                        else
-                        {
-                            if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()<4)
-                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() + "\n");
-                        }
-                        currentNumber++;
-                    }
-                    else
-                    {
-                        if (rightOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rightOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                        {
-                            if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()<4)
-                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
-                        }
-                        else
-                        {
-                            if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()<4)
-                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() + "\n");
-                        }
-                        currentNumber++;
-                    }
-                }
-
-                switch (operationType) {
-                    case ADD:
-                        jasmin.append("\tiadd\n");
-                        break;
-                    case SUB:
-                        jasmin.append("\tisub\n");
-                        break;
-                    case DIV:
-                        jasmin.append("\tidiv\n");
-                        break;
-                    case MUL:
-                        jasmin.append("\timul\n");
-                        break;
-                    case AND:
-                        jasmin.append("\tiand\n");
-                        break;
-                    case ANDB:
-                        jasmin.append("\tiand\n");
-                        break;
-                    case LTH:
-                        jasmin.append("\tif_icmplt LTH_True_" + lthOperation + "\n");
-                        jasmin.append("\ticonst_0\n");
-                        jasmin.append("\tgoto LTH_End_" + lthOperation + "\n" );
-                        jasmin.append("\tLTH_True_" + lthOperation + ":\n");
-                        jasmin.append("\ticonst_1\n");
-                        currentNumber++;
-                        jasmin.append("\tLTH_End_" + lthOperation + ":\n");
-                        lthOperation++;
-                        break;
-                }
-                nonAssign=true;
-                break;
-            case NOPER:
-                SingleOpInstruction singleOpInstruction = (SingleOpInstruction) inst;
-
-                if (singleOpInstruction.getSingleOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) singleOpInstruction.getSingleOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand singleOperand = (Operand) singleOpInstruction.getSingleOperand();
-
-                    Descriptor SingleDescriptor = OllirAccesser.getVarTable(method).get(singleOperand.getName());
-
-                    //jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
-                    if (singleOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || singleOperand.getType().getTypeOfElement()==ElementType.THIS || singleOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (SingleDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + SingleDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + SingleDescriptor.getVirtualReg() + "\n");
-                        currentNumber++;
-                    }
-                    else if (singleOperand instanceof ArrayOperand){
-
-                        ArrayOperand refArray = (ArrayOperand) singleOperand;
-
-                        if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg()<4)
-                            jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
-                        currentNumber++;
-                        for (var index: refArray.getIndexOperands())
-                        {
-                            if (index.isLiteral())
-                            {
-                                LiteralElement literalElement = (LiteralElement) index;
-                                LiteralValues(literalElement);
-                            }
-                            else{
-                                Operand newOperand = (Operand) index;
-
-                                if (newOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || newOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                                {
-                                    if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                        jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                }
-                                else
-                                {
-                                    if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()<4)
-                                        jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                    else
-                                        jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() + "\n");
-                                }
-                            }
-                            currentNumber++;
-                        }
-                        currentNumber++;
-                        jasmin.append("\tiaload\n");
-                    }
-                    else
-                    {
-                        if (singleOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || singleOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                        {
-                            if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()<4)
-                                jasmin.append("\taload_" + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\taload " + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
-                        }
-                        else
-                        {
-                            if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()<4)
-                                jasmin.append("\tiload_" + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
-                            else
-                                jasmin.append("\tiload " + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() + "\n");
-                        }
-                        currentNumber++;
-                    }
-                }
-                nonAssign=true;
-                break;
-            case BRANCH:
-                CondBranchInstruction branchInstruction = (CondBranchInstruction) inst;
-
-                //jasmin.append("IF");
-
-                if (branchInstruction.getLeftOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) branchInstruction.getLeftOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand leftOperand = (Operand) branchInstruction.getLeftOperand();
-
-                    Descriptor leftDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
-
-                    if (leftOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || leftOperand.getType().getTypeOfElement()==ElementType.THIS || leftOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (leftDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + leftDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + leftDescriptor.getVirtualReg() + "\n");
-                    }
-                    else
-                    {
-                        if (leftDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + leftDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiload " + leftDescriptor.getVirtualReg() + "\n");
-                    }
-                }
+                jasmin.append("\ticonst_1\n");
                 currentNumber++;
+                jasmin.append("\tixor\n");
+                if (this.currentNumber > this.numberLimit)
+                    this.numberLimit = this.currentNumber;
+                currentNumber--;
+            }
+            nonAssign = true;
+            break;
+        case BINARYOPER:
+            BinaryOpInstruction binaryOpInstruction = (BinaryOpInstruction) inst;
 
-                if (branchInstruction.getRightOperand().isLiteral()){
-                    LiteralElement literalElement = (LiteralElement) branchInstruction.getRightOperand();
-                    LiteralValues(literalElement);
-                }
-                else {
-                    Operand rigthOperand = (Operand) branchInstruction.getRightOperand();
+            OperationType operationType = binaryOpInstruction.getUnaryOperation().getOpType();
 
-                    Descriptor rigthDescriptor = OllirAccesser.getVarTable(method).get(rigthOperand.getName());
+            if (binaryOpInstruction.getLeftOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getLeftOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand leftOperand = (Operand) binaryOpInstruction.getLeftOperand();
 
-                    if (rigthOperand.getType().getTypeOfElement()==ElementType.OBJECTREF || rigthOperand.getType().getTypeOfElement()==ElementType.THIS || rigthOperand.getType().getTypeOfElement()==ElementType.ARRAYREF)
-                    {
-                        if (rigthDescriptor.getVirtualReg()<4)
-                            jasmin.append("\taload_" + rigthDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\taload " + rigthDescriptor.getVirtualReg() + "\n");
-                    }
+                Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
+
+                // jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                if (leftOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || leftOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (binaryDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
                     else
-                    {
-                        if (rigthDescriptor.getVirtualReg()<4)
-                            jasmin.append("\tiload_" + rigthDescriptor.getVirtualReg() + "\n");
-                        else
-                            jasmin.append("\tiload " + rigthDescriptor.getVirtualReg() + "\n");
+                        jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (binaryDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + binaryDescriptor.getVirtualReg() + "\n");
+                }
+            }
+            currentNumber++;
+
+            if (operationType == OperationType.NOTB) {
+                jasmin.append("\ticonst_1\n");
+                jasmin.append("\tixor\n");
+                break;
+            }
+
+            // if (binaryOpInstruction.getRightOperand().getType() instanceof )
+            if (binaryOpInstruction.getRightOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) binaryOpInstruction.getRightOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand rightOperand = (Operand) binaryOpInstruction.getRightOperand();
+
+                Descriptor binaryDescriptor = OllirAccesser.getVarTable(method).get(rightOperand.getName());
+
+                // jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                if (rightOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || rightOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || rightOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (binaryDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + binaryDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + binaryDescriptor.getVirtualReg() + "\n");
+                    currentNumber++;
+                } else if (rightOperand instanceof ArrayOperand) {
+
+                    ArrayOperand refArrayRigth = (ArrayOperand) rightOperand;
+
+                    for (var index : refArrayRigth.getIndexOperands()) {
+                        if (index.isLiteral()) {
+                            LiteralElement literalElement = (LiteralElement) index;
+                            LiteralValues(literalElement);
+                        } else {
+                            Operand newOperand = (Operand) index;
+
+                            if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                jasmin.append("\taload_"
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                            else
+                                jasmin.append("\taload "
+                                        + OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg()
+                                        + "\n");
+                        }
+                        currentNumber++;
                     }
+
+                    if (refArrayRigth.getType().getTypeOfElement() == ElementType.OBJECTREF
+                            || refArrayRigth.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                        if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() < 4)
+                            jasmin.append("\taload_"
+                                    + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\taload "
+                                    + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()
+                                    + "\n");
+                    } else {
+                        if (OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg() < 4)
+                            jasmin.append("\tiload_"
+                                    + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\tiload "
+                                    + OllirAccesser.getVarTable(method).get(refArrayRigth.getName()).getVirtualReg()
+                                    + "\n");
+                    }
+                    currentNumber++;
+                } else {
+                    if (rightOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                            || rightOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                        if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() < 4)
+                            jasmin.append("\taload_"
+                                    + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\taload "
+                                    + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()
+                                    + "\n");
+                    } else {
+                        if (OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg() < 4)
+                            jasmin.append("\tiload_"
+                                    + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\tiload "
+                                    + OllirAccesser.getVarTable(method).get(rightOperand.getName()).getVirtualReg()
+                                    + "\n");
+                    }
+                    currentNumber++;
                 }
+            }
+
+            switch (operationType) {
+            case ADD:
+                jasmin.append("\tiadd\n");
+                break;
+            case SUB:
+                jasmin.append("\tisub\n");
+                break;
+            case DIV:
+                jasmin.append("\tidiv\n");
+                break;
+            case MUL:
+                jasmin.append("\timul\n");
+                break;
+            case AND:
+                jasmin.append("\tiand\n");
+                break;
+            case ANDB:
+                jasmin.append("\tiand\n");
+                break;
+            case LTH:
+                jasmin.append("\tif_icmplt LTH_True_" + lthOperation + "\n");
+                jasmin.append("\ticonst_0\n");
+                jasmin.append("\tgoto LTH_End_" + lthOperation + "\n");
+                jasmin.append("\tLTH_True_" + lthOperation + ":\n");
+                jasmin.append("\ticonst_1\n");
                 currentNumber++;
+                jasmin.append("\tLTH_End_" + lthOperation + ":\n");
+                lthOperation++;
+                break;
+            }
+            nonAssign = true;
+            break;
+        case NOPER:
+            SingleOpInstruction singleOpInstruction = (SingleOpInstruction) inst;
 
-                OperationType operationType1 = branchInstruction.getCondOperation().getOpType();
+            if (singleOpInstruction.getSingleOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) singleOpInstruction.getSingleOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand singleOperand = (Operand) singleOpInstruction.getSingleOperand();
 
-                switch (operationType1){
-                    case EQ:
-                        jasmin.append("\tif_icmpeq ");
-                        break;
-                    case GTE:
-                        jasmin.append("\tif_icmpge ");
-                        break;
-                    case NEQ:
-                        jasmin.append("\tif_icmpne ");
-                        break;
-                    case GTH:
-                        jasmin.append("\tif_icmpgt ");
-                        break;
-                    case LTH:
-                        jasmin.append("\tif_icmplt ");
-                        break;
-                    case LTE:
-                        jasmin.append("\tif_icmple ");
-                        break;
-                    case ANDB:
-                        jasmin.append("\tif_icmpeq ");
-                        break;
+                Descriptor SingleDescriptor = OllirAccesser.getVarTable(method).get(singleOperand.getName());
+
+                // jasmin.append("\tiload_" + binaryDescriptor.getVirtualReg() + "\n");
+                if (singleOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || singleOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || singleOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (SingleDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + SingleDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + SingleDescriptor.getVirtualReg() + "\n");
+                    currentNumber++;
+                } else if (singleOperand instanceof ArrayOperand) {
+
+                    ArrayOperand refArray = (ArrayOperand) singleOperand;
+
+                    if (OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() < 4)
+                        jasmin.append("\taload_"
+                                + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload "
+                                + OllirAccesser.getVarTable(method).get(refArray.getName()).getVirtualReg() + "\n");
+                    currentNumber++;
+                    for (var index : refArray.getIndexOperands()) {
+                        if (index.isLiteral()) {
+                            LiteralElement literalElement = (LiteralElement) index;
+                            LiteralValues(literalElement);
+                        } else {
+                            Operand newOperand = (Operand) index;
+
+                            if (newOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                                    || newOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                    jasmin.append("\taload_" + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\taload " + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                            } else {
+                                if (OllirAccesser.getVarTable(method).get(newOperand.getName()).getVirtualReg() < 4)
+                                    jasmin.append("\tiload_" + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                                else
+                                    jasmin.append("\tiload " + OllirAccesser.getVarTable(method)
+                                            .get(newOperand.getName()).getVirtualReg() + "\n");
+                            }
+                        }
+                        currentNumber++;
+                    }
+                    currentNumber++;
+                    jasmin.append("\tiaload\n");
+                } else {
+                    if (singleOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                            || singleOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                        if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() < 4)
+                            jasmin.append("\taload_"
+                                    + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\taload "
+                                    + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()
+                                    + "\n");
+                    } else {
+                        if (OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg() < 4)
+                            jasmin.append("\tiload_"
+                                    + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()
+                                    + "\n");
+                        else
+                            jasmin.append("\tiload "
+                                    + OllirAccesser.getVarTable(method).get(singleOperand.getName()).getVirtualReg()
+                                    + "\n");
+                    }
+                    currentNumber++;
                 }
-                jasmin.append(branchInstruction.getLabel() + "\n");
-                nonAssign=true;
-                break;
+            }
+            nonAssign = true;
+            break;
+        case BRANCH:
+            CondBranchInstruction branchInstruction = (CondBranchInstruction) inst;
 
-            case GOTO:
-                GotoInstruction gotoInstruction = (GotoInstruction) inst;
+            // jasmin.append("IF");
 
-                jasmin.append("\tgoto " + gotoInstruction.getLabel() + "\n");
-                nonAssign=true;
+            if (branchInstruction.getLeftOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) branchInstruction.getLeftOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand leftOperand = (Operand) branchInstruction.getLeftOperand();
+
+                Descriptor leftDescriptor = OllirAccesser.getVarTable(method).get(leftOperand.getName());
+
+                if (leftOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || leftOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || leftOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (leftDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + leftDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + leftDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (leftDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + leftDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + leftDescriptor.getVirtualReg() + "\n");
+                }
+            }
+            currentNumber++;
+
+            if (branchInstruction.getRightOperand().isLiteral()) {
+                LiteralElement literalElement = (LiteralElement) branchInstruction.getRightOperand();
+                LiteralValues(literalElement);
+            } else {
+                Operand rigthOperand = (Operand) branchInstruction.getRightOperand();
+
+                Descriptor rigthDescriptor = OllirAccesser.getVarTable(method).get(rigthOperand.getName());
+
+                if (rigthOperand.getType().getTypeOfElement() == ElementType.OBJECTREF
+                        || rigthOperand.getType().getTypeOfElement() == ElementType.THIS
+                        || rigthOperand.getType().getTypeOfElement() == ElementType.ARRAYREF) {
+                    if (rigthDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\taload_" + rigthDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\taload " + rigthDescriptor.getVirtualReg() + "\n");
+                } else {
+                    if (rigthDescriptor.getVirtualReg() < 4)
+                        jasmin.append("\tiload_" + rigthDescriptor.getVirtualReg() + "\n");
+                    else
+                        jasmin.append("\tiload " + rigthDescriptor.getVirtualReg() + "\n");
+                }
+            }
+            currentNumber++;
+
+            OperationType operationType1 = branchInstruction.getCondOperation().getOpType();
+
+            switch (operationType1) {
+            case EQ:
+                jasmin.append("\tif_icmpeq ");
                 break;
+            case GTE:
+                jasmin.append("\tif_icmpge ");
+                break;
+            case NEQ:
+                jasmin.append("\tif_icmpne ");
+                break;
+            case GTH:
+                jasmin.append("\tif_icmpgt ");
+                break;
+            case LTH:
+                jasmin.append("\tif_icmplt ");
+                break;
+            case LTE:
+                jasmin.append("\tif_icmple ");
+                break;
+            case ANDB:
+                jasmin.append("\tif_icmpeq ");
+                break;
+            }
+            jasmin.append(branchInstruction.getLabel() + "\n");
+            nonAssign = true;
+            break;
+
+        case GOTO:
+            GotoInstruction gotoInstruction = (GotoInstruction) inst;
+
+            jasmin.append("\tgoto " + gotoInstruction.getLabel() + "\n");
+            nonAssign = true;
+            break;
         }
     }
 
-    public void MethodOperations(Method method){
-        for (var inst: method.getInstructions()) {
+    public void MethodOperations(Method method) {
+        for (var inst : method.getInstructions()) {
             GetInstructions(inst, method);
         }
     }
 
-    public void addAccessModifier(AccessModifiers modifier){
-        switch (modifier){
-            case PUBLIC:
-                jasmin.append(" public ");
-                break;
-            case PRIVATE:
-                jasmin.append(" private ");
-                break;
-            case PROTECTED:
-                jasmin.append(" protected ");
-                break;
-            case DEFAULT:
-                //jasmin.append(" default ");
-                break;
+    public void addAccessModifier(AccessModifiers modifier) {
+        switch (modifier) {
+        case PUBLIC:
+            jasmin.append(" public ");
+            break;
+        case PRIVATE:
+            jasmin.append(" private ");
+            break;
+        case PROTECTED:
+            jasmin.append(" protected ");
+            break;
+        case DEFAULT:
+            // jasmin.append(" default ");
+            break;
         }
     }
 
-    public void methodLine(Method method)
-    {
+    public void methodLine(Method method) {
         // Deals with Construct
-        if (method.isConstructMethod()){
+        if (method.isConstructMethod()) {
             jasmin.append(".method ");
-            //addAccessModifier(method.getMethodAccessModifier());
+            // addAccessModifier(method.getMethodAccessModifier());
             jasmin.append("public <init>()");
             addType(method.getReturnType());
             jasmin.append("\n");
-            int locals = method.getVarTable().size()+1;
+            int locals = method.getVarTable().size() + 1;
             jasmin.append("\t.limit stack 2\n" + "\t.limit locals " + locals + "\n");
-            //jasmin.append("\n\taload_0\n");
-            //GetInstructions(method.getInstr(0), method);
+            // jasmin.append("\n\taload_0\n");
+            // GetInstructions(method.getInstr(0), method);
             jasmin.append("\taload_0\n");
             jasmin.append("\tinvokespecial java/lang/Object.<init>()V\n");
-            //jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
+            // jasmin.append("\tinvokenonvirtual java/lang/Object/<init>()V\n");
             jasmin.append("\treturn\n");
             jasmin.append(".end method\n");
             finalJasmin.append(jasmin);
@@ -1031,7 +1054,7 @@ public class BackendStage implements JasminBackend {
         }
 
         jasmin.append(".method");
-        //System.out.println(method.getMethodAccessModifier());
+        // System.out.println(method.getMethodAccessModifier());
 
         addAccessModifier(method.getMethodAccessModifier());
 
@@ -1042,18 +1065,17 @@ public class BackendStage implements JasminBackend {
 
         jasmin.append(method.getMethodName());
 
-        if(method.getParams().size()>0){
+        if (method.getParams().size() > 0) {
             jasmin.append("(");
-            for (var param: method.getParams()){
-                //if (param.)
+            for (var param : method.getParams()) {
+                // if (param.)
                 addType(param.getType());
-                //jasmin.append(";");
+                // jasmin.append(";");
             }
             // Remove last ;
             // jasmin.deleteCharAt(jasmin.toString().length()-1);
             jasmin.append(")");
-        }
-        else
+        } else
             jasmin.append("()");
 
         addType(method.getReturnType());
@@ -1068,11 +1090,15 @@ public class BackendStage implements JasminBackend {
 
         jasmin.append(".end method\n");
 
-        int locals = method.getVarTable().size()+1;
+        int locals = method.getVarTable().size() + 1;
 
-        finalJasmin.append("\n\t.limit stack " + numberLimit + "\n" + "\t.limit locals " + locals + "\n");
+        // JB: Several tests are failing because stack gets value 0, changing to 150 to run those tests
+        int maxStack = 150;
 
-        //jasmin.append(".limits " + numberLimit);
+        // finalJasmin.append("\n\t.limit stack " + numberLimit + "\n" + "\t.limit locals " + locals + "\n");
+        finalJasmin.append("\n\t.limit stack " + maxStack + "\n" + "\t.limit locals " + locals + "\n");
+
+        // jasmin.append(".limits " + numberLimit);
         finalJasmin.append(jasmin);
         jasmin = new StringBuilder();
 
@@ -1081,8 +1107,8 @@ public class BackendStage implements JasminBackend {
 
     }
 
-    public void AddClassFields(ClassUnit ollirClass){
-        for (Field field: ollirClass.getFields()){
+    public void AddClassFields(ClassUnit ollirClass) {
+        for (Field field : ollirClass.getFields()) {
             jasmin.append(".field");
 
             addAccessModifier(field.getFieldAccessModifier());
@@ -1092,23 +1118,23 @@ public class BackendStage implements JasminBackend {
             else if (field.isFinalField())
                 jasmin.append("final");
 
-            jasmin.append("'"+field.getFieldName()+"'"+" ");
+            jasmin.append("'" + field.getFieldName() + "'" + " ");
             addType(field.getFieldType());
             jasmin.append("\n");
         }
         jasmin.append("\n");
     }
 
-    public void AddClass(ClassUnit ollirClass){
+    public void AddClass(ClassUnit ollirClass) {
         jasmin.append(".class ");
         addAccessModifier(ollirClass.getClassAccessModifier());
         jasmin.append(ollirClass.getClassName() + "\n");
         jasmin.append(".super java/lang/Object\n\n");
     }
 
-    public void GetImports(ArrayList<String> imports){
-        for (String oneImport : imports){
-            jasmin.append("[ "+ oneImport.replace('.', '/') + ";\n");
+    public void GetImports(ArrayList<String> imports) {
+        for (String oneImport : imports) {
+            jasmin.append("[ " + oneImport.replace('.', '/') + ";\n");
         }
     }
 
@@ -1121,7 +1147,7 @@ public class BackendStage implements JasminBackend {
 
         AddClass(ollirClass);
 
-        if (ollirClass.getNumFields()>0)
+        if (ollirClass.getNumFields() > 0)
             AddClassFields(ollirClass);
 
         try {
@@ -1133,7 +1159,7 @@ public class BackendStage implements JasminBackend {
             ollirClass.buildVarTables(); // build the table of variables for each method
             ollirClass.show(); // print to console main information about the input OLLIR
 
-            for (var method: ollirClass.getMethods()){
+            for (var method : ollirClass.getMethods()) {
                 methodLine(method);
             }
 
